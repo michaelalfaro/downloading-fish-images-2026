@@ -31,6 +31,7 @@ _site/
 analysis/approach_1_gmm/segmented/
 analysis/approach_1_gmm/segmented_dinosam/
 analysis/approach_1_gmm/normalized/
+analysis/approach_1_gmm/comparison_panels/
 analysis/approach_1_gmm/zone_maps/
 analysis/approach_1_gmm/k_selection/bic_curves/
 analysis/approach_1_gmm/k_selection/models/
