@@ -1,0 +1,713 @@
+filename,species,directory,annotation_type,annotation_detail,n_fish_noted,annotated_by,date_annotated
+Chaetodon_litus_Bishop_2072919420.jpg,Chaetodon litus,images_bishop,larva,Larval stage identified by visual inspection,,user,2026-02-04
+Chaetodon_argentatus_FishBase_Charg_u1.jpg,Chaetodon argentatus,images_fishbase_extra,larva,Larval stage identified by visual inspection,,user,2026-02-04
+Chaetodon_argentatus_Bishop_1101542975.jpg,Chaetodon argentatus,images_bishop,larva,Larval stage identified by visual inspection,,user,2026-02-04
+Chaetodon_semilarvatus_FishPix_32790AF.jpg,Chaetodon semilarvatus,images,multi_fish,2 fish in image,2,user,2026-02-04
+Prognathodes_marcellae_FishBase_Prmar_u0.jpg,Prognathodes marcellae,images,multi_fish,2 fish in image,2,user,2026-02-04
+Chaetodon_austriacus_FishBase_Chaus_u0.jpg,Chaetodon austriacus,images_fishbase_extra,multi_fish,2+ fish in image,2,user,2026-02-04
+Chaetodon_collare_FishBase_Chcol_u1.jpg,Chaetodon collare,images_fishbase_extra,multi_fish,3 fish in image,3,user,2026-02-04
+Chaetodon_daedalma_FishBase_Chdae_u0.jpg,Chaetodon daedalma,images_fishbase_extra,multi_fish,2 fish in image,2,user,2026-02-04
+Chaetodon_guentheri_FishBase_Chgue_u2.jpg,Chaetodon guentheri,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_hoefleri_FishBase_Chhoe_u2.jpg,Chaetodon hoefleri,images_fishbase_extra,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_kleinii_FishBase_Chkle_u3.jpg,Chaetodon kleinii,images_fishbase_extra,multi_fish,3+ fish in image,3,user,2026-02-04
+Chaetodon_lunula_FishBase_Chlun_uf.jpg,Chaetodon lunula,images_fishbase_extra,multi_fish,2 fish in image,2,user,2026-02-04
+Amphichaetodon_howensis_Bishop_-1464681654.jpg,Amphichaetodon howensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_Bishop_-369771762.jpg,Amphichaetodon howensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_Bishop_472868867.jpg,Amphichaetodon howensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_11105384.jpg,Amphichaetodon howensis,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_267486174.jpg,Amphichaetodon howensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_33719401.jpg,Amphichaetodon howensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Amphichaetodon_melbae_iNaturalist_462963831.jpg,Amphichaetodon melbae,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_adiergastos_FishBase_Chadi_u0.jpg,Chaetodon adiergastos,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_adiergastos_FishBase_Chadi_u3.jpg,Chaetodon adiergastos,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_adiergastos_FishBase_Chadi_u4.jpg,Chaetodon adiergastos,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_adiergastos_iNaturalist_19737434.jpg,Chaetodon adiergastos,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_adiergastos_iNaturalist_294596355.jpg,Chaetodon adiergastos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_adiergastos_iNaturalist_341061286.jpg,Chaetodon adiergastos,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_andamanensis_Bishop_-322272266.jpg,Chaetodon andamanensis,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_andamanensis_iNaturalist_153255532.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_andamanensis_iNaturalist_177672904.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_andamanensis_iNaturalist_205344829.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_andamanensis_iNaturalist_436938868.jpg,Chaetodon andamanensis,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_andamanensis_iNaturalist_486380130.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_argentatus_iNaturalist_263052573.jpg,Chaetodon argentatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_argentatus_iNaturalist_302749246.jpg,Chaetodon argentatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_argentatus_iNaturalist_304051728.jpg,Chaetodon argentatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_argentatus_iNaturalist_83513716.jpg,Chaetodon argentatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_assarius_iNaturalist_258921023.jpg,Chaetodon assarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_assarius_iNaturalist_299428954.jpg,Chaetodon assarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_assarius_iNaturalist_310339741.jpg,Chaetodon assarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_assarius_iNaturalist_477274770.jpg,Chaetodon assarius,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_assarius_iNaturalist_6085742.jpg,Chaetodon assarius,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_aureofasciatus_iNaturalist_341061346.jpg,Chaetodon aureofasciatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_aureofasciatus_iNaturalist_481634544.jpg,Chaetodon aureofasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_aureofasciatus_iNaturalist_592190693.jpg,Chaetodon aureofasciatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auriga_Bishop_-2122348146.jpg,Chaetodon auriga,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_auriga_Bishop_1449897185.jpg,Chaetodon auriga,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_auriga_Bishop_1988149751.jpg,Chaetodon auriga,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auriga_FishBase_Chaur_ua.jpg,Chaetodon auriga,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auriga_FishBase_Chaur_ue.jpg,Chaetodon auriga,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_auriga_iNaturalist_559191666.jpg,Chaetodon auriga,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_auripes_iNaturalist_398828755.jpg,Chaetodon auripes,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_auripes_iNaturalist_63544462.jpg,Chaetodon auripes,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_austriacus_Bishop_-1737564550.jpg,Chaetodon austriacus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_austriacus_FishBase_Chaus_u3.jpg,Chaetodon austriacus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_102813626.jpg,Chaetodon austriacus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_190613965.jpg,Chaetodon austriacus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_2282538.jpg,Chaetodon austriacus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_450186908.jpg,Chaetodon austriacus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_baronessa_FishBase_Chbar_u7.jpg,Chaetodon baronessa,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_baronessa_iNaturalist_287393226.jpg,Chaetodon baronessa,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_baronessa_iNaturalist_409577421.jpg,Chaetodon baronessa,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_bennetti_iNaturalist_605200594.jpg,Chaetodon bennetti,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_bennetti_iNaturalist_607317919.jpg,Chaetodon bennetti,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_blackburnii_Bishop_-410407509.jpg,Chaetodon blackburnii,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_blackburnii_Bishop_1288243346.jpg,Chaetodon blackburnii,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_blackburnii_Bishop_300609141.jpg,Chaetodon blackburnii,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_blackburnii_iNaturalist_15662749.jpg,Chaetodon blackburnii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_blackburnii_iNaturalist_172869684.jpg,Chaetodon blackburnii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_burgessi_iNaturalist_377051376.jpg,Chaetodon burgessi,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_burgessi_iNaturalist_417137299.jpg,Chaetodon burgessi,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_burgessi_iNaturalist_59037796.jpg,Chaetodon burgessi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_capistratus_FishBase_Chcap_u0.jpg,Chaetodon capistratus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_capistratus_iNaturalist_308518622.jpg,Chaetodon capistratus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_capistratus_iNaturalist_411187850.jpg,Chaetodon capistratus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_capistratus_iNaturalist_92683344.jpg,Chaetodon capistratus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_citrinellus_Bishop_-1937929700.jpg,Chaetodon citrinellus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_collare_Bishop_1403678122.jpg,Chaetodon collare,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_collare_Bishop_1999007469.jpg,Chaetodon collare,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_collare_FishBase_Chcol_u2.jpg,Chaetodon collare,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_collare_iNaturalist_332653503.jpg,Chaetodon collare,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_collare_iNaturalist_483798684.jpg,Chaetodon collare,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_daedalma_FishPix_140579AF.jpg,Chaetodon daedalma,images,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_daedalma_Bishop_1811677923.jpg,Chaetodon daedalma,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_daedalma_FishBase_Chdae_u1.jpg,Chaetodon daedalma,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_daedalma_iNaturalist_560372799.jpg,Chaetodon daedalma,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_declivis_FishBase_Chdec_ua.jpg,Chaetodon declivis,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_declivis_iNaturalist_594486076.jpg,Chaetodon declivis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_decussatus_iNaturalist_366445056.jpg,Chaetodon decussatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_decussatus_iNaturalist_567031020.jpg,Chaetodon decussatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_dialeucos_iNaturalist_33142997.jpg,Chaetodon dialeucos,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_dolosus_Bishop_-1008609691.jpg,Chaetodon dolosus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_15539185.jpg,Chaetodon dolosus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_15690595.jpg,Chaetodon dolosus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_236027673.jpg,Chaetodon dolosus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_343070892.jpg,Chaetodon dolosus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_343070907.jpg,Chaetodon dolosus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_343070914.jpg,Chaetodon dolosus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ephippium_Bishop_-1179871461.jpg,Chaetodon ephippium,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ephippium_Bishop_-1248760382.jpg,Chaetodon ephippium,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_ephippium_FishBase_Cheph_u5.jpg,Chaetodon ephippium,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_ephippium_iNaturalist_243890974.jpg,Chaetodon ephippium,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ephippium_iNaturalist_330181464.jpg,Chaetodon ephippium,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ephippium_iNaturalist_436944065.jpg,Chaetodon ephippium,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_falcula_iNaturalist_317097780.jpg,Chaetodon falcula,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_fasciatus_iNaturalist_344206924.jpg,Chaetodon fasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_fasciatus_iNaturalist_344206971.jpg,Chaetodon fasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_fasciatus_iNaturalist_480744407.jpg,Chaetodon fasciatus,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_flavirostris_iNaturalist_17376679.jpg,Chaetodon flavirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_flavirostris_iNaturalist_17376788.jpg,Chaetodon flavirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_flavirostris_iNaturalist_177651824.jpg,Chaetodon flavirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_flavirostris_iNaturalist_20063822.jpg,Chaetodon flavirostris,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_fremblii_Bishop_5130835.jpg,Chaetodon fremblii,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_fremblii_iNaturalist_101580731.jpg,Chaetodon fremblii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_fremblii_iNaturalist_168295733.jpg,Chaetodon fremblii,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_fremblii_iNaturalist_257546329.jpg,Chaetodon fremblii,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_fremblii_iNaturalist_380394577.jpg,Chaetodon fremblii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_gardineri_iNaturalist_174082664.jpg,Chaetodon gardineri,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_guentheri_iNaturalist_260515911.jpg,Chaetodon guentheri,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_guttatissimus_iNaturalist_174546136.jpg,Chaetodon guttatissimus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_guttatissimus_iNaturalist_303971849.jpg,Chaetodon guttatissimus,images_inaturalist,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_hoefleri_iNaturalist_350007389.jpg,Chaetodon hoefleri,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_hoefleri_iNaturalist_424743322.jpg,Chaetodon hoefleri,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_FishBase_Chhum_u3.jpg,Chaetodon humeralis,images,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_FishBase_Chhum_u0.jpg,Chaetodon humeralis,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_FishBase_Chhum_u2.jpg,Chaetodon humeralis,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_10169427.jpg,Chaetodon humeralis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_11971502.jpg,Chaetodon humeralis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_8288759.jpg,Chaetodon humeralis,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_85384668.jpg,Chaetodon humeralis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_87012423.jpg,Chaetodon humeralis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_88599882.jpg,Chaetodon humeralis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_15933811.jpg,Chaetodon interruptus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_231967804.jpg,Chaetodon interruptus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_444196719.jpg,Chaetodon interruptus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_75713374.jpg,Chaetodon interruptus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_kleinii_Bishop_977649394.jpg,Chaetodon kleinii,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_kleinii_FishBase_Chkle_u4.jpg,Chaetodon kleinii,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_kleinii_iNaturalist_336546534.jpg,Chaetodon kleinii,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_kleinii_iNaturalist_338353091.jpg,Chaetodon kleinii,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_kleinii_iNaturalist_409583506.jpg,Chaetodon kleinii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_kleinii_iNaturalist_97482217.jpg,Chaetodon kleinii,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_larvatus_Bishop_1783626891.jpg,Chaetodon larvatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_larvatus_iNaturalist_183943894.jpg,Chaetodon larvatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_larvatus_iNaturalist_183943928.jpg,Chaetodon larvatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_larvatus_iNaturalist_183943944.jpg,Chaetodon larvatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_larvatus_iNaturalist_183943966.jpg,Chaetodon larvatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_larvatus_iNaturalist_605922484.jpg,Chaetodon larvatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_leucopleura_iNaturalist_257991081.jpg,Chaetodon leucopleura,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_leucopleura_iNaturalist_431017214.jpg,Chaetodon leucopleura,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_leucopleura_iNaturalist_551762355.jpg,Chaetodon leucopleura,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_lineolatus_FishPix_140792AF.jpg,Chaetodon lineolatus,images,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_Bishop_-879271097.jpg,Chaetodon lineolatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_Bishop_1526268337.jpg,Chaetodon lineolatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_Bishop_1821004318.jpg,Chaetodon lineolatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_FishBase_Chlin_u2.jpg,Chaetodon lineolatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_FishBase_Chlin_u5.jpg,Chaetodon lineolatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_FishBase_Chlin_u6.jpg,Chaetodon lineolatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_474229031.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_474229195.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_474229198.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_474229199.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_474229221.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_474229225.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_9952634.jpg,Chaetodon lineolatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_litus_FishBase_Chlit_u0.jpg,Chaetodon litus,images,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_litus_Bishop_1983788749.jpg,Chaetodon litus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_250896809.jpg,Chaetodon litus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_250896825.jpg,Chaetodon litus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_490178965.jpg,Chaetodon litus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_534683993.jpg,Chaetodon litus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunula_FishPix_11643AF.jpg,Chaetodon lunula,images,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_lunula_Bishop_543936522.jpg,Chaetodon lunula,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_lunula_FishBase_Chlun_j1.jpg,Chaetodon lunula,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunula_FishBase_Chlun_u6.jpg,Chaetodon lunula,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_lunula_iNaturalist_178875223.jpg,Chaetodon lunula,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunula_iNaturalist_290315608.jpg,Chaetodon lunula,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunula_iNaturalist_290315687.jpg,Chaetodon lunula,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunula_iNaturalist_545359972.jpg,Chaetodon lunula,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_Bishop_1113667583.jpg,Chaetodon lunulatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_Bishop_1378116790.jpg,Chaetodon lunulatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_FishBase_Chlun_uj.jpg,Chaetodon lunulatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_iNaturalist_166474504.jpg,Chaetodon lunulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_iNaturalist_204763105.jpg,Chaetodon lunulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_iNaturalist_204763128.jpg,Chaetodon lunulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_iNaturalist_22286339.jpg,Chaetodon lunulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_madagaskariensis_Bishop_1210446292.jpg,Chaetodon madagaskariensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_madagaskariensis_iNaturalist_220678407.jpg,Chaetodon madagaskariensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_madagaskariensis_iNaturalist_233631122.jpg,Chaetodon madagaskariensis,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_madagaskariensis_iNaturalist_554082399.jpg,Chaetodon madagaskariensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_madagaskariensis_iNaturalist_585635427.jpg,Chaetodon madagaskariensis,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_marleyi_Bishop_384825925.jpg,Chaetodon marleyi,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_marleyi_iNaturalist_463787418.jpg,Chaetodon marleyi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_marleyi_iNaturalist_553311592.jpg,Chaetodon marleyi,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_marleyi_iNaturalist_598506457.jpg,Chaetodon marleyi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melannotus_FishBase_Chmel_j0.jpg,Chaetodon melannotus,images_fishbase_extra,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_219530872.jpg,Chaetodon melannotus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_225310685.jpg,Chaetodon melannotus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_409531338.jpg,Chaetodon melannotus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_409632193.jpg,Chaetodon melannotus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_Bishop_-738901426.jpg,Chaetodon melapterus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_Bishop_690928567.jpg,Chaetodon melapterus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_FishBase_Chmel_u9.jpg,Chaetodon melapterus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_FishBase_Chmel_ua.jpg,Chaetodon melapterus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_278909138.jpg,Chaetodon melapterus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_31528972.jpg,Chaetodon melapterus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_612761452.jpg,Chaetodon melapterus,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_612969490.jpg,Chaetodon melapterus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_612990357.jpg,Chaetodon melapterus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mertensii_iNaturalist_332349948.jpg,Chaetodon mertensii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_243394049.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_260752004.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_270114509.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_270115709.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_465897429.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_465897441.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_67202713.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mesoleucos_iNaturalist_67938601.jpg,Chaetodon mesoleucos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_miliaris_Bishop_1720766063.jpg,Chaetodon miliaris,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_179529921.jpg,Chaetodon miliaris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_386290369.jpg,Chaetodon miliaris,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_386290397.jpg,Chaetodon miliaris,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_432546006.jpg,Chaetodon miliaris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_596812485.jpg,Chaetodon miliaris,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_600454066.jpg,Chaetodon miliaris,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_mitratus_Bishop_-777256060.jpg,Chaetodon mitratus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_mitratus_iNaturalist_476531321.jpg,Chaetodon mitratus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_multicinctus_Bishop_-1145166510.jpg,Chaetodon multicinctus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_multicinctus_Bishop_-1285212619.jpg,Chaetodon multicinctus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_multicinctus_FishBase_Chmul_u7.jpg,Chaetodon multicinctus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_multicinctus_iNaturalist_456392856.jpg,Chaetodon multicinctus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_multicinctus_iNaturalist_457417238.jpg,Chaetodon multicinctus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_multicinctus_iNaturalist_466264486.jpg,Chaetodon multicinctus,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_multicinctus_iNaturalist_580823296.jpg,Chaetodon multicinctus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_Bishop_1435538384.jpg,Chaetodon nigropunctatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_Bishop_276052843.jpg,Chaetodon nigropunctatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_FishBase_Chnig_u2.jpg,Chaetodon nigropunctatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_FishBase_Chnig_u4.jpg,Chaetodon nigropunctatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_iNaturalist_13558701.jpg,Chaetodon nigropunctatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_iNaturalist_3794625.jpg,Chaetodon nigropunctatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_iNaturalist_3794626.jpg,Chaetodon nigropunctatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_iNaturalist_3794627.jpg,Chaetodon nigropunctatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_nigropunctatus_iNaturalist_560214858.jpg,Chaetodon nigropunctatus,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_nippon_Bishop_-751379567.jpg,Chaetodon nippon,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ocellatus_FishBase_Choce_u5.jpg,Chaetodon ocellatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ocellatus_FishBase_Choce_u8.jpg,Chaetodon ocellatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_21126529.jpg,Chaetodon ocellatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_230787450.jpg,Chaetodon ocellatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_241430977.jpg,Chaetodon ocellatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_569216342.jpg,Chaetodon ocellatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_98005952.jpg,Chaetodon ocellatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ocellicaudus_iNaturalist_340784700.jpg,Chaetodon ocellicaudus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ocellicaudus_iNaturalist_48536597.jpg,Chaetodon ocellicaudus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_octofasciatus_FishPix_40751AF.jpg,Chaetodon octofasciatus,images,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_octofasciatus_FishBase_Choct_j0.jpg,Chaetodon octofasciatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_octofasciatus_iNaturalist_318759037.jpg,Chaetodon octofasciatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_octofasciatus_iNaturalist_319578656.jpg,Chaetodon octofasciatus,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_octofasciatus_iNaturalist_438496468.jpg,Chaetodon octofasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ornatissimus_Bishop_164962524.jpg,Chaetodon ornatissimus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ornatissimus_Bishop_553414317.jpg,Chaetodon ornatissimus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ornatissimus_FishBase_Chorn_u0.jpg,Chaetodon ornatissimus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_ornatissimus_FishBase_Chorn_uf.jpg,Chaetodon ornatissimus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ornatissimus_iNaturalist_179512141.jpg,Chaetodon ornatissimus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ornatissimus_iNaturalist_4956860.jpg,Chaetodon ornatissimus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ornatissimus_iNaturalist_71820287.jpg,Chaetodon ornatissimus,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_oxycephalus_iNaturalist_564242487.jpg,Chaetodon oxycephalus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_paucifasciatus_iNaturalist_157581191.jpg,Chaetodon paucifasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_paucifasciatus_iNaturalist_448628514.jpg,Chaetodon paucifasciatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_paucifasciatus_iNaturalist_461212819.jpg,Chaetodon paucifasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_pelewensis_iNaturalist_287497554.jpg,Chaetodon pelewensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_pelewensis_iNaturalist_590667200.jpg,Chaetodon pelewensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_173874324.jpg,Chaetodon pictus,images,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_184329464.jpg,Chaetodon pictus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_184329489.jpg,Chaetodon pictus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_328475415.jpg,Chaetodon pictus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_3502842.jpg,Chaetodon pictus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_3502843.jpg,Chaetodon pictus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_60591745.jpg,Chaetodon pictus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_plebeius_FishBase_Chple_u1.jpg,Chaetodon plebeius,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_plebeius_iNaturalist_302022715.jpg,Chaetodon plebeius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_plebeius_iNaturalist_302022740.jpg,Chaetodon plebeius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_plebeius_iNaturalist_443767734.jpg,Chaetodon plebeius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_punctatofasciatus_iNaturalist_255620804.jpg,Chaetodon punctatofasciatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_punctatofasciatus_iNaturalist_465096696.jpg,Chaetodon punctatofasciatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_FishBase_Chqua_j0.jpg,Chaetodon quadrimaculatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_FishBase_Chqua_u5.jpg,Chaetodon quadrimaculatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_FishBase_Chqua_u6.jpg,Chaetodon quadrimaculatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_FishBase_Chqua_u8.jpg,Chaetodon quadrimaculatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_178914726.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_234795159.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_23523422.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_297498864.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_556077020.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_rafflesii_Bishop_-779601278.jpg,Chaetodon rafflesii,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_rafflesii_Bishop_497192485.jpg,Chaetodon rafflesii,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_rainfordi_iNaturalist_449237800.jpg,Chaetodon rainfordi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_rainfordi_iNaturalist_476225553.jpg,Chaetodon rainfordi,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_rainfordi_iNaturalist_592118460.jpg,Chaetodon rainfordi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_rainfordi_iNaturalist_592118909.jpg,Chaetodon rainfordi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_rainfordi_iNaturalist_595411844.jpg,Chaetodon rainfordi,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_reticulatus_iNaturalist_487632927.jpg,Chaetodon reticulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_reticulatus_iNaturalist_487632982.jpg,Chaetodon reticulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_reticulatus_iNaturalist_54399841.jpg,Chaetodon reticulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_reticulatus_iNaturalist_600115611.jpg,Chaetodon reticulatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_robustus_FishBase_Chrob_u6.jpg,Chaetodon robustus,images,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_2549491.jpg,Chaetodon robustus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_257423579.jpg,Chaetodon robustus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_399369257.jpg,Chaetodon robustus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_437534347.jpg,Chaetodon robustus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_61768271.jpg,Chaetodon robustus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_61768277.jpg,Chaetodon robustus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_FishBase_Chsan_u0.jpg,Chaetodon sanctaehelenae,images,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_FishBase_Chsan_u2.jpg,Chaetodon sanctaehelenae,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_29339037.jpg,Chaetodon sanctaehelenae,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_484513376.jpg,Chaetodon sanctaehelenae,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_sedentarius_iNaturalist_291518510.jpg,Chaetodon sedentarius,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_sedentarius_iNaturalist_32020377.jpg,Chaetodon sedentarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sedentarius_iNaturalist_32020388.jpg,Chaetodon sedentarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sedentarius_iNaturalist_32020394.jpg,Chaetodon sedentarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sedentarius_iNaturalist_33101162.jpg,Chaetodon sedentarius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sedentarius_iNaturalist_4692917.jpg,Chaetodon sedentarius,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_selene_Bishop_-1379331455.jpg,Chaetodon selene,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_selene_FishBase_Chsel_u0.jpg,Chaetodon selene,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_selene_iNaturalist_194985212.jpg,Chaetodon selene,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_selene_iNaturalist_577593291.jpg,Chaetodon selene,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_FishBase_Chsem_j0.jpg,Chaetodon semeion,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_iNaturalist_483843324.jpg,Chaetodon semeion,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_iNaturalist_483843340.jpg,Chaetodon semeion,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_iNaturalist_483843356.jpg,Chaetodon semeion,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_iNaturalist_599835888.jpg,Chaetodon semeion,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_iNaturalist_80165040.jpg,Chaetodon semeion,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_semilarvatus_FishBase_Chsem_ua.jpg,Chaetodon semilarvatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semilarvatus_iNaturalist_234638753.jpg,Chaetodon semilarvatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_semilarvatus_iNaturalist_2675097.jpg,Chaetodon semilarvatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_semilarvatus_iNaturalist_542083393.jpg,Chaetodon semilarvatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_smithi_FishBase_Chsmi_u2.jpg,Chaetodon smithi,images_fishbase_extra,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_speculum_FishBase_Chspe_j0.jpg,Chaetodon speculum,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_speculum_FishBase_Chspe_u1.jpg,Chaetodon speculum,images_fishbase_extra,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_speculum_iNaturalist_175106878.jpg,Chaetodon speculum,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_striatus_FishBase_Chstr_ui.jpg,Chaetodon striatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_striatus_iNaturalist_108952720.jpg,Chaetodon striatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_striatus_iNaturalist_177316261.jpg,Chaetodon striatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_striatus_iNaturalist_254945429.jpg,Chaetodon striatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_striatus_iNaturalist_608288977.jpg,Chaetodon striatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_triangulum_iNaturalist_149101164.jpg,Chaetodon triangulum,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_triangulum_iNaturalist_280764242.jpg,Chaetodon triangulum,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_triangulum_iNaturalist_592518850.jpg,Chaetodon triangulum,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_trichrous_Bishop_-192591132.jpg,Chaetodon trichrous,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_trichrous_iNaturalist_54935427.jpg,Chaetodon trichrous,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_trichrous_iNaturalist_587089834.jpg,Chaetodon trichrous,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_tricinctus_iNaturalist_248668717.jpg,Chaetodon tricinctus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_tricinctus_iNaturalist_322706422.jpg,Chaetodon tricinctus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_trifascialis_iNaturalist_243933.jpg,Chaetodon trifascialis,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_trifasciatus_FishPix_55807AF.jpg,Chaetodon trifasciatus,images,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_trifasciatus_Bishop_-781709008.jpg,Chaetodon trifasciatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_trifasciatus_FishBase_Chtri_ur.jpg,Chaetodon trifasciatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_trifasciatus_iNaturalist_173829556.jpg,Chaetodon trifasciatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_trifasciatus_iNaturalist_434604519.jpg,Chaetodon trifasciatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_FishBase_Chuli_u3.jpg,Chaetodon ulietensis,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_FishBase_Chuli_u6.jpg,Chaetodon ulietensis,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_1400797.jpg,Chaetodon ulietensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_173697456.jpg,Chaetodon ulietensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_326590225.jpg,Chaetodon ulietensis,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_453440787.jpg,Chaetodon ulietensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_453444823.jpg,Chaetodon ulietensis,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_unimaculatus_FishBase_Chuni_u5.jpg,Chaetodon unimaculatus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_unimaculatus_FishBase_Chuni_ul.jpg,Chaetodon unimaculatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_unimaculatus_iNaturalist_179915614.jpg,Chaetodon unimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_unimaculatus_iNaturalist_553392414.jpg,Chaetodon unimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_unimaculatus_iNaturalist_553392498.jpg,Chaetodon unimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_unimaculatus_iNaturalist_602202893.jpg,Chaetodon unimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_Bishop_2044270221.jpg,Chaetodon vagabundus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_Bishop_397124810.jpg,Chaetodon vagabundus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_FishBase_Chvag_u1.jpg,Chaetodon vagabundus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_vagabundus_iNaturalist_234150683.jpg,Chaetodon vagabundus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_iNaturalist_236696832.jpg,Chaetodon vagabundus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_iNaturalist_236697047.jpg,Chaetodon vagabundus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_Bishop_532247427.jpg,Chaetodon wiebeli,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_303753000.jpg,Chaetodon wiebeli,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_303837873.jpg,Chaetodon wiebeli,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_303837884.jpg,Chaetodon wiebeli,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_433350324.jpg,Chaetodon wiebeli,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_433350349.jpg,Chaetodon wiebeli,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_433350357.jpg,Chaetodon wiebeli,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_xanthocephalus_iNaturalist_590458116.jpg,Chaetodon xanthocephalus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_xanthurus_Bishop_-858508951.jpg,Chaetodon xanthurus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_xanthurus_FishBase_Chxan_uk.jpg,Chaetodon xanthurus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_xanthurus_iNaturalist_227051829.jpg,Chaetodon xanthurus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_zanzibarensis_iNaturalist_426318179.jpg,Chaetodon zanzibarensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_zanzibarensis_iNaturalist_459833013.jpg,Chaetodon zanzibarensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_marginalis_iNaturalist_220605305.jpg,Chelmon marginalis,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chelmon_marginalis_iNaturalist_220605314.jpg,Chelmon marginalis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_marginalis_iNaturalist_271338157.jpg,Chelmon marginalis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_muelleri_iNaturalist_143981394.jpg,Chelmon muelleri,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_muelleri_iNaturalist_341061339.jpg,Chelmon muelleri,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmon_muelleri_iNaturalist_41609881.jpg,Chelmon muelleri,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmon_rostratus_FishBase_Chros_u1.jpg,Chelmon rostratus,images_fishbase_extra,outlier,color_outlier,,pipeline,2026-02-04
+Chelmon_rostratus_FishBase_Chros_u7.jpg,Chelmon rostratus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_rostratus_iNaturalist_10597368.jpg,Chelmon rostratus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_rostratus_iNaturalist_389832450.jpg,Chelmon rostratus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chelmon_rostratus_iNaturalist_422514686.jpg,Chelmon rostratus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmon_rostratus_iNaturalist_579723287.jpg,Chelmon rostratus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmonops_curiosus_FishBase_Chcur_u0.jpg,Chelmonops curiosus,images,outlier,large_mask,,pipeline,2026-02-04
+Chelmonops_curiosus_iNaturalist_13983228.jpg,Chelmonops curiosus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmonops_curiosus_iNaturalist_199284350.jpg,Chelmonops curiosus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmonops_curiosus_iNaturalist_23672257.jpg,Chelmonops curiosus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmonops_curiosus_iNaturalist_23672405.jpg,Chelmonops curiosus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chelmonops_truncatus_iNaturalist_42619218.jpg,Chelmonops truncatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Coradion_altivelis_Bishop_1025347564.jpg,Coradion altivelis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Coradion_altivelis_iNaturalist_154303836.jpg,Coradion altivelis,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Coradion_altivelis_iNaturalist_154303839.jpg,Coradion altivelis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Coradion_altivelis_iNaturalist_283987512.jpg,Coradion altivelis,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Coradion_chrysozonus_iNaturalist_266332535.jpg,Coradion chrysozonus,images_inaturalist,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Coradion_chrysozonus_iNaturalist_277154827.jpg,Coradion chrysozonus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Coradion_chrysozonus_iNaturalist_336902408.jpg,Coradion chrysozonus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Coradion_melanopus_iNaturalist_471470053.jpg,Coradion melanopus,images_inaturalist,outlier,color_outlier; small_mask,,pipeline,2026-02-04
+Coradion_melanopus_iNaturalist_591247918.jpg,Coradion melanopus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Coradion_melanopus_iNaturalist_594962045.jpg,Coradion melanopus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Coradion_melanopus_iNaturalist_80459445.jpg,Coradion melanopus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Forcipiger_flavissimus_Bishop_-1224605166.jpg,Forcipiger flavissimus,images_bishop,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Forcipiger_flavissimus_FishBase_Fofla_u3.jpg,Forcipiger flavissimus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Forcipiger_flavissimus_iNaturalist_237549065.jpg,Forcipiger flavissimus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Forcipiger_flavissimus_iNaturalist_59975862.jpg,Forcipiger flavissimus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_Bishop_2048048784.jpg,Forcipiger longirostris,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_Bishop_545316689.jpg,Forcipiger longirostris,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_iNaturalist_415726122.jpg,Forcipiger longirostris,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_iNaturalist_474224006.jpg,Forcipiger longirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_iNaturalist_474224219.jpg,Forcipiger longirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_iNaturalist_474224273.jpg,Forcipiger longirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Forcipiger_longirostris_iNaturalist_72235.jpg,Forcipiger longirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Forcipiger_wanai_iNaturalist_435111986.jpg,Forcipiger wanai,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Hemitaurichthys_polylepis_Bishop_224753564.jpg,Hemitaurichthys polylepis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Hemitaurichthys_polylepis_FishBase_Hepol_u7.jpg,Hemitaurichthys polylepis,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_polylepis_iNaturalist_187785592.jpg,Hemitaurichthys polylepis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_polylepis_iNaturalist_237757988.jpg,Hemitaurichthys polylepis,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Hemitaurichthys_polylepis_iNaturalist_327765402.jpg,Hemitaurichthys polylepis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_polylepis_iNaturalist_377517077.jpg,Hemitaurichthys polylepis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_FishPix_76147AF.jpg,Hemitaurichthys thompsoni,images,outlier,large_mask,,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_FishBase_Hetho_u0.jpg,Hemitaurichthys thompsoni,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_iNaturalist_122841071.jpg,Hemitaurichthys thompsoni,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_iNaturalist_601149946.jpg,Hemitaurichthys thompsoni,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_Bishop_1598828141.jpg,Hemitaurichthys zoster,images_bishop,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Hemitaurichthys_zoster_FishBase_Hezos_u0.jpg,Hemitaurichthys zoster,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_15934136.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_485085859.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_567879903.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_568089875.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_601708912.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_602702709.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_602702894.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_77719643.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_Bishop_1965411939.jpg,Heniochus acuminatus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_FishBase_Heacu_j0.jpg,Heniochus acuminatus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_FishBase_Heacu_u1.jpg,Heniochus acuminatus,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_FishBase_Heacu_u3.jpg,Heniochus acuminatus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_acuminatus_FishBase_Heacu_ug.jpg,Heniochus acuminatus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_acuminatus_iNaturalist_20970094.jpg,Heniochus acuminatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_iNaturalist_230063607.jpg,Heniochus acuminatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_iNaturalist_598752856.jpg,Heniochus acuminatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_acuminatus_iNaturalist_598753383.jpg,Heniochus acuminatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_chrysostomus_Bishop_1854375753.jpg,Heniochus chrysostomus,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_chrysostomus_FishBase_Hechr_u2.jpg,Heniochus chrysostomus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_237286772.jpg,Heniochus chrysostomus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_237286787.jpg,Heniochus chrysostomus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_237980308.jpg,Heniochus chrysostomus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_9703424.jpg,Heniochus chrysostomus,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_9703440.jpg,Heniochus chrysostomus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_9703441.jpg,Heniochus chrysostomus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_diphreutes_FishPix_11583AF.jpg,Heniochus diphreutes,images,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_diphreutes_Bishop_1453219286.jpg,Heniochus diphreutes,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_diphreutes_iNaturalist_178101152.jpg,Heniochus diphreutes,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_diphreutes_iNaturalist_178101157.jpg,Heniochus diphreutes,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_diphreutes_iNaturalist_605814253.jpg,Heniochus diphreutes,images_inaturalist,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Heniochus_diphreutes_iNaturalist_605814292.jpg,Heniochus diphreutes,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_intermedius_iNaturalist_190615451.jpg,Heniochus intermedius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_intermedius_iNaturalist_466154072.jpg,Heniochus intermedius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_intermedius_iNaturalist_468855261.jpg,Heniochus intermedius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_monoceros_FishBase_Hemon_u6.jpg,Heniochus monoceros,images_fishbase_extra,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Heniochus_monoceros_iNaturalist_580445463.jpg,Heniochus monoceros,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_monoceros_iNaturalist_580445465.jpg,Heniochus monoceros,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_monoceros_iNaturalist_580445466.jpg,Heniochus monoceros,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_monoceros_iNaturalist_580445490.jpg,Heniochus monoceros,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_pleurotaenia_FishBase_Heple_u2.jpg,Heniochus pleurotaenia,images,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_pleurotaenia_Bishop_-1006778558.jpg,Heniochus pleurotaenia,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_pleurotaenia_FishBase_Heple_u0.jpg,Heniochus pleurotaenia,images_fishbase_extra,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_pleurotaenia_iNaturalist_474493863.jpg,Heniochus pleurotaenia,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_pleurotaenia_iNaturalist_474493865.jpg,Heniochus pleurotaenia,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_pleurotaenia_iNaturalist_593339892.jpg,Heniochus pleurotaenia,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_singularius_iNaturalist_19670206.jpg,Heniochus singularius,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_singularius_iNaturalist_340601370.jpg,Heniochus singularius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_singularius_iNaturalist_478493440.jpg,Heniochus singularius,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_singularius_iNaturalist_483418197.jpg,Heniochus singularius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_singularius_iNaturalist_483418203.jpg,Heniochus singularius,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Heniochus_singularius_iNaturalist_483418207.jpg,Heniochus singularius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_varius_Bishop_2014348865.jpg,Heniochus varius,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Heniochus_varius_iNaturalist_294238984.jpg,Heniochus varius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_varius_iNaturalist_395588221.jpg,Heniochus varius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_varius_iNaturalist_558793993.jpg,Heniochus varius,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Heniochus_varius_iNaturalist_60367466.jpg,Heniochus varius,images_inaturalist,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Johnrandallia_nigrirostris_FishBase_Jonig_u3.jpg,Johnrandallia nigrirostris,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Johnrandallia_nigrirostris_iNaturalist_140802403.jpg,Johnrandallia nigrirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Johnrandallia_nigrirostris_iNaturalist_299336234.jpg,Johnrandallia nigrirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Parachaetodon_ocellatus_iNaturalist_101338050.jpg,Parachaetodon ocellatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Parachaetodon_ocellatus_iNaturalist_10940553.jpg,Parachaetodon ocellatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Prognathodes_aculeatus_iNaturalist_525211901.jpg,Prognathodes aculeatus,images_inaturalist,outlier,small_mask; luminance_anomaly,,pipeline,2026-02-04
+Prognathodes_aculeatus_iNaturalist_601647878.jpg,Prognathodes aculeatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_aya_iNaturalist_345856582.jpg,Prognathodes aya,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_carlhubbsi_iNaturalist_296851093.jpg,Prognathodes carlhubbsi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_falcifer_iNaturalist_439465583.jpg,Prognathodes falcifer,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_falcifer_iNaturalist_440145575.jpg,Prognathodes falcifer,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_falcifer_iNaturalist_44348913.jpg,Prognathodes falcifer,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_falcifer_iNaturalist_60191150.jpg,Prognathodes falcifer,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_guyanensis_FishPix_89093AF.jpg,Prognathodes guyanensis,images,outlier,large_mask,,pipeline,2026-02-04
+Prognathodes_guyanensis_iNaturalist_456412996.jpg,Prognathodes guyanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_166670964.jpg,Prognathodes marcellae,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_184144288.jpg,Prognathodes marcellae,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_184144302.jpg,Prognathodes marcellae,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_219633983.jpg,Prognathodes marcellae,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_244937622.jpg,Prognathodes marcellae,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_273249646.jpg,Prognathodes marcellae,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Roa_modesta_iNaturalist_200235685.jpg,Roa modesta,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Roa_modesta_iNaturalist_351064648.jpg,Roa modesta,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Roa_modesta_iNaturalist_475502900.jpg,Roa modesta,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_33167253.jpg,Amphichaetodon howensis,images_inaturalist,multi_fish_inat,4 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,4,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_392179799.jpg,Amphichaetodon howensis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Amphichaetodon_melbae_iNaturalist_577502906.jpg,Amphichaetodon melbae,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_argentatus_iNaturalist_263052559.jpg,Chaetodon argentatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_assarius_iNaturalist_599485831.jpg,Chaetodon assarius,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_aureofasciatus_iNaturalist_175593141.jpg,Chaetodon aureofasciatus,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_auripes_iNaturalist_576758934.jpg,Chaetodon auripes,images_inaturalist,multi_fish_inat,4 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,4,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_3125075.jpg,Chaetodon austriacus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_606348798.jpg,Chaetodon austriacus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_blackburnii_iNaturalist_247677288.jpg,Chaetodon blackburnii,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_collare_iNaturalist_249083568.jpg,Chaetodon collare,images_inaturalist,multi_fish_inat,4 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,4,pipeline,2026-02-04
+Chaetodon_collare_iNaturalist_603923252.jpg,Chaetodon collare,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_daedalma_iNaturalist_390092673.jpg,Chaetodon daedalma,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_daedalma_iNaturalist_78269334.jpg,Chaetodon daedalma,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_decussatus_iNaturalist_42777173.jpg,Chaetodon decussatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_decussatus_iNaturalist_60833629.jpg,Chaetodon decussatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_dolosus_iNaturalist_349460578.jpg,Chaetodon dolosus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_ephippium_iNaturalist_330181465.jpg,Chaetodon ephippium,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_falcula_iNaturalist_340839235.jpg,Chaetodon falcula,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_guttatissimus_iNaturalist_474997418.jpg,Chaetodon guttatissimus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_1461105.jpg,Chaetodon humeralis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_456296117.jpg,Chaetodon humeralis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_479599038.jpg,Chaetodon interruptus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_82279573.jpg,Chaetodon interruptus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_82279598.jpg,Chaetodon interruptus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_82279627.jpg,Chaetodon interruptus,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_lineolatus_iNaturalist_9952627.jpg,Chaetodon lineolatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_474014549.jpg,Chaetodon litus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_534683960.jpg,Chaetodon litus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_litus_iNaturalist_534683999.jpg,Chaetodon litus,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_lunula_iNaturalist_331.jpg,Chaetodon lunula,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_madagaskariensis_iNaturalist_554082386.jpg,Chaetodon madagaskariensis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_marleyi_iNaturalist_547984306.jpg,Chaetodon marleyi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_228710894.jpg,Chaetodon melannotus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_241736994.jpg,Chaetodon melannotus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_302828066.jpg,Chaetodon melapterus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_612969819.jpg,Chaetodon melapterus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_613002357.jpg,Chaetodon melapterus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_mertensii_iNaturalist_287390665.jpg,Chaetodon mertensii,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_mertensii_iNaturalist_359657684.jpg,Chaetodon mertensii,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_miliaris_iNaturalist_179529915.jpg,Chaetodon miliaris,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_multicinctus_iNaturalist_178987277.jpg,Chaetodon multicinctus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_multicinctus_iNaturalist_51887092.jpg,Chaetodon multicinctus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_nigropunctatus_iNaturalist_604765404.jpg,Chaetodon nigropunctatus,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_nippon_iNaturalist_574792403.jpg,Chaetodon nippon,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_441973517.jpg,Chaetodon ocellatus,images_inaturalist,multi_fish_inat,18 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,18,pipeline,2026-02-04
+Chaetodon_ocellicaudus_iNaturalist_530620209.jpg,Chaetodon ocellicaudus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_octofasciatus_iNaturalist_482079348.jpg,Chaetodon octofasciatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_ornatissimus_iNaturalist_179799134.jpg,Chaetodon ornatissimus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_ornatissimus_iNaturalist_442103313.jpg,Chaetodon ornatissimus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_paucifasciatus_iNaturalist_157577598.jpg,Chaetodon paucifasciatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_pelewensis_iNaturalist_487815372.jpg,Chaetodon pelewensis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_179955261.jpg,Chaetodon pictus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_pictus_iNaturalist_606694537.jpg,Chaetodon pictus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_375423270.jpg,Chaetodon quadrimaculatus,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_rafflesii_iNaturalist_175108072.jpg,Chaetodon rafflesii,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_418980733.jpg,Chaetodon sanctaehelenae,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_418983044.jpg,Chaetodon sanctaehelenae,images_inaturalist,multi_fish_inat,5 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,5,pipeline,2026-02-04
+Chaetodon_semilarvatus_iNaturalist_120141561.jpg,Chaetodon semilarvatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_semilarvatus_iNaturalist_480736217.jpg,Chaetodon semilarvatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_semilarvatus_iNaturalist_598091917.jpg,Chaetodon semilarvatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_smithi_iNaturalist_459167446.jpg,Chaetodon smithi,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_striatus_iNaturalist_378227586.jpg,Chaetodon striatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_triangulum_iNaturalist_336501928.jpg,Chaetodon triangulum,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_triangulum_iNaturalist_71648447.jpg,Chaetodon triangulum,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_trichrous_iNaturalist_472558208.jpg,Chaetodon trichrous,images_inaturalist,multi_fish_inat,5 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,5,pipeline,2026-02-04
+Chaetodon_trichrous_iNaturalist_473965444.jpg,Chaetodon trichrous,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_trichrous_iNaturalist_593273450.jpg,Chaetodon trichrous,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_tricinctus_iNaturalist_13811577.jpg,Chaetodon tricinctus,images_inaturalist,multi_fish_inat,5 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,5,pipeline,2026-02-04
+Chaetodon_tricinctus_iNaturalist_6629748.jpg,Chaetodon tricinctus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_tricinctus_iNaturalist_6629751.jpg,Chaetodon tricinctus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_trifasciatus_iNaturalist_173829547.jpg,Chaetodon trifasciatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_trifasciatus_iNaturalist_332090965.jpg,Chaetodon trifasciatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_trifasciatus_iNaturalist_434604443.jpg,Chaetodon trifasciatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_222874834.jpg,Chaetodon ulietensis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_unimaculatus_iNaturalist_66774276.jpg,Chaetodon unimaculatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_wiebeli_iNaturalist_416917368.jpg,Chaetodon wiebeli,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_xanthocephalus_iNaturalist_458538304.jpg,Chaetodon xanthocephalus,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Chaetodon_xanthocephalus_iNaturalist_593967746.jpg,Chaetodon xanthocephalus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chaetodon_zanzibarensis_iNaturalist_459837615.jpg,Chaetodon zanzibarensis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chelmon_muelleri_iNaturalist_202629383.jpg,Chelmon muelleri,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chelmonops_curiosus_iNaturalist_342373914.jpg,Chelmonops curiosus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Chelmonops_truncatus_iNaturalist_20710357.jpg,Chelmonops truncatus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Coradion_altivelis_iNaturalist_585934103.jpg,Coradion altivelis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Hemitaurichthys_polylepis_iNaturalist_409603684.jpg,Hemitaurichthys polylepis,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_iNaturalist_601149930.jpg,Hemitaurichthys thompsoni,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_iNaturalist_601149963.jpg,Hemitaurichthys thompsoni,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_170510325.jpg,Heniochus chrysostomus,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Heniochus_chrysostomus_iNaturalist_251695494.jpg,Heniochus chrysostomus,images_inaturalist,multi_fish_inat,4 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,4,pipeline,2026-02-04
+Heniochus_diphreutes_iNaturalist_305134134.jpg,Heniochus diphreutes,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Heniochus_diphreutes_iNaturalist_605814272.jpg,Heniochus diphreutes,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_intermedius_iNaturalist_487588004.jpg,Heniochus intermedius,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Heniochus_intermedius_iNaturalist_511341361.jpg,Heniochus intermedius,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Heniochus_intermedius_iNaturalist_582254294.jpg,Heniochus intermedius,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_pleurotaenia_iNaturalist_197005693.jpg,Heniochus pleurotaenia,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Heniochus_pleurotaenia_iNaturalist_474493868.jpg,Heniochus pleurotaenia,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Heniochus_pleurotaenia_iNaturalist_66920433.jpg,Heniochus pleurotaenia,images_inaturalist,multi_fish_inat,3 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,3,pipeline,2026-02-04
+Johnrandallia_nigrirostris_iNaturalist_14815735.jpg,Johnrandallia nigrirostris,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Prognathodes_carlhubbsi_iNaturalist_443367465.jpg,Prognathodes carlhubbsi,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Prognathodes_marcellae_iNaturalist_166670490.jpg,Prognathodes marcellae,images_inaturalist,multi_fish_inat,4 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,4,pipeline,2026-02-04
+Roa_modesta_iNaturalist_351064622.jpg,Roa modesta,images_inaturalist,multi_fish_inat,2 foreground objects detected; excluding iNaturalist multi-fish to avoid wrong species contamination,2,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_33719286.jpg,Amphichaetodon howensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_iNaturalist_33719403.jpg,Amphichaetodon howensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_andamanensis_iNaturalist_2532907.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_argentatus_iNaturalist_605150779.jpg,Chaetodon argentatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auriga_FishBase_Chaur_un.jpg,Chaetodon auriga,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auriga_iNaturalist_389831783.jpg,Chaetodon auriga,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auripes_FishBase_Chaur_uo.jpg,Chaetodon auripes,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_auripes_iNaturalist_423034637.jpg,Chaetodon auripes,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_austriacus_iNaturalist_450388533.jpg,Chaetodon austriacus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_baronessa_FishBase_Chbar_j0.jpg,Chaetodon baronessa,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_baronessa_iNaturalist_290835408.jpg,Chaetodon baronessa,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_baronessa_iNaturalist_409626771.jpg,Chaetodon baronessa,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_blackburnii_iNaturalist_19749462.jpg,Chaetodon blackburnii,images_inaturalist,outlier,large_mask; luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_citrinellus_FishPix_33011AF.jpg,Chaetodon citrinellus,images,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_citrinellus_iNaturalist_354753796.jpg,Chaetodon citrinellus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_citrinellus_iNaturalist_354753799.jpg,Chaetodon citrinellus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_collare_FishBase_Chcol_u0.jpg,Chaetodon collare,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_daedalma_iNaturalist_560373781.jpg,Chaetodon daedalma,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_fremblii_iNaturalist_443350802.jpg,Chaetodon fremblii,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_fremblii_iNaturalist_598700060.jpg,Chaetodon fremblii,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_guttatissimus_iNaturalist_174031744.jpg,Chaetodon guttatissimus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_hoefleri_iNaturalist_349923956.jpg,Chaetodon hoefleri,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_humeralis_iNaturalist_607033378.jpg,Chaetodon humeralis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_kleinii_iNaturalist_97428922.jpg,Chaetodon kleinii,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_lunula_FishBase_Chlun_un.jpg,Chaetodon lunula,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_lunulatus_iNaturalist_179510692.jpg,Chaetodon lunulatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_marleyi_iNaturalist_359692990.jpg,Chaetodon marleyi,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_marleyi_iNaturalist_463787443.jpg,Chaetodon marleyi,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melannotus_iNaturalist_84610206.jpg,Chaetodon melannotus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_33143451.jpg,Chaetodon melapterus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_melapterus_iNaturalist_612761090.jpg,Chaetodon melapterus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_mertensii_iNaturalist_14452975.jpg,Chaetodon mertensii,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_meyeri_iNaturalist_390482460.jpg,Chaetodon meyeri,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_441973498.jpg,Chaetodon ocellatus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_octofasciatus_FishBase_Choct_u6.jpg,Chaetodon octofasciatus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_oxycephalus_iNaturalist_448971545.jpg,Chaetodon oxycephalus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_plebeius_iNaturalist_607534630.jpg,Chaetodon plebeius,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_265786115.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_341846702.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_quadrimaculatus_iNaturalist_341846706.jpg,Chaetodon quadrimaculatus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_rafflesii_iNaturalist_473127064.jpg,Chaetodon rafflesii,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_robustus_iNaturalist_61768284.jpg,Chaetodon robustus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_578388945.jpg,Chaetodon sanctaehelenae,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_578388957.jpg,Chaetodon sanctaehelenae,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_sanctaehelenae_iNaturalist_578388963.jpg,Chaetodon sanctaehelenae,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_semeion_iNaturalist_85606809.jpg,Chaetodon semeion,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_speculum_iNaturalist_351451545.jpg,Chaetodon speculum,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_tinkeri_iNaturalist_122833590.jpg,Chaetodon tinkeri,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_trichrous_iNaturalist_350883651.jpg,Chaetodon trichrous,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_trifascialis_FishPix_140533AF.jpg,Chaetodon trifascialis,images,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_trifasciatus_FishBase_Chtri_u3.jpg,Chaetodon trifasciatus,images_fishbase_extra,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_ulietensis_iNaturalist_453439299.jpg,Chaetodon ulietensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_FishBase_Chvag_j0.jpg,Chaetodon vagabundus,images_fishbase_extra,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_vagabundus_iNaturalist_236697461.jpg,Chaetodon vagabundus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chaetodon_wiebeli_FishBase_Chwie_u4.jpg,Chaetodon wiebeli,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_xanthurus_iNaturalist_221164225.jpg,Chaetodon xanthurus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chelmon_muelleri_FishBase_Chmue_u0.jpg,Chelmon muelleri,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chelmonops_curiosus_iNaturalist_29627943.jpg,Chelmonops curiosus,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Chelmonops_truncatus_iNaturalist_21652115.jpg,Chelmonops truncatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Coradion_chrysozonus_iNaturalist_336902426.jpg,Coradion chrysozonus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Coradion_melanopus_iNaturalist_572762865.jpg,Coradion melanopus,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Forcipiger_flavissimus_FishBase_Fofla_u9.jpg,Forcipiger flavissimus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Forcipiger_flavissimus_FishBase_Fofla_uc.jpg,Forcipiger flavissimus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Forcipiger_flavissimus_iNaturalist_170376471.jpg,Forcipiger flavissimus,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Forcipiger_wanai_iNaturalist_566944234.jpg,Forcipiger wanai,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_iNaturalist_535843126.jpg,Hemitaurichthys thompsoni,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_thompsoni_iNaturalist_610388709.jpg,Hemitaurichthys thompsoni,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Hemitaurichthys_zoster_iNaturalist_602702693.jpg,Hemitaurichthys zoster,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_acuminatus_FishPix_54009AF.jpg,Heniochus acuminatus,images,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_acuminatus_iNaturalist_386242137.jpg,Heniochus acuminatus,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Heniochus_diphreutes_FishBase_Hedip_u5.jpg,Heniochus diphreutes,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Heniochus_monoceros_iNaturalist_84610546.jpg,Heniochus monoceros,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Johnrandallia_nigrirostris_iNaturalist_2848140.jpg,Johnrandallia nigrirostris,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
+Parachaetodon_ocellatus_iNaturalist_579722938.jpg,Parachaetodon ocellatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Prognathodes_aculeatus_iNaturalist_390540552.jpg,Prognathodes aculeatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Roa_modesta_iNaturalist_351101106.jpg,Roa modesta,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Roa_modesta_iNaturalist_351101127.jpg,Roa modesta,images_inaturalist,outlier,large_mask,,pipeline,2026-02-04
+Chaetodon_auriga_FishBase_Chaur_u4.jpg,Chaetodon auriga,images_fishbase_extra,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_citrinellus_iNaturalist_233426826.jpg,Chaetodon citrinellus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_citrinellus_iNaturalist_585084786.jpg,Chaetodon citrinellus,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_collare_FishPix_61562AF.jpg,Chaetodon collare,images,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_interruptus_iNaturalist_170722148.jpg,Chaetodon interruptus,images_inaturalist,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_lunula_iNaturalist_58993744.jpg,Chaetodon lunula,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_ocellatus_iNaturalist_540068424.jpg,Chaetodon ocellatus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_pelewensis_iNaturalist_197012322.jpg,Chaetodon pelewensis,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_reticulatus_FishBase_Chret_u1.jpg,Chaetodon reticulatus,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_tinkeri_FishBase_Chtin_u3.jpg,Chaetodon tinkeri,images_fishbase_extra,outlier,color_outlier,,pipeline,2026-02-04
+Chaetodon_tricinctus_iNaturalist_197184716.jpg,Chaetodon tricinctus,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04
+Chaetodon_wiebeli_FishBase_Chwie_j0.jpg,Chaetodon wiebeli,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
+Johnrandallia_nigrirostris_iNaturalist_90964108.jpg,Johnrandallia nigrirostris,images_inaturalist,outlier,luminance_anomaly,,pipeline,2026-02-04

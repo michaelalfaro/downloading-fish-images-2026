@@ -1,0 +1,20 @@
+name: chaet-seg
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pytorch::pytorch>=2.1
+  - pytorch::torchvision
+  - numpy
+  - scikit-learn
+  - scikit-image
+  - scipy
+  - pillow
+  - matplotlib
+  - joblib
+  - pip
+  - pip:
+    - transformers>=4.36.0
+    - opencv-python-headless

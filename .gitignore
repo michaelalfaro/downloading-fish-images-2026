@@ -26,3 +26,13 @@ __pycache__/
 # Quarto
 _site/
 .quarto/
+
+# Analysis pipeline outputs (large image dirs, reproducible)
+analysis/approach_1_gmm/segmented/
+analysis/approach_1_gmm/segmented_dinosam/
+analysis/approach_1_gmm/normalized/
+analysis/approach_1_gmm/zone_maps/
+analysis/approach_1_gmm/k_selection/bic_curves/
+analysis/approach_1_gmm/k_selection/models/
+analysis/approach_2_recolorize/
+analysis/approach_3_charisma/
