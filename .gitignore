@@ -1,0 +1,28 @@
+# Downloaded images (reproducible via scripts)
+images/
+images_bishop/
+images_fishbase_extra/
+images_inaturalist/
+images_quarantine/
+
+# Large generated PDF
+tree/chaet_tree_with_images.pdf
+
+# Source data file (too large for git)
+abb9107_data_file_s1.xlsx
+
+# OS files
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Quarto
+_site/
+.quarto/

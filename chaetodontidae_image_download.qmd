@@ -1,0 +1,360 @@
+---
+title: "Downloading Chaetodontidae Images from Multiple Databases"
+author: "Alfaro Lab"
+date: "2026-02-03"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: cosmo
+---
+
+## Overview
+
+This document describes the workflow for downloading color pattern images
+of butterflyfish (family Chaetodontidae) from five public databases and
+cross-referencing them against the phylogenetic tree used in the
+chaets-divergence-2026 project. We collected up to 10 images per species
+from each source, verified species identity via the FishBase API, and
+deduplicated across all sources using MD5 hashes.
+
+## Data Sources
+
+1. **Miyazawa (2020) Supplementary Data File S1** (`abb9107_data_file_s1.xlsx`):
+   Contains color pattern annotations for 18,114 fish species from images
+   sourced from FishBase and FishPix. Each species is annotated for the
+   presence/absence of 11 pattern motifs.
+
+   **Citation:** Miyazawa S (2020) Pattern blending enriches the diversity
+   of animal colorations. *Science Advances* 6: eabb9107.
+
+2. **FishBase** (<https://www.fishbase.org/>): A global biodiversity
+   information system on fishes. Additional images beyond the Miyazawa
+   dataset were obtained by querying the FishBase `FishPicsList.php` web
+   service API for each species. This API returns the exact list of
+   image filenames associated with a given species, eliminating the
+   code-collision problem inherent in FishBase's 5-letter image codes
+   (see "FishBase Code Collision Issue" below).
+
+3. **FishPix** (<http://fishpix.kahaku.go.jp/fishimage-e/>): A fish image
+   database maintained by the National Museum of Nature and Science, Japan.
+
+4. **Bishop Museum -- John E. Randall Fish Photo Collection**
+   (<https://pbs.bishopmuseum.org/images/JER/>): A collection of fish
+   photographs by the ichthyologist John E. Randall, hosted by the
+   Bernice Pauahi Bishop Museum, Honolulu, Hawaii.
+
+5. **iNaturalist** (<https://www.inaturalist.org/>): A citizen science
+   platform with research-grade biodiversity observations. We queried the
+   iNaturalist API (`/v1/observations`) for each species, filtering for
+   research-grade observations with photos under open licenses (CC-BY,
+   CC-BY-NC, etc.), ranked by community votes.
+
+6. **Phylogenetic tree** (`Butterflyfish_concat_final.tre`): A NEXUS-format
+   tree containing 209 taxa, of which 111 belong to family Chaetodontidae,
+   from the chaets-divergence-2026 project.
+
+## Methods
+
+### Step 1: Extract Chaetodontidae from the Miyazawa Dataset
+
+The Excel file contains an image-level annotation sheet
+(`A_FishPatterns_img`) with columns for the image filename, source database,
+taxonomic family, genus, species, and 11 binary pattern motif columns. We
+filtered this sheet for all rows where `family == "Chaetodontidae"`.
+
+This yielded **131 image records** covering **128 unique species** across
+12 genera: *Amphichaetodon*, *Chaetodon*, *Chelmon*, *Chelmonops*,
+*Coradion*, *Forcipiger*, *Hemitaurichthys*, *Heniochus*, *Johnrandallia*,
+*Parachaetodon*, *Prognathodes*, and *Roa*.
+
+### Step 2: Scrape Chaetodontidae from the Bishop Museum Collection
+
+The Bishop Museum gallery was queried with the family name
+"Chaetodontidae" via the search interface at
+`https://pbs.bishopmuseum.org/images/JER/images.asp?nm=Chaetodontidae`.
+The resulting HTML was parsed to extract image IDs, species names, and
+locality metadata from the gallery thumbnails. Three records identified
+only to genus level (*Chaetodon* sp., *Heniochus* sp.) were excluded.
+
+This yielded **177 image records** covering **97 identified species**.
+
+### Step 3: Download Additional FishBase Images (API-Verified)
+
+For each of the 130 species in our combined list, we queried the FishBase
+web service API:
+
+```
+https://www.fishbase.se/webservice/photos/FishPicsList.php?Genus=<GENUS>&Species=<EPITHET>
+```
+
+This returns an XML document listing every image filename that FishBase
+associates with that specific species, along with the image type
+(`adult`, `stamps`, `diseases`, `larvae`) and photographer attribution.
+We downloaded only `adult`-type images and skipped any filenames already
+obtained via the Miyazawa dataset.
+
+### Step 4: Download iNaturalist Research-Grade Photos
+
+For each species, we queried the iNaturalist API:
+
+```
+GET https://api.inaturalist.org/v1/observations
+    ?taxon_name=Genus+species
+    &photos=true
+    &quality_grade=research
+    &per_page=20
+    &order_by=votes
+```
+
+We downloaded up to 10 large-format photos per species, verifying that
+each observation's taxon name exactly matched the query species.
+Only photos with open licenses were retained. A 0.8-second delay between
+API calls was used to respect rate limits.
+
+### Step 5: Image Quality Filtering
+
+After downloading, we applied several quality filters to remove
+problematic images:
+
+1. **GIF files removed** (31 images): FishBase stores many older images as
+   GIF files, which are typically black-and-white line drawings rather than
+   photographs. All GIF-format images were quarantined.
+
+2. **Wrong-species images removed** (3 images): FishBase incorrectly
+   associates certain images with *Chaetodon pictus*. The images
+   `Chvag_u0.jpg` and `Chvag_u2.jpg` actually depict *C. vagabundus*, and
+   `Chpic_u2.jpg` depicts *Chaunax pictus* (a sea toad). These were
+   quarantined and replaced with correctly identified iNaturalist photos.
+
+3. **Within-species duplicates removed** (3 images): iNaturalist
+   occasionally serves identical image data under different photo IDs
+   within the same observation. Duplicates detected by MD5 hash comparison
+   were quarantined.
+
+4. **MD5 deduplication across sources**: Hashes were computed for every
+   remaining image across all directories. No cross-source duplicates were
+   found (i.e., FishBase and iNaturalist do not appear to share the same
+   underlying image files for Chaetodontidae).
+
+All quarantined images are preserved in `images_quarantine/` with a
+detailed log in `filter_log.csv`.
+
+### Step 6: Match Species to the Phylogenetic Tree
+
+Each species was checked against the set of taxa extracted from the tree.
+Matching was performed using normalized (lowercased) species names. Known
+variants were handled explicitly:
+
+- `Chaetodon auriga` &rarr; `Chaetodon auriga2` (specimen suffix in tree)
+- `Roa modesta` &rarr; `Roa modestua` (spelling variant)
+- `Chaetodon zanzibariensis` &rarr; `Chaetodon zanzibarensis` (Bishop Museum spelling)
+- `Chaetodon excelsa` &rarr; `Roa excelsa` (taxonomic reassignment)
+
+## FishBase Code Collision Issue
+
+FishBase uses a 5-letter code system for image filenames: the first 2
+letters of the genus + the first 3 letters of the species epithet (e.g.,
+`Charg` for *Chaetodon argentatus*). This creates collisions when different
+species across genera share the same prefix:
+
+- **`Charg`**: *Chaetodon argentatus* (butterflyfish) AND *Chanodichthys
+  argentatus* (cyprinid)
+- **`Ammel`**: *Amphichaetodon melbae* (butterflyfish) AND *Ameiurus melas*
+  (catfish)
+- **`Chpic`**: *Chaetodon pictus* (butterflyfish) AND *Chaunax pictus*
+  (sea toad)
+- **`Chand`**: *Chaetodon andamanensis* (butterflyfish) AND *Chanda nama*
+  (glassfish)
+
+Additionally, within Chaetodontidae, 10 collision groups exist where
+multiple species share the same code (e.g., `Chtri` covers 5 species:
+*C. triangulum*, *C. trichrous*, *C. tricinctus*, *C. trifascialis*,
+*C. trifasciatus*).
+
+Our solution uses the `FishPicsList.php` API, which returns only the
+images that FishBase explicitly associates with the queried species,
+completely eliminating code-collision contamination.
+
+## *Chaetodon pictus* Correction
+
+FishBase's species page for *C. pictus* (species ID 66029) incorrectly
+includes the image `Chvag_u2.jpg`, which is actually a *C. vagabundus*
+specimen. The FishBase code `Chpic` maps to *Chaunax pictus* (a deep-sea
+batfish), not *Chaetodon pictus*. The correct *C. pictus* image was
+sourced from iNaturalist (photo 173874324, by Sylvain Le Bris, CC BY-NC).
+
+## Results
+
+### Summary by Source (All Downloads)
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Per-species image counts across all five sources (after deduplication)"
+library(readr)
+library(dplyr)
+library(knitr)
+
+summary_df <- read_csv("species_image_summary.csv", show_col_types = FALSE)
+
+# Overall stats
+cat("Total species:", nrow(summary_df), "\n")
+cat("Total unique images:", sum(summary_df$n_total), "\n")
+cat("Species in tree:", sum(summary_df$in_tree == "yes"), "\n")
+
+summary_display <- summary_df |>
+  arrange(desc(n_total)) |>
+  rename(
+    Species = species,
+    `In Tree` = in_tree,
+    FishPix = n_fishpix,
+    `FishBase (Miyazawa)` = n_fishbase,
+    `Bishop Museum` = n_bishop,
+    `FishBase (extra)` = n_fishbase_extra,
+    iNaturalist = n_inaturalist,
+    Total = n_total,
+    Sources = sources
+  )
+
+kable(summary_display)
+```
+
+### Image Totals by Source
+
+```{r}
+#| label: tbl-source-totals
+#| tbl-cap: "Total image counts by source"
+
+source_totals <- data.frame(
+  Source = c("FishPix (Miyazawa)", "FishBase (Miyazawa)", "Bishop Museum",
+             "FishBase (extra, API-verified)", "iNaturalist", "Total"),
+  Images = c(
+    sum(summary_df$n_fishpix),
+    sum(summary_df$n_fishbase),
+    sum(summary_df$n_bishop),
+    sum(summary_df$n_fishbase_extra),
+    sum(summary_df$n_inaturalist),
+    sum(summary_df$n_total)
+  ),
+  Species = c(
+    sum(summary_df$n_fishpix > 0),
+    sum(summary_df$n_fishbase > 0),
+    sum(summary_df$n_bishop > 0),
+    sum(summary_df$n_fishbase_extra > 0),
+    sum(summary_df$n_inaturalist > 0),
+    nrow(summary_df)
+  )
+)
+
+kable(source_totals)
+```
+
+### Phylogenetic Tree Coverage
+
+```{r}
+#| label: tbl-tree-coverage
+#| tbl-cap: "Image availability for species present in the phylogenetic tree"
+
+tree_sp <- summary_df |>
+  filter(in_tree == "yes")
+
+n_tree <- nrow(tree_sp)
+n_with_3plus <- sum(tree_sp$n_total >= 3)
+n_with_2 <- sum(tree_sp$n_total >= 2)
+n_with_1 <- sum(tree_sp$n_total >= 1)
+
+cat("Tree species with >= 1 image:", n_with_1, "/", n_tree, "\n")
+cat("Tree species with >= 2 images:", n_with_2, "/", n_tree, "\n")
+cat("Tree species with >= 3 images:", n_with_3plus, "/", n_tree, "\n")
+```
+
+### Deduplication Report
+
+```{r}
+#| label: tbl-dedup
+#| tbl-cap: "Duplicate images found across sources (identical MD5 hash)"
+
+dedup <- read_csv("dedup_report.csv", show_col_types = FALSE)
+
+if (nrow(dedup) > 0) {
+  dedup_display <- dedup |>
+    select(species, kept_file, kept_source, duplicate_file, duplicate_source)
+  kable(dedup_display)
+} else {
+  cat("No duplicate images were found across sources.\n")
+}
+```
+
+### Combined Species Table (Original 3 Sources)
+
+```{r}
+#| label: tbl-combined
+#| tbl-cap: "Chaetodontidae species across the original three image databases and their phylogenetic tree match status"
+
+combined <- read_csv("combined_species_data.csv", show_col_types = FALSE)
+
+display <- combined |>
+  arrange(species) |>
+  rename(
+    Species = species,
+    FishPix = fishpix,
+    FishBase = fishbase,
+    `Bishop Museum` = bishop_museum,
+    `In Tree` = in_tree
+  )
+
+kable(display)
+```
+
+## Output Files
+
+| File | Description |
+|------|-------------|
+| `chaetodontidae_image_data.csv` | CSV: FishBase/FishPix species, filenames, source, tree match |
+| `bishop_museum_image_data.csv` | CSV: Bishop Museum species, filenames, locality, tree match |
+| `combined_species_data.csv` | CSV: All species with presence/absence across original 3 sources |
+| `all_images_inventory.csv` | CSV: Master inventory of all images with MD5 hashes |
+| `species_image_summary.csv` | CSV: Per-species image counts by source |
+| `dedup_report.csv` | CSV: List of duplicate images found across sources |
+| `filter_log.csv` | CSV: Log of all images quarantined by quality filters |
+| `tree/tip_image_lookup.csv` | CSV: Mapping of tree tip labels to image paths (3 columns) |
+| `images/` | FishBase/FishPix JPEG images from Miyazawa dataset |
+| `images_bishop/` | Bishop Museum JPEG images |
+| `images_fishbase_extra/` | Additional API-verified FishBase images |
+| `images_inaturalist/` | iNaturalist research-grade photos |
+| `download_chaetodontidae.py` | Python script for FishBase/FishPix downloads |
+| `download_bishop_museum.py` | Python script for Bishop Museum downloads |
+| `download_additional_images.py` | Python script for FishBase extra + iNaturalist + dedup |
+| `filter_images.py` | Python script for image quality filtering |
+| `images_quarantine/` | Quarantined images (GIFs, wrong species, duplicates) |
+| `tree/build_tip_image_lookup.py` | Python script to build tip-to-image mapping |
+| `tree/plot_chaet_tree_with_images.R` | R script to generate tree with 3 image columns |
+
+## Reproducibility
+
+To re-run the full pipeline:
+
+```bash
+# Step 1: Original Miyazawa dataset downloads
+python3 download_chaetodontidae.py
+
+# Step 2: Bishop Museum downloads
+python3 download_bishop_museum.py
+
+# Step 3: Additional FishBase (API-verified) + iNaturalist + dedup
+python3 download_additional_images.py
+
+# Step 4: Quality filtering (remove GIFs, wrong species, duplicates)
+python3 filter_images.py
+
+# Step 5: Build tip-to-image lookup with 3 columns
+python3 tree/build_tip_image_lookup.py
+
+# Step 6: Generate tree with 3 image columns
+Rscript tree/plot_chaet_tree_with_images.R
+```
+
+All download scripts will skip images that have already been downloaded.
+The Miyazawa download script requires the `openpyxl` Python package for
+reading the Excel file.

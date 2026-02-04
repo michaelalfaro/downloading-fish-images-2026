@@ -1,0 +1,311 @@
+#NEXUS
+begin taxa;
+	dimensions ntax=209;
+	taxlabels
+	Acanthurus_bahianusF358
+	Acanthurus_bariene
+	Acanthurus_chirurgusF360
+	Acanthurus_coeruleusF361
+	Acanthurus_leucosternonCFF359
+	Acanthurus_lineatusF276
+	Acanthurus_monroviaeF363
+	Acanthurus_nigricansF364
+	Acanthurus_nigrofuscusF365
+	Acanthurus_olivaceus
+	Acanthurus_pyroferus
+	Acanthurus_triostegusF366
+	Amphichaetodon_howensis_M967
+	Amphichaetodon_melbae_FMNH107370
+	Antigonia_capros
+	Apolemichthys_armitageiF457M1091
+	Apolemichthys_trimaculatusF454M1006
+	Apolemichthys_xanthurusF526M1004
+	Callanthias_australis
+	Centropyge_acanthopsF448M1428
+	Centropyge_argiF456M1357
+	Centropyge_aurantiaF460M1094
+	Centropyge_aurantonotaF462M1096
+	Centropyge_bicolorF464M673
+	Centropyge_bispinosaF468M1097
+	Centropyge_coliniF472M1300
+	Centropyge_eibliF480M1065
+	Centropyge_ferrugataF481M1001
+	Centropyge_fisheriF482M1155
+	Centropyge_flavicaudaF484M1111
+	Centropyge_flavipectoralisF485M1014
+	Centropyge_flavissimaF487M301
+	Centropyge_heraldiwoodheadF489M1136
+	Centropyge_joculatorF492M1181
+	Centropyge_loriculusF494M319
+	Centropyge_multispinusF518M1011
+	Centropyge_potteriF510M1159
+	Centropyge_tibicenF514M1024
+	Centropyge_vrolikiiF520M1025
+	Chaetodon_adiergastos_CHD01
+	Chaetodon_argentatus_M1589
+	Chaetodon_assarius_M1684
+	Chaetodon_aureofasciatus_M1637
+	Chaetodon_auriga2
+	Chaetodon_auripes_CEU01
+	Chaetodon_austriacus_CAI02
+	Chaetodon_baronessa_CBN01
+	Chaetodon_bennetti_CNN01
+	Chaetodon_blackburnii_PW4271
+	Chaetodon_burgessi_JRH80
+	Chaetodon_capistratus_PW3430
+	Chaetodon_citrinellus_FMNH119310
+	Chaetodon_collare_PW3054
+	Chaetodon_declivis_CDE01
+	Chaetodon_decussatus_M1546
+	Chaetodon_dialeucos_CDA01
+	Chaetodon_ephippium_PW3016
+	Chaetodon_falcula_CHL01
+	Chaetodon_fasciatus_CFT01
+	Chaetodon_fremblii_PW1517
+	Chaetodon_gardineri_PW4074
+	Chaetodon_guentheri_FMNH128374
+	Chaetodon_guttatissimus_CGU14
+	Chaetodon_humeralis_PW1006
+	Chaetodon_interruptus_PW4842E
+	Chaetodon_kleinii_PW4831
+	Chaetodon_larvatus_CLA01
+	Chaetodon_leucopleura_PW4078
+	Chaetodon_lineolatus_FMNH123553
+	Chaetodon_litus_PW4847
+	Chaetodon_lunula_CHLU11
+	Chaetodon_lunulatus_SJL061
+	Chaetodon_madagaskariensis_CMD11
+	Chaetodon_melannotus_CMN01
+	Chaetodon_melapterus_CMP05
+	Chaetodon_mertensii_PW3003
+	Chaetodon_mesoleucos_CMS01
+	Chaetodon_meyeri_FMNH118571
+	Chaetodon_miliaris_PW1535
+	Chaetodon_mitratus_CHI01
+	Chaetodon_multicinctus_PW1520
+	Chaetodon_nigropunctatus_CNC01
+	Chaetodon_nippon_M1853
+	Chaetodon_ocellatus
+	Chaetodon_ocellicaudus_FMNH128372
+	Chaetodon_octofasciatus_PW3014
+	Chaetodon_ornatissimus_PW5539
+	Chaetodon_oxycephalus_FMNH119318
+	Chaetodon_paucifasciatus_CPF01
+	Chaetodon_pelewensis_PW3004
+	Chaetodon_pictus_CPS01
+	Chaetodon_plebeius_CPB01
+	Chaetodon_punctatofasciatus_PW4843
+	Chaetodon_quadrimaculatus_PW4068
+	Chaetodon_rafflesii_CRL01
+	Chaetodon_rainfordi_FMNH128538
+	Chaetodon_reticulatus_FMNH123545
+	Chaetodon_robustus_CRB01
+	Chaetodon_sanctaehelenae_CHSA02
+	Chaetodon_sedentarius_PW1245
+	Chaetodon_selene_CHS01
+	Chaetodon_semeion_FMNH118569
+	Chaetodon_semilarvatus_CSE02
+	Chaetodon_speculum_CHP01
+	Chaetodon_striatus_PW4854
+	Chaetodon_tinkeri_PW1545
+	Chaetodon_triangulum_CTG01
+	Chaetodon_trichrous_PW4270
+	Chaetodon_tricinctus_M965
+	Chaetodon_ulietensis_FMNH119327
+	Chaetodon_unimaculatus_PW1523
+	Chaetodon_vagabundus_FMNH120353
+	Chaetodon_xanthocephalus_CXN01
+	Chaetodon_xanthurus_PW4859
+	Chaetodon_zanzibarensis_CZA01
+	Chaetodontoplus_duboulayiF478M1019
+	Chaetodontoplus_melanosomaF496M1061
+	Chaetodontoplus_meridithiF500M1135
+	Chaetodontoplus_mesoleucusF506M1101
+	Chaunax_pictus_SAMN26280042
+	Chelmon_muelleri_M1612
+	Chelmon_rostratus_PW4838
+	Chelmonops_curiosus_M1682
+	Coradion_altivelis_PW4073
+	Coradion_chrysozonus_COH01
+	Coradion_melanopus_FMNH124029
+	Drepane_punctata_18811
+	Forcipiger_flavissimus_FFL02
+	Forcipiger_longirostris
+	Forcipiger_wanai_JRH86
+	Gazza_minuta
+	Genicanthus_lamarckF493M1073
+	Haemulon_album
+	Hemitaurichthys_polylepis_PW3095
+	Hemitaurichthys_thompsoni_PW5537
+	Hemitaurichthys_zoster_PW4855
+	Heniochus_acuminatus_PW4560
+	Heniochus_chrysostomus_PW2923
+	Heniochus_diphreutes_HDP01
+	Heniochus_intermedius_HIN02
+	Heniochus_monoceros_PW3173
+	Heniochus_pleurotaenia_HPR01
+	Heniochus_singularius_HSI01
+	Heniochus_varius_PW2921
+	Histrio_histrio_43108
+	Holacanthus_africanusF450M1959
+	Holacanthus_bermudensisF463M1320
+	Holacanthus_ciliarisF471M1099
+	Johnrandallia_nigrirostris_PW4857
+	Luvarus_imperialis_18812
+	Melanocetus_johnsonii_16243
+	Mola_mola_13718
+	Monodactylus_sebae_13567
+	Morone_saxatilis_12185
+	Naso_elegansF370
+	Naso_lituratusF371
+	Naso_unicornisF372
+	Ogcocephalus_radiatus
+	Paracentropyge_multifasciataF505M1133
+	Paracentropyge_venustaF517M1154
+	Parachaetodon_ocellatus_PW1643
+	Pomacanthus_annularisF453M1008
+	Pomacanthus_asfurF458M989
+	Pomacanthus_chrysurusF469M1897
+	Pomacanthus_imperatorF490M998
+	Pomacanthus_maculosusF495M1088
+	Pomacanthus_navarchusF507M1102
+	Pomacanthus_paruF509M1333
+	Pomacanthus_semicirculatusF511M1009
+	Pomacanthus_sexstriatusF513M880
+	Pomacanthus_xanthometaponF524M1062
+	Pomacanthus_zonipectusF528M1334
+	Prognathodes_aculeatus_PW648
+	Prognathodes_aya_PW1045
+	Prognathodes_brasiliensis_PW3997
+	Prognathodes_dichrous_PDH01
+	Prognathodes_obliquus_POQ02
+	Pygoplites_diacanthusF473M317
+	Roa_excelsa_ROAsp_02
+	Roa_haraguchiae_KAUM35795
+	Roa_jayakari_JDD98
+	Roa_modestua_CMO01
+	Sladenia_gardineri_WJC8048
+	Triacanthodes_ethiops
+	Triodon_macropterus
+	Zanclus_cornutus_12451
+	acanthurus_grammoptilus
+	acanthurus_leucopareius
+	acanthurus_nigricauda
+	acanthurus_tennentii
+	acanthurus_tractus
+	chaetodon_trifascialis
+	chaetodon_trifasciatus
+	ctenochaetus_hawaiiensis
+	ctenochaetus_striatus
+	holacanthus_passer
+	karalla_daura
+	lethrinus_nebulosus
+	lophius_piscatorius
+	naso_annulatus
+	naso_brachycentron
+	naso_brevirostris
+	naso_minor
+	naso_thynnoides
+	naso_vlamingii
+	scatophagus_argus
+	siganus_fuscescens
+	sparus_aurata
+	takifugu_rubripes
+;
+end;
+
+begin trees;
+	tree tree_1 = [&R] (Acanthurus_bahianusF358:0.003409,(Acanthurus_chirurgusF360:0.004825,((((((Acanthurus_coeruleusF361:0.009497,(Acanthurus_leucosternonCFF359:0.003021,Acanthurus_nigricansF364:0.001837)[&label=100]:0.009721)[&label=100]:0.002499,((acanthurus_leucopareius:0.004509,Acanthurus_nigrofuscusF365:0.005899)[&label=100]:0.00689,Acanthurus_lineatusF276:0.011438)[&label=100]:9.29E-4)[&label=97]:7.17E-4,(Acanthurus_triostegusF366:0.059109,((((((((((Amphichaetodon_howensis_M967:0.001766,Amphichaetodon_melbae_FMNH107370:0.001757)[&label=100]:0.008153,(((Chelmon_muelleri_M1612:0.006461,Chelmon_rostratus_PW4838:0.006348)[&label=100]:0.00969,Chelmonops_curiosus_M1682:0.008887)[&label=100]:0.00332,((Coradion_altivelis_PW4073:0.004404,Coradion_melanopus_FMNH124029:0.005325)[&label=82]:7.62E-4,Coradion_chrysozonus_COH01:0.008154)[&label=100]:0.009804)[&label=100]:0.010407)[&label=100]:0.002778,((Forcipiger_flavissimus_FFL02:0.005758,(Forcipiger_longirostris:0.001039,Forcipiger_wanai_JRH86:0.00185)[&label=100]:0.003375)[&label=100]:0.006195,(((Hemitaurichthys_polylepis_PW3095:0.002,Hemitaurichthys_zoster_PW4855:0.001607)[&label=100]:9.03E-4,Hemitaurichthys_thompsoni_PW5537:0.002716)[&label=100]:0.008412,(((((Heniochus_acuminatus_PW4560:0.001906,Heniochus_intermedius_HIN02:0.002366)[&label=100]:0.001366,(Heniochus_diphreutes_HDP01:0.0033,Heniochus_singularius_HSI01:0.003345)[&label=100]:7.01E-4)[&label=92]:2.61E-4,Heniochus_monoceros_PW3173:0.0037)[&label=100]:0.00253,(Heniochus_chrysostomus_PW2923:0.007388,(Heniochus_pleurotaenia_HPR01:0.00289,Heniochus_varius_PW2921:0.003687)[&label=100]:0.003001)[&label=100]:7.57E-4)[&label=100]:8.8E-4,Johnrandallia_nigrirostris_PW4857:0.006328)[&label=100]:0.002559)[&label=100]:0.001927)[&label=100]:0.011464)[&label=100]:0.003364,((((((((((Chaetodon_adiergastos_CHD01:0.003267,(Chaetodon_auripes_CEU01:0.003811,(Chaetodon_fasciatus_CFT01:0.001807,Chaetodon_lunula_CHLU11:0.00194)[&label=100]:9.68E-4)[&label=96]:3.71E-4)[&label=100]:3.32E-4,Chaetodon_collare_PW3054:0.003862)[&label=100]:9.4E-4,(((Chaetodon_auriga2:0.003131,((Chaetodon_decussatus_M1546:0.001756,Chaetodon_vagabundus_FMNH120353:0.002002)[&label=90]:4.52E-4,Chaetodon_pictus_CPS01:0.003637)[&label=100]:6.42E-4)[&label=100]:0.001143,(Chaetodon_dialeucos_CDA01:0.003523,(Chaetodon_mesoleucos_CMS01:0.001737,Chaetodon_nigropunctatus_CNC01:0.002543)[&label=100]:4.99E-4)[&label=100]:0.001768)[&label=100]:5.42E-4,(((((Chaetodon_falcula_CHL01:0.002038,Chaetodon_ulietensis_FMNH119327:0.001898)[&label=100]:6.56E-4,Chaetodon_oxycephalus_FMNH119318:0.002961)[&label=100]:7.2E-4,Chaetodon_lineolatus_FMNH123553:0.00278)[&label=100]:5.35E-4,Chaetodon_semilarvatus_CSE02:0.003219)[&label=100]:9.25E-4,Chaetodon_rafflesii_CRL01:0.004419)[&label=100]:4.23E-4)[&label=100]:4.14E-4)[&label=100]:0.002804,((Chaetodon_ephippium_PW3016:0.002485,Chaetodon_xanthocephalus_CXN01:0.00202)[&label=100]:0.001536,Chaetodon_semeion_FMNH118569:0.003502)[&label=100]:0.004217)[&label=100]:6.64E-4,(((Chaetodon_gardineri_PW4074:0.001745,Chaetodon_selene_CHS01:0.002115)[&label=100]:4.95E-4,Chaetodon_leucopleura_PW4078:0.001794)[&label=100]:0.004306,(Chaetodon_melannotus_CMN01:0.003687,Chaetodon_ocellicaudus_FMNH128372:0.00412)[&label=100]:0.002599)[&label=100]:0.003119)[&label=100]:7.83E-4,((Chaetodon_capistratus_PW3430:0.00387,Chaetodon_striatus_PW4854:0.003926)[&label=100]:0.002281,(Chaetodon_humeralis_PW1006:0.00402,Chaetodon_ocellatus:0.005508)[&label=100]:0.00212)[&label=100]:0.00514)[&label=100]:0.004718,(((((((Chaetodon_aureofasciatus_M1637:0.002021,Chaetodon_octofasciatus_PW3014:0.002434)[&label=100]:0.002457,Chaetodon_rainfordi_FMNH128538:0.004414)[&label=100]:0.005086,Parachaetodon_ocellatus_PW1643:0.016561)[&label=100]:0.002034,(((Chaetodon_bennetti_CNN01:0.003741,(Chaetodon_speculum_CHP01:0.006674,Chaetodon_zanzibarensis_CZA01:0.00229)[&label=100]:0.001662)[&label=95]:2.86E-4,Chaetodon_plebeius_CPB01:0.004873)[&label=100]:0.001385,Chaetodon_tricinctus_M965:0.00431)[&label=100]:0.003036)[&label=100]:7.59E-4,chaetodon_trifascialis:0.008811)[&label=100]:8.86E-4,((Chaetodon_baronessa_CBN01:0.001192,Chaetodon_triangulum_CTG01:0.001202)[&label=100]:0.002263,Chaetodon_larvatus_CLA01:0.003034)[&label=100]:0.006245)[&label=100]:0.0034,(((Chaetodon_austriacus_CAI02:0.001563,Chaetodon_melapterus_CMP05:0.001717)[&label=100]:4.43E-4,(Chaetodon_lunulatus_SJL061:0.001448,chaetodon_trifasciatus:8.24E-4)[&label=100]:7.57E-4)[&label=100]:0.007447,((Chaetodon_meyeri_FMNH118571:0.001588,Chaetodon_ornatissimus_PW5539:0.001609)[&label=97]:3.69E-4,Chaetodon_reticulatus_FMNH123545:0.001428)[&label=100]:0.007145)[&label=100]:0.001457)[&label=100]:0.002731)[&label=70]:6.86E-4,((((((Chaetodon_argentatus_M1589:0.002392,((Chaetodon_madagaskariensis_CMD11:0.002042,(Chaetodon_mertensii_PW3003:0.003076,Chaetodon_xanthurus_PW4859:0.002474)[&label=93]:3.53E-4)[&label=78]:2.18E-4,Chaetodon_paucifasciatus_CPF01:0.002184)[&label=100]:9.31E-4)[&label=100]:4.35E-4,(((Chaetodon_burgessi_JRH80:0.001599,Chaetodon_declivis_CDE01:0.001452)[&label=56]:2.31E-4,Chaetodon_tinkeri_PW1545:0.001847)[&label=100]:2.64E-4,Chaetodon_mitratus_CHI01:0.001393)[&label=100]:0.00148)[&label=100]:9.45E-4,Chaetodon_fremblii_PW1517:0.004236)[&label=50]:2.15E-4,Chaetodon_nippon_M1853:0.003497)[&label=100]:0.001753,(((((Chaetodon_assarius_M1684:0.002401,(Chaetodon_guentheri_FMNH128374:0.001689,Chaetodon_litus_PW4847:0.001708)[&label=100]:4.2E-4)[&label=75]:1.5E-4,(Chaetodon_sanctaehelenae_CHSA02:0.001846,Chaetodon_sedentarius_PW1245:0.002195)[&label=100]:4.46E-4)[&label=100]:3.29E-4,Chaetodon_miliaris_PW1535:0.004904)[&label=100]:0.001336,(Chaetodon_guttatissimus_CGU14:0.00177,((Chaetodon_multicinctus_PW1520:0.001604,Chaetodon_punctatofasciatus_PW4843:0.001547)[&label=85]:2.76E-4,Chaetodon_pelewensis_PW3004:0.001759)[&label=94]:2.53E-4)[&label=100]:0.00113)[&label=100]:0.001372,(Chaetodon_blackburnii_PW4271:0.004636,(Chaetodon_citrinellus_FMNH119310:0.003254,Chaetodon_quadrimaculatus_PW4068:0.00345)[&label=100]:0.001511)[&label=100]:0.00144)[&label=100]:0.001261)[&label=100]:0.002335,((Chaetodon_interruptus_PW4842E:0.001645,Chaetodon_unimaculatus_PW1523:0.001965)[&label=100]:0.002195,(Chaetodon_kleinii_PW4831:0.001812,Chaetodon_trichrous_PW4270:0.001927)[&label=100]:0.002458)[&label=100]:0.011552)[&label=100]:0.005265)[&label=100]:0.002729,Chaetodon_robustus_CRB01:0.012002)[&label=100]:0.004453,(((Prognathodes_aculeatus_PW648:0.002271,Prognathodes_brasiliensis_PW3997:0.002661)[&label=100]:0.004283,(Prognathodes_aya_PW1045:0.002615,(Prognathodes_dichrous_PDH01:0.003621,Prognathodes_obliquus_POQ02:0.002037)[&label=100]:0.001157)[&label=100]:0.001251)[&label=100]:0.002871,((Roa_excelsa_ROAsp_02:0.002985,(Roa_haraguchiae_KAUM35795:0.001988,Roa_modestua_CMO01:0.001717)[&label=76]:4.58E-4)[&label=100]:0.001152,Roa_jayakari_JDD98:0.003314)[&label=100]:0.005195)[&label=100]:0.004546)[&label=100]:0.016147)[&label=100]:0.019467,(karalla_daura:0.043654,Gazza_minuta:0.044896)[&label=100]:0.118699)[&label=100]:0.00791,(((((((((Apolemichthys_armitageiF457M1091:0.002474,Apolemichthys_trimaculatusF454M1006:0.003834)[&label=55]:0.001052,Apolemichthys_xanthurusF526M1004:0.003873)[&label=100]:0.003462,(((Centropyge_acanthopsF448M1428:0.003574,((Centropyge_argiF456M1357:0.00438,Centropyge_aurantonotaF462M1096:0.003549)[&label=100]:8.94E-4,(Centropyge_fisheriF482M1155:0.003616,Centropyge_flavicaudaF484M1111:0.003745)[&label=94]:5.3E-4)[&label=77]:4.56E-4)[&label=100]:0.006203,(((Centropyge_joculatorF492M1181:0.003433,(Centropyge_bispinosaF468M1097:0.003272,Centropyge_ferrugataF481M1001:0.003354)[&label=100]:4.97E-4)[&label=100]:3.99E-4,Centropyge_loriculusF494M319:0.003228)[&label=100]:7.6E-4,Centropyge_potteriF510M1159:0.003482)[&label=100]:0.001419)[&label=100]:0.00978,Genicanthus_lamarckF493M1073:0.006619)[&label=100]:0.001488)[&label=100]:0.00188,(Paracentropyge_venustaF517M1154:0.005039,Paracentropyge_multifasciataF505M1133:0.004688)[&label=100]:0.00381)[&label=100]:0.001785,((Centropyge_aurantiaF460M1094:0.008153,(((Centropyge_bicolorF464M673:0.006456,Centropyge_heraldiwoodheadF489M1136:0.005892)[&label=100]:0.001576,(Centropyge_flavipectoralisF485M1014:0.0071,(Centropyge_multispinusF518M1011:0.004496,Centropyge_tibicenF514M1024:0.005459)[&label=80]:5.77E-4)[&label=70]:4.52E-4)[&label=100]:0.003028,(Centropyge_flavissimaF487M301:0.003024,(Centropyge_vrolikiiF520M1025:0.004,Centropyge_eibliF480M1065:0.002935)[&label=100]:6.98E-4)[&label=100]:0.00361)[&label=100]:0.007744)[&label=100]:7.13E-4,Centropyge_coliniF472M1300:0.009443)[&label=100]:0.002018)[&label=100]:7.97E-4,Pygoplites_diacanthusF473M317:0.010807)[&label=99]:7.05E-4,(((Holacanthus_bermudensisF463M1320:0.002004,Holacanthus_ciliarisF471M1099:0.002183)[&label=100]:0.001226,holacanthus_passer:0.002223)[&label=100]:0.003855,Holacanthus_africanusF450M1959:0.006861)[&label=100]:0.004298)[&label=100]:0.010346,((((Pomacanthus_annularisF453M1008:0.005435,((Pomacanthus_asfurF458M989:0.00449,Pomacanthus_maculosusF495M1088:0.0034)[&label=100]:5.59E-4,(Pomacanthus_chrysurusF469M1897:0.004878,Pomacanthus_semicirculatusF511M1009:0.003149)[&label=100]:5.26E-4)[&label=100]:0.00291)[&label=75]:4.42E-4,Pomacanthus_imperatorF490M998:0.005475)[&label=100]:0.001288,(Pomacanthus_navarchusF507M1102:0.005876,(Pomacanthus_sexstriatusF513M880:0.002878,Pomacanthus_xanthometaponF524M1062:0.006229)[&label=100]:0.002447)[&label=100]:0.001451)[&label=100]:0.001275,(Pomacanthus_paruF509M1333:0.004332,Pomacanthus_zonipectusF528M1334:0.007578)[&label=100]:0.006362)[&label=100]:0.005899)[&label=100]:0.006869,((Chaetodontoplus_duboulayiF478M1019:0.007813,Chaetodontoplus_mesoleucusF506M1101:0.008431)[&label=100]:0.006657,(Chaetodontoplus_melanosomaF496M1061:0.00871,Chaetodontoplus_meridithiF500M1135:0.007676)[&label=100]:0.009544)[&label=100]:0.017535)[&label=100]:0.029988)[&label=100]:0.001453,(((((Antigonia_capros:0.058637,((((Chaunax_pictus_SAMN26280042:0.029355,Melanocetus_johnsonii_16243:0.089758)[&label=100]:0.022584,(Histrio_histrio_43108:0.147926,Ogcocephalus_radiatus:0.15094)[&label=100]:0.006698)[&label=100]:0.031542,(lophius_piscatorius:0.098139,Sladenia_gardineri_WJC8048:0.046795)[&label=100]:0.077126)[&label=100]:0.039271,((Mola_mola_13718:0.137681,takifugu_rubripes:0.303206)[&label=100]:0.010724,(Triacanthodes_ethiops:0.037304,Triodon_macropterus:0.05181)[&label=100]:0.003449)[&label=100]:0.028073)[&label=98]:0.001211)[&label=100]:0.001768,scatophagus_argus:0.077601)[&label=100]:0.003854,siganus_fuscescens:0.160595)[&label=100]:0.002825,((Haemulon_album:0.064789,Callanthias_australis:0.116159)[&label=97]:0.005232,(lethrinus_nebulosus:0.062535,sparus_aurata:0.066023)[&label=100]:0.019948)[&label=99]:0.003757)[&label=99]:0.001108,((Drepane_punctata_18811:0.047649,Morone_saxatilis_12185:0.04874)[&label=100]:0.00273,Monodactylus_sebae_13567:0.047133)[&label=99]:0.001205)[&label=100]:0.001)[&label=100]:0.013995,Luvarus_imperialis_18812:0.05109)[&label=100]:0.007073,Zanclus_cornutus_12451:0.047659)[&label=100]:0.013304,(((((naso_annulatus:0.003921,naso_brevirostris:0.002409)[&label=100]:0.001285,naso_vlamingii:0.002813)[&label=100]:0.002138,((Naso_elegansF370:0.002114,Naso_lituratusF371:0.07223)[&label=100]:0.001474,Naso_unicornisF372:0.020771)[&label=100]:0.002459)[&label=100]:0.002837,naso_brachycentron:0.008447)[&label=100]:6.55E-4,(naso_minor:0.012213,naso_thynnoides:0.010591)[&label=100]:0.002211)[&label=100]:0.055116)[&label=100]:0.041572)[&label=100]:0.003173)[&label=100]:0.003066,((Acanthurus_pyroferus:0.007226,ctenochaetus_hawaiiensis:0.005744)[&label=100]:9.82E-4,ctenochaetus_striatus:0.010449)[&label=100]:0.003851)[&label=100]:0.002013,(((acanthurus_grammoptilus:0.065664,Acanthurus_bariene:0.003817)[&label=100]:0.002517,acanthurus_nigricauda:0.016325)[&label=100]:0.002296,(acanthurus_tennentii:0.002188,Acanthurus_olivaceus:0.002132)[&label=100]:0.006894)[&label=100]:0.001458)[&label=100]:0.001905,Acanthurus_monroviaeF363:0.065312)[&label=100]:0.00982)[&label=100]:0.00213,acanthurus_tractus:0.001836);
+end;
+
+begin figtree;
+	set appearance.backgroundColorAttribute="Default";
+	set appearance.backgroundColour=#ffffff;
+	set appearance.branchColorAttribute="User selection";
+	set appearance.branchColorGradient=false;
+	set appearance.branchLineWidth=1.0;
+	set appearance.branchMinLineWidth=0.0;
+	set appearance.branchWidthAttribute="Fixed";
+	set appearance.foregroundColour=#000000;
+	set appearance.hilightingGradient=false;
+	set appearance.selectionColour=#2d3680;
+	set branchLabels.colorAttribute="User selection";
+	set branchLabels.displayAttribute="Branch times";
+	set branchLabels.fontName="sansserif";
+	set branchLabels.fontSize=8;
+	set branchLabels.fontStyle=0;
+	set branchLabels.isShown=false;
+	set branchLabels.significantDigits=4;
+	set layout.expansion=487;
+	set layout.layoutType="RECTILINEAR";
+	set layout.zoom=0;
+	set legend.attribute="label";
+	set legend.fontSize=10.0;
+	set legend.isShown=false;
+	set legend.significantDigits=4;
+	set nodeBars.barWidth=4.0;
+	set nodeBars.displayAttribute=null;
+	set nodeBars.isShown=false;
+	set nodeLabels.colorAttribute="User selection";
+	set nodeLabels.displayAttribute="Node ages";
+	set nodeLabels.fontName="sansserif";
+	set nodeLabels.fontSize=8;
+	set nodeLabels.fontStyle=0;
+	set nodeLabels.isShown=false;
+	set nodeLabels.significantDigits=4;
+	set nodeShapeExternal.colourAttribute="User selection";
+	set nodeShapeExternal.isShown=false;
+	set nodeShapeExternal.minSize=10.0;
+	set nodeShapeExternal.scaleType=Width;
+	set nodeShapeExternal.shapeType=Circle;
+	set nodeShapeExternal.size=4.0;
+	set nodeShapeExternal.sizeAttribute="Fixed";
+	set nodeShapeInternal.colourAttribute="User selection";
+	set nodeShapeInternal.isShown=false;
+	set nodeShapeInternal.minSize=10.0;
+	set nodeShapeInternal.scaleType=Width;
+	set nodeShapeInternal.shapeType=Circle;
+	set nodeShapeInternal.size=4.0;
+	set nodeShapeInternal.sizeAttribute="Fixed";
+	set polarLayout.alignTipLabels=false;
+	set polarLayout.angularRange=0;
+	set polarLayout.rootAngle=0;
+	set polarLayout.rootLength=100;
+	set polarLayout.showRoot=true;
+	set radialLayout.spread=0.0;
+	set rectilinearLayout.alignTipLabels=true;
+	set rectilinearLayout.curvature=0;
+	set rectilinearLayout.rootLength=100;
+	set scale.offsetAge=0.0;
+	set scale.rootAge=1.0;
+	set scale.scaleFactor=1.0;
+	set scale.scaleRoot=false;
+	set scaleAxis.automaticScale=true;
+	set scaleAxis.fontSize=8.0;
+	set scaleAxis.isShown=false;
+	set scaleAxis.lineWidth=1.0;
+	set scaleAxis.majorTicks=1.0;
+	set scaleAxis.minorTicks=0.5;
+	set scaleAxis.origin=0.0;
+	set scaleAxis.reverseAxis=false;
+	set scaleAxis.showGrid=true;
+	set scaleBar.automaticScale=true;
+	set scaleBar.fontSize=10.0;
+	set scaleBar.isShown=true;
+	set scaleBar.lineWidth=1.0;
+	set scaleBar.scaleRange=0.0;
+	set tipLabels.colorAttribute="User selection";
+	set tipLabels.displayAttribute="Names";
+	set tipLabels.fontName="sansserif";
+	set tipLabels.fontSize=11;
+	set tipLabels.fontStyle=0;
+	set tipLabels.isShown=true;
+	set tipLabels.significantDigits=4;
+	set trees.order=true;
+	set trees.orderType="increasing";
+	set trees.rooting=true;
+	set trees.rootingType="User Selection";
+	set trees.transform=true;
+	set trees.transformType="cladogram";
+end;
+
