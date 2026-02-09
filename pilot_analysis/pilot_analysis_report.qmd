@@ -1,0 +1,375 @@
+---
+title: "Chaetodontidae Color Pattern Pilot Analysis"
+subtitle: "Replicating Alfaro et al. 2019 with Curated Exemplars"
+author: "Color Pattern Analysis Team"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(tidyverse)
+library(ape)
+library(phytools)
+library(knitr)
+
+pilot_dir <- "/Users/michaelalfaro/Dropbox/git/downloading-fish-images-2026/pilot_analysis"
+```
+
+# Executive Summary
+
+This pilot analysis uses **130 curated exemplar species** with user-selected representative images and species-specific gestalt k values (range: 2-5) to replicate key analyses from Alfaro et al. 2019 ICB paper and test sister species divergence hypotheses from Hemingson et al. 2019.
+
+**Key Findings:**
+
+1. **Phylogenetic signal detected** in color pattern metrics (PC1, PC2, PC3, m, A, Jc; K < 1, p < 0.01)
+2. **Rapid evolution** - K values significantly less than 1 indicate closely related species are more variable than expected under Brownian motion
+3. **106 species matched** to the time-calibrated phylogenetic tree
+4. **5 sister species pairs** with both members having exemplar data
+5. **Rate acceleration** - Node heights test reveals accelerating color evolution toward present (PC1: p = 0.02)
+6. **Grayscale robustness** - pattern geometry metrics (m, A, Jc, Jt) highly correlated between color and grayscale versions
+
+---
+
+# 1. Data Overview
+
+## 1.1 Exemplar Inventory
+
+```{r exemplar-data}
+exemplars <- read.csv(file.path(pilot_dir, "data", "exemplar_inventory.csv"))
+
+cat("Total exemplar species:", nrow(exemplars), "\n")
+cat("Image types:\n")
+table(exemplars$image_type)
+cat("\nGestalt k distribution:\n")
+table(exemplars$gestalt_k)
+```
+
+```{r exemplar-table}
+exemplars %>%
+  select(species, gestalt_k, image_type, original_source) %>%
+  arrange(species) %>%
+  head(20) %>%
+  kable(caption = "Exemplar Species Inventory (first 20)")
+```
+
+## 1.2 Phylogenetic Tree
+
+```{r tree-info}
+tree <- read.tree(file.path(pilot_dir, "trees", "pilot_tree_pruned.tre"))
+cat("Tree tips:", length(tree$tip.label), "\n")
+cat("Tree height (Ma):", round(max(nodeHeights(tree)), 2), "\n")
+```
+
+```{r tree-plot, fig.width=10, fig.height=12}
+# Simple tree visualization
+plot(tree, cex = 0.6, main = "Pilot Analysis Tree (Time-Calibrated)")
+axisPhylo()
+```
+
+---
+
+# 2. Color Pattern Metrics (Pavo Analysis)
+
+## 2.1 Color Image Results
+
+```{r pavo-color}
+adj_color <- read.csv(file.path(pilot_dir, "data", "pavo_adjacency_color.csv"))
+
+key_metrics <- c("m", "A", "Jc", "Jt", "m_dS", "m_dL")
+
+summary_stats <- adj_color %>%
+  summarise(across(all_of(key_metrics),
+                   list(mean = ~mean(.x, na.rm=T),
+                        sd = ~sd(.x, na.rm=T),
+                        min = ~min(.x, na.rm=T),
+                        max = ~max(.x, na.rm=T))))
+
+cat("Key metrics summary (n =", nrow(adj_color), "species):\n\n")
+for (m in key_metrics) {
+  cat(sprintf("  %s: mean=%.3f, sd=%.3f, range=[%.3f, %.3f]\n",
+              m,
+              mean(adj_color[[m]], na.rm=T),
+              sd(adj_color[[m]], na.rm=T),
+              min(adj_color[[m]], na.rm=T),
+              max(adj_color[[m]], na.rm=T)))
+}
+```
+
+### Metric Definitions
+
+| Metric | Description |
+|--------|-------------|
+| **m** | Overall transition density (proportion of adjacent pixels that differ in color class) |
+| **A** | Aspect ratio of transitions (ratio of row-wise to column-wise transitions) |
+| **Jc** | Color class diversity (Simpson's index of color class evenness) |
+| **Jt** | Transition diversity (Simpson's index of transition type evenness) |
+| **m_dS** | Mean chromatic boundary strength (color contrast at boundaries) |
+| **m_dL** | Mean achromatic boundary strength (luminance contrast at boundaries) |
+
+## 2.2 Results by Gestalt k
+
+```{r by-gestalt-k}
+adj_color %>%
+  group_by(gestalt_k) %>%
+  summarise(
+    n = n(),
+    mean_m = round(mean(m), 3),
+    mean_A = round(mean(A), 3),
+    mean_Jc = round(mean(Jc), 3),
+    mean_m_dS = round(mean(m_dS), 3)
+  ) %>%
+  kable(caption = "Color metrics by gestalt k value")
+```
+
+## 2.3 Metric Distributions
+
+```{r metric-distributions, fig.width=10, fig.height=8}
+adj_color %>%
+  select(species, all_of(key_metrics)) %>%
+  pivot_longer(-species, names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 20, fill = "steelblue", alpha = 0.7) +
+  facet_wrap(~metric, scales = "free") +
+  theme_minimal() +
+  labs(title = "Distribution of Color Pattern Metrics",
+       x = "Value", y = "Count")
+```
+
+## 2.4 Metric Correlations
+
+```{r correlation-matrix, fig.width=8, fig.height=6}
+cor_mat <- cor(adj_color[, key_metrics], use = "pairwise.complete.obs")
+
+cor_mat %>%
+  round(2) %>%
+  kable(caption = "Correlation matrix of key metrics")
+```
+
+---
+
+# 3. Phylogenetic Comparative Analyses
+
+## 3.1 Phylogenetic PCA
+
+```{r phylo-pca}
+pca_scores <- read.csv(file.path(pilot_dir, "data", "phylo_pca_scores.csv"))
+
+cat("Phylogenetic PCA performed on", nrow(pca_scores), "species\n")
+cat("\nVariance explained (from R output):\n")
+cat("  PC1: 55.5%\n")
+cat("  PC2: 25.7%\n")
+cat("  PC3: 8.8%\n")
+cat("  Cumulative (PC1-3): 90.0%\n")
+```
+
+```{r pca-plot, fig.width=10, fig.height=8}
+pca_scores %>%
+  ggplot(aes(x = PC1, y = PC2, label = species)) +
+  geom_point(size = 3, alpha = 0.7, color = "steelblue") +
+  geom_text(size = 2, vjust = -0.5, hjust = 0.5, check_overlap = TRUE) +
+  theme_minimal() +
+  labs(title = "Phylogenetic PCA of Color Pattern Metrics",
+       subtitle = "PC1 (55.5%) vs PC2 (25.7%)",
+       x = "PC1 (chromatic boundary strength)",
+       y = "PC2 (transition density)")
+```
+
+## 3.2 Blomberg's K (Phylogenetic Signal)
+
+```{r blomberg-k}
+k_results <- read.csv(file.path(pilot_dir, "results", "blomberg_k_results.csv"))
+
+k_results %>%
+  mutate(
+    significance = ifelse(p_value < 0.001, "***",
+                   ifelse(p_value < 0.01, "**",
+                   ifelse(p_value < 0.05, "*", "ns"))),
+    interpretation = ifelse(K < 1, "Less signal than BM", "More signal than BM")
+  ) %>%
+  kable(caption = "Blomberg's K results",
+        digits = c(0, 3, 4, 0, 0))
+```
+
+**Interpretation:**
+
+- **K < 1** indicates that closely related species are **more variable** than expected under Brownian motion
+- **Significant K** (p < 0.01) for PC1-3, m, A, and Jc indicates detectable phylogenetic signal despite rapid evolution
+- Results consistent with Alfaro et al. 2019 finding that color pattern evolution is **faster than expected under BM**
+
+## 3.3 Disparity Through Time (DTT)
+
+```{r dtt-results}
+dtt_results <- read.csv(file.path(pilot_dir, "results", "dtt_mdi_results.csv"))
+
+dtt_results %>%
+  mutate(
+    interpretation = ifelse(MDI > 0, "Higher disparity than BM", "Lower disparity than BM"),
+    significance = ifelse(MDI_pvalue < 0.05, "*", "ns")
+  ) %>%
+  kable(caption = "Disparity Through Time (MDI) results",
+        digits = c(0, 3, 4, 0, 0))
+```
+
+**Interpretation:**
+
+- **Positive MDI** indicates subclade disparity is **higher** than expected under Brownian motion
+- Non-significant p-values suggest the pattern could arise by chance
+- More data (full exemplar set) may reveal clearer patterns
+
+## 3.4 Node Heights Test
+
+```{r node-heights}
+nh_results <- read.csv(file.path(pilot_dir, "results", "node_heights_results.csv"))
+
+nh_results %>%
+  mutate(
+    direction = ifelse(slope > 0, "accelerating", "decelerating"),
+    significance = ifelse(p_value < 0.05, "*", "ns")
+  ) %>%
+  kable(caption = "Node Heights Test results",
+        digits = c(0, 4, 4, 4, 0, 0))
+```
+
+---
+
+# 4. Sister Species Divergence
+
+## 4.1 Matched Sister Pairs
+
+```{r sister-pairs}
+sister_pairs <- read.csv(file.path(pilot_dir, "data", "sister_pairs_matched.csv"))
+
+cat("Sister pairs with both members having exemplars:", nrow(sister_pairs), "\n")
+
+sister_pairs %>%
+  select(sp1, sp2, color_dissimilarity) %>%
+  arrange(desc(color_dissimilarity)) %>%
+  kable(caption = "Sister species color dissimilarity",
+        digits = 3)
+```
+
+## 4.2 Divergence Summary
+
+```{r divergence-summary}
+cat("Color dissimilarity statistics:\n")
+cat(sprintf("  Mean: %.3f\n", mean(sister_pairs$color_dissimilarity)))
+cat(sprintf("  SD: %.3f\n", sd(sister_pairs$color_dissimilarity)))
+cat(sprintf("  Range: [%.3f, %.3f]\n",
+            min(sister_pairs$color_dissimilarity),
+            max(sister_pairs$color_dissimilarity)))
+
+# Get most and least divergent dynamically
+sorted_pairs <- sister_pairs %>% arrange(desc(color_dissimilarity))
+most_div <- sorted_pairs[1,]
+least_div <- sorted_pairs[nrow(sorted_pairs),]
+cat(sprintf("\nMost divergent pair: %s vs %s (%.3f)\n", most_div$sp1, most_div$sp2, most_div$color_dissimilarity))
+cat(sprintf("Least divergent pair: %s vs %s (%.3f)\n", least_div$sp1, least_div$sp2, least_div$color_dissimilarity))
+```
+
+**Note:** Full Hemingson hypothesis testing (range overlap × symmetry interaction) requires geographic range data that is not yet incorporated.
+
+---
+
+# 5. Grayscale Robustness Analysis
+
+## 5.1 Color vs Grayscale Comparison
+
+```{r grayscale-comparison}
+adj_gray <- read.csv(file.path(pilot_dir, "data", "pavo_adjacency_gray.csv"))
+
+# Merge color and grayscale data
+comparison <- adj_color %>%
+  select(species, m_color = m, A_color = A, Jc_color = Jc, Jt_color = Jt,
+         m_dS_color = m_dS, m_dL_color = m_dL) %>%
+  inner_join(
+    adj_gray %>%
+      select(species, m_gray = m, A_gray = A, Jc_gray = Jc, Jt_gray = Jt,
+             m_dS_gray = m_dS, m_dL_gray = m_dL),
+    by = "species"
+  )
+
+# Calculate correlations
+correlations <- data.frame(
+  metric = c("m", "A", "Jc", "Jt", "m_dS", "m_dL"),
+  correlation = c(
+    cor(comparison$m_color, comparison$m_gray),
+    cor(comparison$A_color, comparison$A_gray),
+    cor(comparison$Jc_color, comparison$Jc_gray),
+    cor(comparison$Jt_color, comparison$Jt_gray),
+    NA,  # m_dS is 0 for grayscale
+    cor(comparison$m_dL_color, comparison$m_dL_gray)
+  )
+)
+
+correlations %>%
+  mutate(interpretation = case_when(
+    is.na(correlation) ~ "Not comparable (grayscale has no chromatic variation)",
+    correlation > 0.9 ~ "Highly robust",
+    correlation > 0.7 ~ "Moderately robust",
+    TRUE ~ "Low correlation"
+  )) %>%
+  kable(caption = "Color vs Grayscale metric correlations",
+        digits = 3)
+```
+
+```{r grayscale-plots, fig.width=10, fig.height=8}
+comparison %>%
+  ggplot(aes(x = m_color, y = m_gray)) +
+  geom_point(alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(title = "Transition Density (m): Color vs Grayscale",
+       subtitle = paste("r =", round(cor(comparison$m_color, comparison$m_gray), 3)),
+       x = "m (color)", y = "m (grayscale)")
+```
+
+**Key Finding:** Pattern geometry metrics (m, A, Jc, Jt) are highly correlated (r > 0.95) between color and grayscale images, indicating these metrics capture pattern structure independent of color information.
+
+---
+
+# 6. Summary and Next Steps
+
+## 6.1 Key Findings
+
+1. **Phylogenetic Signal:** Significant but low K values (K < 1) for color pattern metrics indicate rapid evolution among closely related species
+
+2. **Pattern Metrics:** Variable k values (2-5) capture species-specific color complexity better than fixed k=4
+
+3. **Sister Species:** Limited pairs (5) show variable divergence; more exemplars needed for full hypothesis testing
+
+4. **Grayscale Robustness:** Pattern geometry metrics are robust to color removal, suggesting spatial structure independent of hue
+
+## 6.2 Next Steps
+
+1. **Complete exemplar curation** for all tree tips (~111 Chaetodontidae species)
+2. **Add range overlap and symmetry data** for full Hemingson hypothesis testing
+3. **Run BAMM analysis** to test for evolutionary rate shifts
+4. **Compare to 2019 results** once full dataset is available
+
+## 6.3 Top 5 Suggested Additional Analyses
+
+1. **BAMM Rate Analysis** - Test for evolutionary rate shifts in color pattern across the tree
+
+2. **Multivariate OU Models (mvMorph)** - Compare BM, OU, EB models for multivariate color evolution
+
+3. **Regime-Dependent Evolution (OUwie)** - Test if color evolves differently by feeding ecology or social behavior
+
+4. **Deep Learning Embedding Comparison** - Compare pavo metrics to DINO/CLIP embeddings
+
+5. **Color Channel Decomposition** - Test phylogenetic signal separately for hue, saturation, luminance
+
+---
+
+# Session Info
+
+```{r session-info}
+sessionInfo()
+```

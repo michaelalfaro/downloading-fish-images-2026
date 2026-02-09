@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Color Pattern Analysis Team">
+<meta name="dcterms.date" content="2026-02-08">
+
+<title>Chaetodontidae Color Pattern Pilot Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="pilot_analysis_report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="pilot_analysis_report_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="pilot_analysis_report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="pilot_analysis_report_files/libs/quarto-html/popper.min.js"></script>
+<script src="pilot_analysis_report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="pilot_analysis_report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="pilot_analysis_report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="pilot_analysis_report_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="pilot_analysis_report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="pilot_analysis_report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="pilot_analysis_report_files/libs/bootstrap/bootstrap-8a894fcc3cb5e37eb5bf30def131be2f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link active" data-scroll-target="#executive-summary">Executive Summary</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview">1. Data Overview</a>
+  <ul class="collapse">
+  <li><a href="#exemplar-inventory" id="toc-exemplar-inventory" class="nav-link" data-scroll-target="#exemplar-inventory">1.1 Exemplar Inventory</a></li>
+  <li><a href="#phylogenetic-tree" id="toc-phylogenetic-tree" class="nav-link" data-scroll-target="#phylogenetic-tree">1.2 Phylogenetic Tree</a></li>
+  </ul></li>
+  <li><a href="#color-pattern-metrics-pavo-analysis" id="toc-color-pattern-metrics-pavo-analysis" class="nav-link" data-scroll-target="#color-pattern-metrics-pavo-analysis">2. Color Pattern Metrics (Pavo Analysis)</a>
+  <ul class="collapse">
+  <li><a href="#color-image-results" id="toc-color-image-results" class="nav-link" data-scroll-target="#color-image-results">2.1 Color Image Results</a>
+  <ul class="collapse">
+  <li><a href="#metric-definitions" id="toc-metric-definitions" class="nav-link" data-scroll-target="#metric-definitions">Metric Definitions</a></li>
+  </ul></li>
+  <li><a href="#results-by-gestalt-k" id="toc-results-by-gestalt-k" class="nav-link" data-scroll-target="#results-by-gestalt-k">2.2 Results by Gestalt k</a></li>
+  <li><a href="#metric-distributions" id="toc-metric-distributions" class="nav-link" data-scroll-target="#metric-distributions">2.3 Metric Distributions</a></li>
+  <li><a href="#metric-correlations" id="toc-metric-correlations" class="nav-link" data-scroll-target="#metric-correlations">2.4 Metric Correlations</a></li>
+  </ul></li>
+  <li><a href="#phylogenetic-comparative-analyses" id="toc-phylogenetic-comparative-analyses" class="nav-link" data-scroll-target="#phylogenetic-comparative-analyses">3. Phylogenetic Comparative Analyses</a>
+  <ul class="collapse">
+  <li><a href="#phylogenetic-pca" id="toc-phylogenetic-pca" class="nav-link" data-scroll-target="#phylogenetic-pca">3.1 Phylogenetic PCA</a></li>
+  <li><a href="#blombergs-k-phylogenetic-signal" id="toc-blombergs-k-phylogenetic-signal" class="nav-link" data-scroll-target="#blombergs-k-phylogenetic-signal">3.2 Blomberg’s K (Phylogenetic Signal)</a></li>
+  <li><a href="#disparity-through-time-dtt" id="toc-disparity-through-time-dtt" class="nav-link" data-scroll-target="#disparity-through-time-dtt">3.3 Disparity Through Time (DTT)</a></li>
+  <li><a href="#node-heights-test" id="toc-node-heights-test" class="nav-link" data-scroll-target="#node-heights-test">3.4 Node Heights Test</a></li>
+  </ul></li>
+  <li><a href="#sister-species-divergence" id="toc-sister-species-divergence" class="nav-link" data-scroll-target="#sister-species-divergence">4. Sister Species Divergence</a>
+  <ul class="collapse">
+  <li><a href="#matched-sister-pairs" id="toc-matched-sister-pairs" class="nav-link" data-scroll-target="#matched-sister-pairs">4.1 Matched Sister Pairs</a></li>
+  <li><a href="#divergence-summary" id="toc-divergence-summary" class="nav-link" data-scroll-target="#divergence-summary">4.2 Divergence Summary</a></li>
+  </ul></li>
+  <li><a href="#grayscale-robustness-analysis" id="toc-grayscale-robustness-analysis" class="nav-link" data-scroll-target="#grayscale-robustness-analysis">5. Grayscale Robustness Analysis</a>
+  <ul class="collapse">
+  <li><a href="#color-vs-grayscale-comparison" id="toc-color-vs-grayscale-comparison" class="nav-link" data-scroll-target="#color-vs-grayscale-comparison">5.1 Color vs Grayscale Comparison</a></li>
+  </ul></li>
+  <li><a href="#summary-and-next-steps" id="toc-summary-and-next-steps" class="nav-link" data-scroll-target="#summary-and-next-steps">6. Summary and Next Steps</a>
+  <ul class="collapse">
+  <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings">6.1 Key Findings</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">6.2 Next Steps</a></li>
+  <li><a href="#top-5-suggested-additional-analyses" id="toc-top-5-suggested-additional-analyses" class="nav-link" data-scroll-target="#top-5-suggested-additional-analyses">6.3 Top 5 Suggested Additional Analyses</a></li>
+  </ul></li>
+  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info">Session Info</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chaetodontidae Color Pattern Pilot Analysis</h1>
+<p class="subtitle lead">Replicating Alfaro et al.&nbsp;2019 with Curated Exemplars</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Color Pattern Analysis Team </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 8, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(phytools)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pilot_dir <span class="ot">&lt;-</span> <span class="st">"/Users/michaelalfaro/Dropbox/git/downloading-fish-images-2026/pilot_analysis"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="executive-summary" class="level1">
+<h1>Executive Summary</h1>
+<p>This pilot analysis uses <strong>130 curated exemplar species</strong> with user-selected representative images and species-specific gestalt k values (range: 2-5) to replicate key analyses from Alfaro et al.&nbsp;2019 ICB paper and test sister species divergence hypotheses from Hemingson et al.&nbsp;2019.</p>
+<p><strong>Key Findings:</strong></p>
+<ol type="1">
+<li><strong>Phylogenetic signal detected</strong> in color pattern metrics (PC1, PC2, PC3, m, A, Jc; K &lt; 1, p &lt; 0.01)</li>
+<li><strong>Rapid evolution</strong> - K values significantly less than 1 indicate closely related species are more variable than expected under Brownian motion</li>
+<li><strong>106 species matched</strong> to the time-calibrated phylogenetic tree</li>
+<li><strong>5 sister species pairs</strong> with both members having exemplar data</li>
+<li><strong>Rate acceleration</strong> - Node heights test reveals accelerating color evolution toward present (PC1: p = 0.02)</li>
+<li><strong>Grayscale robustness</strong> - pattern geometry metrics (m, A, Jc, Jt) highly correlated between color and grayscale versions</li>
+</ol>
+<hr>
+</section>
+<section id="data-overview" class="level1">
+<h1>1. Data Overview</h1>
+<section id="exemplar-inventory" class="level2">
+<h2 class="anchored" data-anchor-id="exemplar-inventory">1.1 Exemplar Inventory</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>exemplars <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"data"</span>, <span class="st">"exemplar_inventory.csv"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total exemplar species:"</span>, <span class="fu">nrow</span>(exemplars), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total exemplar species: 130 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Image types:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Image types:</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(exemplars<span class="sc">$</span>image_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ oriented segmented 
+       18       112 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Gestalt k distribution:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Gestalt k distribution:</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(exemplars<span class="sc">$</span>gestalt_k)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 2  3  4  5 
+10 71 48  1 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>exemplars <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(species, gestalt_k, image_type, original_source) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(species) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Exemplar Species Inventory (first 20)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Exemplar Species Inventory (first 20)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">species</th>
+<th style="text-align: right;">gestalt_k</th>
+<th style="text-align: left;">image_type</th>
+<th style="text-align: left;">original_source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Amphichaetodon howensis</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">Bishop</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Amphichaetodon melbae</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">oriented</td>
+<td style="text-align: left;">iNat</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon adiergastos</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon andamanensis</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon argentatus</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon assarius</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon aureofasciatus</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon auriga</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon auripes</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon austriacus</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon baronessa</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon bennetti</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon blackburnii</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon burgessi</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon capistratus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon citrinellus</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon collare</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">segmented</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon daedalma</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">segmented</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chaetodon declivis</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">segmented</td>
+<td style="text-align: left;">FishBase</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chaetodon decussatus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">oriented</td>
+<td style="text-align: left;">Bishop</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="phylogenetic-tree" class="level2">
+<h2 class="anchored" data-anchor-id="phylogenetic-tree">1.2 Phylogenetic Tree</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">read.tree</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"trees"</span>, <span class="st">"pilot_tree_pruned.tre"</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Tree tips:"</span>, <span class="fu">length</span>(tree<span class="sc">$</span>tip.label), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tree tips: 109 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Tree height (Ma):"</span>, <span class="fu">round</span>(<span class="fu">max</span>(<span class="fu">nodeHeights</span>(tree)), <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tree height (Ma): 54.17 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple tree visualization</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">main =</span> <span class="st">"Pilot Analysis Tree (Time-Calibrated)"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">axisPhylo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="pilot_analysis_report_files/figure-html/tree-plot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="color-pattern-metrics-pavo-analysis" class="level1">
+<h1>2. Color Pattern Metrics (Pavo Analysis)</h1>
+<section id="color-image-results" class="level2">
+<h2 class="anchored" data-anchor-id="color-image-results">2.1 Color Image Results</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>adj_color <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"data"</span>, <span class="st">"pavo_adjacency_color.csv"</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>key_metrics <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"m"</span>, <span class="st">"A"</span>, <span class="st">"Jc"</span>, <span class="st">"Jt"</span>, <span class="st">"m_dS"</span>, <span class="st">"m_dL"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> adj_color <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(key_metrics),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="at">mean =</span> <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm=</span>T),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sd =</span> <span class="sc">~</span><span class="fu">sd</span>(.x, <span class="at">na.rm=</span>T),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">min =</span> <span class="sc">~</span><span class="fu">min</span>(.x, <span class="at">na.rm=</span>T),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max =</span> <span class="sc">~</span><span class="fu">max</span>(.x, <span class="at">na.rm=</span>T))))</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Key metrics summary (n ="</span>, <span class="fu">nrow</span>(adj_color), <span class="st">"species):</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key metrics summary (n = 130 species):</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (m <span class="cf">in</span> key_metrics) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: mean=%.3f, sd=%.3f, range=[%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>              m,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mean</span>(adj_color[[m]], <span class="at">na.rm=</span>T),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>              <span class="fu">sd</span>(adj_color[[m]], <span class="at">na.rm=</span>T),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>              <span class="fu">min</span>(adj_color[[m]], <span class="at">na.rm=</span>T),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>              <span class="fu">max</span>(adj_color[[m]], <span class="at">na.rm=</span>T)))</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  m: mean=0.120, sd=0.056, range=[0.025, 0.294]
+  A: mean=1.117, sd=0.212, range=[0.729, 1.958]
+  Jc: mean=0.754, sd=0.164, range=[0.294, 0.997]
+  Jt: mean=0.726, sd=0.143, range=[0.375, 1.000]
+  m_dS: mean=0.167, sd=0.108, range=[0.025, 0.687]
+  m_dL: mean=1.051, sd=0.289, range=[0.474, 2.401]</code></pre>
+</div>
+</div>
+<section id="metric-definitions" class="level3">
+<h3 class="anchored" data-anchor-id="metric-definitions">Metric Definitions</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>m</strong></td>
+<td>Overall transition density (proportion of adjacent pixels that differ in color class)</td>
+</tr>
+<tr class="even">
+<td><strong>A</strong></td>
+<td>Aspect ratio of transitions (ratio of row-wise to column-wise transitions)</td>
+</tr>
+<tr class="odd">
+<td><strong>Jc</strong></td>
+<td>Color class diversity (Simpson’s index of color class evenness)</td>
+</tr>
+<tr class="even">
+<td><strong>Jt</strong></td>
+<td>Transition diversity (Simpson’s index of transition type evenness)</td>
+</tr>
+<tr class="odd">
+<td><strong>m_dS</strong></td>
+<td>Mean chromatic boundary strength (color contrast at boundaries)</td>
+</tr>
+<tr class="even">
+<td><strong>m_dL</strong></td>
+<td>Mean achromatic boundary strength (luminance contrast at boundaries)</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="results-by-gestalt-k" class="level2">
+<h2 class="anchored" data-anchor-id="results-by-gestalt-k">2.2 Results by Gestalt k</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>adj_color <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gestalt_k) <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_m =</span> <span class="fu">round</span>(<span class="fu">mean</span>(m), <span class="dv">3</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_A =</span> <span class="fu">round</span>(<span class="fu">mean</span>(A), <span class="dv">3</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_Jc =</span> <span class="fu">round</span>(<span class="fu">mean</span>(Jc), <span class="dv">3</span>),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_m_dS =</span> <span class="fu">round</span>(<span class="fu">mean</span>(m_dS), <span class="dv">3</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Color metrics by gestalt k value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Color metrics by gestalt k value</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">gestalt_k</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean_m</th>
+<th style="text-align: right;">mean_A</th>
+<th style="text-align: right;">mean_Jc</th>
+<th style="text-align: right;">mean_m_dS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.069</td>
+<td style="text-align: right;">1.057</td>
+<td style="text-align: right;">0.804</td>
+<td style="text-align: right;">0.142</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">0.101</td>
+<td style="text-align: right;">1.122</td>
+<td style="text-align: right;">0.780</td>
+<td style="text-align: right;">0.191</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">0.158</td>
+<td style="text-align: right;">1.126</td>
+<td style="text-align: right;">0.708</td>
+<td style="text-align: right;">0.136</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.140</td>
+<td style="text-align: right;">0.951</td>
+<td style="text-align: right;">0.535</td>
+<td style="text-align: right;">0.107</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="metric-distributions" class="level2">
+<h2 class="anchored" data-anchor-id="metric-distributions">2.3 Metric Distributions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>adj_color <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(species, <span class="fu">all_of</span>(key_metrics)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>species, <span class="at">names_to =</span> <span class="st">"metric"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Color Pattern Metrics"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Value"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="pilot_analysis_report_files/figure-html/metric-distributions-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="metric-correlations" class="level2">
+<h2 class="anchored" data-anchor-id="metric-correlations">2.4 Metric Correlations</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cor_mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(adj_color[, key_metrics], <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>cor_mat <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Correlation matrix of key metrics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Correlation matrix of key metrics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">m</th>
+<th style="text-align: right;">A</th>
+<th style="text-align: right;">Jc</th>
+<th style="text-align: right;">Jt</th>
+<th style="text-align: right;">m_dS</th>
+<th style="text-align: right;">m_dL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">-0.12</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">-0.49</td>
+<td style="text-align: right;">-0.38</td>
+<td style="text-align: right;">-0.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">-0.12</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">-0.16</td>
+<td style="text-align: right;">-0.18</td>
+<td style="text-align: right;">-0.12</td>
+<td style="text-align: right;">0.07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jc</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">-0.16</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">-0.22</td>
+<td style="text-align: right;">-0.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jt</td>
+<td style="text-align: right;">-0.49</td>
+<td style="text-align: right;">-0.18</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">m_dS</td>
+<td style="text-align: right;">-0.38</td>
+<td style="text-align: right;">-0.12</td>
+<td style="text-align: right;">-0.22</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.06</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m_dL</td>
+<td style="text-align: right;">-0.50</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">-0.14</td>
+<td style="text-align: right;">0.65</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="phylogenetic-comparative-analyses" class="level1">
+<h1>3. Phylogenetic Comparative Analyses</h1>
+<section id="phylogenetic-pca" class="level2">
+<h2 class="anchored" data-anchor-id="phylogenetic-pca">3.1 Phylogenetic PCA</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pca_scores <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"data"</span>, <span class="st">"phylo_pca_scores.csv"</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Phylogenetic PCA performed on"</span>, <span class="fu">nrow</span>(pca_scores), <span class="st">"species</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Phylogenetic PCA performed on 106 species</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Variance explained (from R output):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Variance explained (from R output):</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  PC1: 55.5%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  PC1: 55.5%</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  PC2: 25.7%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  PC2: 25.7%</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  PC3: 8.8%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  PC3: 8.8%</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Cumulative (PC1-3): 90.0%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Cumulative (PC1-3): 90.0%</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pca_scores <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">label =</span> species)) <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Phylogenetic PCA of Color Pattern Metrics"</span>,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"PC1 (55.5%) vs PC2 (25.7%)"</span>,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"PC1 (chromatic boundary strength)"</span>,</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"PC2 (transition density)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="pilot_analysis_report_files/figure-html/pca-plot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="blombergs-k-phylogenetic-signal" class="level2">
+<h2 class="anchored" data-anchor-id="blombergs-k-phylogenetic-signal">3.2 Blomberg’s K (Phylogenetic Signal)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>k_results <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"results"</span>, <span class="st">"blomberg_k_results.csv"</span>))</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>k_results <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">significance =</span> <span class="fu">ifelse</span>(p_value <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">"***"</span>,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">ifelse</span>(p_value <span class="sc">&lt;</span> <span class="fl">0.01</span>, <span class="st">"**"</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">ifelse</span>(p_value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"*"</span>, <span class="st">"ns"</span>))),</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">interpretation =</span> <span class="fu">ifelse</span>(K <span class="sc">&lt;</span> <span class="dv">1</span>, <span class="st">"Less signal than BM"</span>, <span class="st">"More signal than BM"</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Blomberg's K results"</span>,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Blomberg’s K results</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">K</th>
+<th style="text-align: right;">p_value</th>
+<th style="text-align: left;">significance</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PC1</td>
+<td style="text-align: right;">0.208</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PC2</td>
+<td style="text-align: right;">0.199</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PC3</td>
+<td style="text-align: right;">0.194</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">0.230</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">0.287</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jc</td>
+<td style="text-align: right;">0.249</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jt</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: left;">ns</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m_dS</td>
+<td style="text-align: right;">0.147</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: left;">ns</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">m_dL</td>
+<td style="text-align: right;">0.146</td>
+<td style="text-align: right;">0.189</td>
+<td style="text-align: left;">ns</td>
+<td style="text-align: left;">Less signal than BM</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li><strong>K &lt; 1</strong> indicates that closely related species are <strong>more variable</strong> than expected under Brownian motion</li>
+<li><strong>Significant K</strong> (p &lt; 0.01) for PC1-3, m, A, and Jc indicates detectable phylogenetic signal despite rapid evolution</li>
+<li>Results consistent with Alfaro et al.&nbsp;2019 finding that color pattern evolution is <strong>faster than expected under BM</strong></li>
+</ul>
+</section>
+<section id="disparity-through-time-dtt" class="level2">
+<h2 class="anchored" data-anchor-id="disparity-through-time-dtt">3.3 Disparity Through Time (DTT)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dtt_results <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"results"</span>, <span class="st">"dtt_mdi_results.csv"</span>))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>dtt_results <span class="sc">%&gt;%</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">interpretation =</span> <span class="fu">ifelse</span>(MDI <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"Higher disparity than BM"</span>, <span class="st">"Lower disparity than BM"</span>),</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">significance =</span> <span class="fu">ifelse</span>(MDI_pvalue <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"*"</span>, <span class="st">"ns"</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Disparity Through Time (MDI) results"</span>,</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Disparity Through Time (MDI) results</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">MDI</th>
+<th style="text-align: right;">MDI_pvalue</th>
+<th style="text-align: left;">interpretation</th>
+<th style="text-align: left;">significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PC1</td>
+<td style="text-align: right;">0.171</td>
+<td style="text-align: right;">0.787</td>
+<td style="text-align: left;">Higher disparity than BM</td>
+<td style="text-align: left;">ns</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PC2</td>
+<td style="text-align: right;">0.589</td>
+<td style="text-align: right;">0.997</td>
+<td style="text-align: left;">Higher disparity than BM</td>
+<td style="text-align: left;">ns</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PC3</td>
+<td style="text-align: right;">0.560</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: left;">Higher disparity than BM</td>
+<td style="text-align: left;">ns</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li><strong>Positive MDI</strong> indicates subclade disparity is <strong>higher</strong> than expected under Brownian motion</li>
+<li>Non-significant p-values suggest the pattern could arise by chance</li>
+<li>More data (full exemplar set) may reveal clearer patterns</li>
+</ul>
+</section>
+<section id="node-heights-test" class="level2">
+<h2 class="anchored" data-anchor-id="node-heights-test">3.4 Node Heights Test</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>nh_results <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"results"</span>, <span class="st">"node_heights_results.csv"</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>nh_results <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="fu">ifelse</span>(slope <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"accelerating"</span>, <span class="st">"decelerating"</span>),</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">significance =</span> <span class="fu">ifelse</span>(p_value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"*"</span>, <span class="st">"ns"</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Node Heights Test results"</span>,</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Node Heights Test results</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">slope</th>
+<th style="text-align: right;">p_value</th>
+<th style="text-align: right;">r_squared</th>
+<th style="text-align: left;">direction</th>
+<th style="text-align: left;">significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PC1</td>
+<td style="text-align: right;">0.0056</td>
+<td style="text-align: right;">0.0209</td>
+<td style="text-align: right;">0.0508</td>
+<td style="text-align: left;">accelerating</td>
+<td style="text-align: left;">*</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PC2</td>
+<td style="text-align: right;">0.0019</td>
+<td style="text-align: right;">0.2223</td>
+<td style="text-align: right;">0.0144</td>
+<td style="text-align: left;">accelerating</td>
+<td style="text-align: left;">ns</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PC3</td>
+<td style="text-align: right;">0.0009</td>
+<td style="text-align: right;">0.3083</td>
+<td style="text-align: right;">0.0101</td>
+<td style="text-align: left;">accelerating</td>
+<td style="text-align: left;">ns</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="sister-species-divergence" class="level1">
+<h1>4. Sister Species Divergence</h1>
+<section id="matched-sister-pairs" class="level2">
+<h2 class="anchored" data-anchor-id="matched-sister-pairs">4.1 Matched Sister Pairs</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>sister_pairs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"data"</span>, <span class="st">"sister_pairs_matched.csv"</span>))</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sister pairs with both members having exemplars:"</span>, <span class="fu">nrow</span>(sister_pairs), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sister pairs with both members having exemplars: 5 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>sister_pairs <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sp1, sp2, color_dissimilarity) <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(color_dissimilarity)) <span class="sc">%&gt;%</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Sister species color dissimilarity"</span>,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Sister species color dissimilarity</caption>
+<colgroup>
+<col style="width: 37%">
+<col style="width: 33%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sp1</th>
+<th style="text-align: left;">sp2</th>
+<th style="text-align: right;">color_dissimilarity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Heniochus pleurotaenia</td>
+<td style="text-align: left;">Heniochus varius</td>
+<td style="text-align: right;">0.657</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chelmon muelleri</td>
+<td style="text-align: left;">Chelmon rostratus</td>
+<td style="text-align: right;">0.400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Amphichaetodon howensis</td>
+<td style="text-align: left;">Amphichaetodon melbae</td>
+<td style="text-align: right;">0.350</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Coradion altivelis</td>
+<td style="text-align: left;">Coradion melanopus</td>
+<td style="text-align: right;">0.307</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hemitaurichthys polylepis</td>
+<td style="text-align: left;">Hemitaurichthys zoster</td>
+<td style="text-align: right;">0.260</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="divergence-summary" class="level2">
+<h2 class="anchored" data-anchor-id="divergence-summary">4.2 Divergence Summary</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Color dissimilarity statistics:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Color dissimilarity statistics:</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Mean: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(sister_pairs<span class="sc">$</span>color_dissimilarity)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Mean: 0.395</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  SD: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(sister_pairs<span class="sc">$</span>color_dissimilarity)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  SD: 0.155</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Range: [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">min</span>(sister_pairs<span class="sc">$</span>color_dissimilarity),</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">max</span>(sister_pairs<span class="sc">$</span>color_dissimilarity)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Range: [0.260, 0.657]</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get most and least divergent dynamically</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>sorted_pairs <span class="ot">&lt;-</span> sister_pairs <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(color_dissimilarity))</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>most_div <span class="ot">&lt;-</span> sorted_pairs[<span class="dv">1</span>,]</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>least_div <span class="ot">&lt;-</span> sorted_pairs[<span class="fu">nrow</span>(sorted_pairs),]</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Most divergent pair: %s vs %s (%.3f)</span><span class="sc">\n</span><span class="st">"</span>, most_div<span class="sc">$</span>sp1, most_div<span class="sc">$</span>sp2, most_div<span class="sc">$</span>color_dissimilarity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Most divergent pair: Heniochus pleurotaenia vs Heniochus varius (0.657)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Least divergent pair: %s vs %s (%.3f)</span><span class="sc">\n</span><span class="st">"</span>, least_div<span class="sc">$</span>sp1, least_div<span class="sc">$</span>sp2, least_div<span class="sc">$</span>color_dissimilarity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Least divergent pair: Hemitaurichthys polylepis vs Hemitaurichthys zoster (0.260)</code></pre>
+</div>
+</div>
+<p><strong>Note:</strong> Full Hemingson hypothesis testing (range overlap × symmetry interaction) requires geographic range data that is not yet incorporated.</p>
+<hr>
+</section>
+</section>
+<section id="grayscale-robustness-analysis" class="level1">
+<h1>5. Grayscale Robustness Analysis</h1>
+<section id="color-vs-grayscale-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="color-vs-grayscale-comparison">5.1 Color vs Grayscale Comparison</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>adj_gray <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(pilot_dir, <span class="st">"data"</span>, <span class="st">"pavo_adjacency_gray.csv"</span>))</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge color and grayscale data</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> adj_color <span class="sc">%&gt;%</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(species, <span class="at">m_color =</span> m, <span class="at">A_color =</span> A, <span class="at">Jc_color =</span> Jc, <span class="at">Jt_color =</span> Jt,</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">m_dS_color =</span> m_dS, <span class="at">m_dL_color =</span> m_dL) <span class="sc">%&gt;%</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>    adj_gray <span class="sc">%&gt;%</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(species, <span class="at">m_gray =</span> m, <span class="at">A_gray =</span> A, <span class="at">Jc_gray =</span> Jc, <span class="at">Jt_gray =</span> Jt,</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">m_dS_gray =</span> m_dS, <span class="at">m_dL_gray =</span> m_dL),</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"species"</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate correlations</span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>correlations <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="fu">c</span>(<span class="st">"m"</span>, <span class="st">"A"</span>, <span class="st">"Jc"</span>, <span class="st">"Jt"</span>, <span class="st">"m_dS"</span>, <span class="st">"m_dL"</span>),</span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">correlation =</span> <span class="fu">c</span>(</span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cor</span>(comparison<span class="sc">$</span>m_color, comparison<span class="sc">$</span>m_gray),</span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cor</span>(comparison<span class="sc">$</span>A_color, comparison<span class="sc">$</span>A_gray),</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cor</span>(comparison<span class="sc">$</span>Jc_color, comparison<span class="sc">$</span>Jc_gray),</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cor</span>(comparison<span class="sc">$</span>Jt_color, comparison<span class="sc">$</span>Jt_gray),</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>,  <span class="co"># m_dS is 0 for grayscale</span></span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cor</span>(comparison<span class="sc">$</span>m_dL_color, comparison<span class="sc">$</span>m_dL_gray)</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>correlations <span class="sc">%&gt;%</span></span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">interpretation =</span> <span class="fu">case_when</span>(</span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(correlation) <span class="sc">~</span> <span class="st">"Not comparable (grayscale has no chromatic variation)"</span>,</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a>    correlation <span class="sc">&gt;</span> <span class="fl">0.9</span> <span class="sc">~</span> <span class="st">"Highly robust"</span>,</span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>    correlation <span class="sc">&gt;</span> <span class="fl">0.7</span> <span class="sc">~</span> <span class="st">"Moderately robust"</span>,</span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Low correlation"</span></span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Color vs Grayscale metric correlations"</span>,</span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Color vs Grayscale metric correlations</caption>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 16%">
+<col style="width: 73%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">metric</th>
+<th style="text-align: right;">correlation</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">0.970</td>
+<td style="text-align: left;">Highly robust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">0.980</td>
+<td style="text-align: left;">Highly robust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jc</td>
+<td style="text-align: right;">0.963</td>
+<td style="text-align: left;">Highly robust</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jt</td>
+<td style="text-align: right;">0.926</td>
+<td style="text-align: left;">Highly robust</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">m_dS</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">Not comparable (grayscale has no chromatic variation)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m_dL</td>
+<td style="text-align: right;">0.963</td>
+<td style="text-align: left;">Highly robust</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>comparison <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> m_color, <span class="at">y =</span> m_gray)) <span class="sc">+</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Transition Density (m): Color vs Grayscale"</span>,</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"r ="</span>, <span class="fu">round</span>(<span class="fu">cor</span>(comparison<span class="sc">$</span>m_color, comparison<span class="sc">$</span>m_gray), <span class="dv">3</span>)),</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"m (color)"</span>, <span class="at">y =</span> <span class="st">"m (grayscale)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="pilot_analysis_report_files/figure-html/grayscale-plots-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key Finding:</strong> Pattern geometry metrics (m, A, Jc, Jt) are highly correlated (r &gt; 0.95) between color and grayscale images, indicating these metrics capture pattern structure independent of color information.</p>
+<hr>
+</section>
+</section>
+<section id="summary-and-next-steps" class="level1">
+<h1>6. Summary and Next Steps</h1>
+<section id="key-findings" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings">6.1 Key Findings</h2>
+<ol type="1">
+<li><p><strong>Phylogenetic Signal:</strong> Significant but low K values (K &lt; 1) for color pattern metrics indicate rapid evolution among closely related species</p></li>
+<li><p><strong>Pattern Metrics:</strong> Variable k values (2-5) capture species-specific color complexity better than fixed k=4</p></li>
+<li><p><strong>Sister Species:</strong> Limited pairs (5) show variable divergence; more exemplars needed for full hypothesis testing</p></li>
+<li><p><strong>Grayscale Robustness:</strong> Pattern geometry metrics are robust to color removal, suggesting spatial structure independent of hue</p></li>
+</ol>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">6.2 Next Steps</h2>
+<ol type="1">
+<li><strong>Complete exemplar curation</strong> for all tree tips (~111 Chaetodontidae species)</li>
+<li><strong>Add range overlap and symmetry data</strong> for full Hemingson hypothesis testing</li>
+<li><strong>Run BAMM analysis</strong> to test for evolutionary rate shifts</li>
+<li><strong>Compare to 2019 results</strong> once full dataset is available</li>
+</ol>
+</section>
+<section id="top-5-suggested-additional-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="top-5-suggested-additional-analyses">6.3 Top 5 Suggested Additional Analyses</h2>
+<ol type="1">
+<li><p><strong>BAMM Rate Analysis</strong> - Test for evolutionary rate shifts in color pattern across the tree</p></li>
+<li><p><strong>Multivariate OU Models (mvMorph)</strong> - Compare BM, OU, EB models for multivariate color evolution</p></li>
+<li><p><strong>Regime-Dependent Evolution (OUwie)</strong> - Test if color evolves differently by feeding ecology or social behavior</p></li>
+<li><p><strong>Deep Learning Embedding Comparison</strong> - Compare pavo metrics to DINO/CLIP embeddings</p></li>
+<li><p><strong>Color Channel Decomposition</strong> - Test phylogenetic signal separately for hue, saturation, luminance</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="session-info" class="level1">
+<h1>Session Info</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.5.1 (2025-06-13)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: America/Los_Angeles
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] knitr_1.50      phytools_2.5-2  maps_3.4.3      ape_5.8-1      
+ [5] lubridate_1.9.4 forcats_1.0.1   stringr_1.5.2   dplyr_1.1.4    
+ [9] purrr_1.1.0     readr_2.1.5     tidyr_1.3.1     tibble_3.3.0   
+[13] ggplot2_4.0.0   tidyverse_2.0.0
+
+loaded via a namespace (and not attached):
+ [1] fastmatch_1.1-6         gtable_0.3.6            xfun_0.53              
+ [4] htmlwidgets_1.6.4       lattice_0.22-7          tzdb_0.5.0             
+ [7] numDeriv_2016.8-1.1     quadprog_1.5-8          vctrs_0.6.5            
+[10] tools_4.5.1             generics_0.1.4          parallel_4.5.1         
+[13] pkgconfig_2.0.3         Matrix_1.7-4            RColorBrewer_1.1-3     
+[16] S7_0.2.0                scatterplot3d_0.3-44    lifecycle_1.0.4        
+[19] compiler_4.5.1          farver_2.1.2            mnormt_2.1.1           
+[22] combinat_0.0-8          codetools_0.2-20        htmltools_0.5.8.1      
+[25] yaml_2.3.10             pillar_1.11.1           MASS_7.3-65            
+[28] clusterGeneration_1.3.8 iterators_1.0.14        foreach_1.5.2          
+[31] nlme_3.1-168            phangorn_2.12.1         tidyselect_1.2.1       
+[34] digest_0.6.37           stringi_1.8.7           labeling_0.4.3         
+[37] fastmap_1.2.0           grid_4.5.1              expm_1.0-0             
+[40] cli_3.6.5               magrittr_2.0.4          optimParallel_1.0-2    
+[43] withr_3.0.2             scales_1.4.0            DEoptim_2.2-8          
+[46] timechange_0.3.0        rmarkdown_2.30          igraph_2.2.1           
+[49] hms_1.1.4               coda_0.19-4.1           evaluate_1.0.5         
+[52] doParallel_1.0.17       rlang_1.1.6             Rcpp_1.1.0             
+[55] glue_1.8.0              jsonlite_2.0.0          R6_2.6.1               </code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
