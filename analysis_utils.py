@@ -22,6 +22,7 @@ IMAGE_DIRS = {
 ANALYSIS_DIR = os.path.join(SCRIPT_DIR, "analysis")
 GMM_DIR = os.path.join(ANALYSIS_DIR, "approach_1_gmm")
 SEGMENTED_DIR = os.path.join(GMM_DIR, "segmented")
+ORIENTED_DIR = os.path.join(GMM_DIR, "oriented")
 NORMALIZED_DIR = os.path.join(GMM_DIR, "normalized")
 ZONE_MAPS_DIR = os.path.join(GMM_DIR, "zone_maps")
 K_SELECTION_DIR = os.path.join(GMM_DIR, "k_selection")
@@ -185,3 +186,122 @@ def lab_to_rgb_pixels(lab_pixels):
 def all_species(inventory):
     """Get sorted unique species list from inventory."""
     return sorted(set(row["species"] for row in inventory))
+
+
+def get_oriented_path(species, filename):
+    """Get the output path for an oriented image."""
+    sp_dir = species_to_dirname(species)
+    base = os.path.splitext(filename)[0] + ".png"
+    return os.path.join(ORIENTED_DIR, sp_dir, base)
+
+
+def get_best_segmented_path(species, filename):
+    """Get best available segmented image: oriented if exists, else segmented.
+
+    Use this for downstream analysis (pavo, color analysis, etc.) to ensure
+    oriented images are used when available.
+
+    Returns:
+        Path to oriented image if it exists, otherwise path to segmented image.
+        Returns None if neither exists.
+    """
+    oriented = get_oriented_path(species, filename)
+    if os.path.exists(oriented):
+        return oriented
+
+    segmented = get_segmented_path(species, filename)
+    if os.path.exists(segmented):
+        return segmented
+
+    return None
+
+
+def get_included_images_for_species(inventory, species, annotations=None,
+                                     exclude_larvae=True, exclude_multi_inat=True):
+    """Get list of (filename, best_path) tuples for included images.
+
+    This is the main function for downstream analysis. It:
+    1. Filters out excluded images (larvae, multi-fish, manual excludes)
+    2. Uses oriented images when available, otherwise segmented
+    3. Only returns images that have a valid segmented/oriented file
+
+    Returns:
+        List of tuples: (original_filename, best_image_path)
+    """
+    # Get filtered inventory rows
+    rows = get_images_for_species(
+        inventory, species, annotations,
+        exclude_larvae=exclude_larvae, exclude_multi_inat=exclude_multi_inat
+    )
+
+    results = []
+    for row in rows:
+        best_path = get_best_segmented_path(species, row["filename"])
+        if best_path:
+            results.append((row["filename"], best_path))
+
+    return results
+
+
+def count_oriented_images(species=None):
+    """Count oriented images, optionally for a specific species.
+
+    Returns:
+        If species is None: dict mapping species to count
+        If species is provided: int count for that species
+    """
+    counts = {}
+    if not os.path.exists(ORIENTED_DIR):
+        return 0 if species else counts
+
+    for sp_dir in os.listdir(ORIENTED_DIR):
+        sp_path = os.path.join(ORIENTED_DIR, sp_dir)
+        if os.path.isdir(sp_path):
+            sp_name = dirname_to_species(sp_dir)
+            n = len([f for f in os.listdir(sp_path) if f.endswith('.png')])
+            counts[sp_name] = n
+
+    if species:
+        return counts.get(species, 0)
+    return counts
+
+
+EXEMPLAR_CSV = os.path.join(GMM_DIR, "species_exemplar.csv")
+
+
+def load_exemplars(csv_path=None):
+    """Load species_exemplar.csv. Returns dict keyed by species.
+
+    Each entry contains: species, filename, png_name, source, selected_at
+    """
+    if csv_path is None:
+        csv_path = EXEMPLAR_CSV
+    exemplars = {}
+    if not os.path.exists(csv_path):
+        return exemplars
+    with open(csv_path, newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            exemplars[row["species"]] = row
+    return exemplars
+
+
+def get_exemplar_path(species, exemplars=None):
+    """Get the path to the exemplar image for a species.
+
+    Uses oriented version if available, otherwise segmented.
+
+    Returns:
+        Path to exemplar image, or None if no exemplar set or file not found.
+    """
+    if exemplars is None:
+        exemplars = load_exemplars()
+
+    if species not in exemplars:
+        return None
+
+    png_name = exemplars[species].get("png_name", "")
+    if not png_name:
+        return None
+
+    return get_best_segmented_path(species, png_name)
