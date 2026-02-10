@@ -1,0 +1,140 @@
+---
+title: "Image Collection Changelog"
+date: "2026-02-09"
+format: html
+---
+
+# Image Collection & Processing Changes
+
+This document tracks significant changes to the Chaetodontidae image collection and processing pipeline.
+
+## 2026-02-09: Taxonomy Reconciliation & Source Attribution
+
+### Summary
+
+Comprehensive reconciliation of taxonomy and image source attribution between Bishop Museum (Randall) and FishBase collections.
+
+### Changes Made
+
+#### 1. Taxonomy Fixes
+
+**Roa Genus (formerly Chaetodon)**
+
+The Bishop Museum collection used the old genus assignment "Chaetodon" for three species now placed in genus Roa. These have been reconciled:
+
+| Bishop Name | Accepted Name | Action |
+|-------------|---------------|--------|
+| Chaetodon excelsa | Roa excelsa | Merged into Roa excelsa |
+| Chaetodon jayakari | Roa jayakari | FishBase only (no Bishop image) |
+| Chaetodon modesta | Roa modesta | FishBase only (no Bishop image) |
+
+**Key finding:** The Bishop `Chaetodon_excelsa` image and FishBase `Roa_excelsa` image are the **SAME Randall photograph**. We now use the Bishop version.
+
+**Zanzibar Butterflyfish Spelling**
+
+| Variant | Source | Action |
+|---------|--------|--------|
+| Chaetodon zanzibariensis | Bishop Museum | Kept (correct spelling) |
+| Chaetodon zanzibarensis | FishBase | Removed (duplicate) |
+
+The correct spelling is "zanzibarensis" (from Zanzibar). Bishop image retained as exemplar.
+
+#### 2. Duplicate Image Detection
+
+Perceptual hash comparison identified **416 duplicate images** between Bishop and FishBase collections. These are the same Randall photographs that appear in both databases.
+
+Action: Exemplars updated to prefer Bishop versions for color fidelity.
+
+#### 3. Exemplar Updates
+
+42 exemplars were updated:
+- 2 taxonomy merges (Roa excelsa, Chaetodon zanzibarensis)
+- 40 switched from FishBase to Bishop versions
+
+All exemplars now include an `is_randall` flag indicating Randall photograph status.
+
+#### 4. Review App Enhancements
+
+Updated `apps/review_app.py`:
+- Added `is_randall` detection for images
+- Added Randall badge display in image cards
+- Exemplar selection now records `is_randall` status
+- Bishop/Randall images remain sorted first
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `scripts/quality/reconcile_taxonomy_and_sources.py` | Main reconciliation script |
+| `data/taxonomy_reconciliation_report.md` | Detailed reconciliation report |
+| `data/image_inventory_with_sources.csv` | Full inventory with source attribution |
+
+### Modified Files
+
+| File | Change |
+|------|--------|
+| `analysis/approach_1_gmm/species_exemplar.csv` | Added `is_randall` column, updated 42 records |
+| `analysis/approach_1_gmm/species_gestalt_k.csv` | Merged duplicate species entries |
+| `apps/review_app.py` | Added Randall badge display |
+
+### Image Source Statistics
+
+| Source | Total Images | Randall? |
+|--------|--------------|----------|
+| Bishop Museum | 178 | All (100%) |
+| FishBase Official | 131 | 113 images |
+| FishBase Extra | 568 | 544 images |
+| FishBase UserContrib | 722 | None |
+| iNaturalist | 1,125 | None |
+
+### Recommendations
+
+1. **Use Bishop images when available** - Best color fidelity for analysis
+2. **FishBase-only Randall images** - 14 species have Randall on FishBase but not Bishop
+3. **Color correction** - Essential for non-Randall images, especially iNaturalist (57% underwater)
+
+---
+
+## Previous Changes
+
+### 2026-02-08: Directory Reorganization
+
+Reorganized repository structure for clarity:
+- `scripts/download/` - Image acquisition scripts
+- `scripts/processing/` - Segmentation, orientation, color correction
+- `scripts/quality/` - QC and filtering
+- `scripts/analysis/` - Color analysis scripts
+- `apps/` - Interactive applications
+- `data/` - Metadata and inventories
+
+Created `IMAGE_DIRECTORY_GUIDE.md` and updated `README.md`.
+
+### 2026-02-05: Underwater Color Correction
+
+Tested color correction methods for underwater images:
+- Combined method (Gray World + Red Compensation + CLAHE) achieved best results
+- 57% of iNaturalist images detected as underwater
+- Created `scripts/analysis/39_underwater_color_correction.py`
+
+---
+
+## Technical Notes
+
+### Perceptual Hash Comparison
+
+Duplicate detection uses 16x16 grayscale perceptual hashing with binary threshold.
+- **Hash size:** 256 bits
+- **Duplicate threshold:** Hamming distance < 52 (20% difference)
+- **Sensitivity:** Catches identical images with minor cropping or color shifts
+
+### Taxonomy Source
+
+Current taxonomy follows FishBase accepted names as of February 2025.
+Genus Roa was split from Chaetodon based on phylogenetic analysis.
+
+### Randall Image Identification
+
+Randall photographs identified by:
+1. Bishop Museum filename prefix (`_Bishop_`)
+2. FishBase Randall credit (web scraping verification)
+3. Cross-reference with Bishop collection via hash comparison

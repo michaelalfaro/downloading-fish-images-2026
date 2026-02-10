@@ -148,10 +148,10 @@ def _load_exemplars():
 
 def _save_exemplars():
     """Save species exemplar selections to CSV."""
-    fields = ["species", "filename", "png_name", "source", "selected_at"]
+    fields = ["species", "filename", "png_name", "source", "selected_at", "is_randall"]
     ensure_dir(os.path.dirname(EXEMPLAR_CSV))
     with open(EXEMPLAR_CSV, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fields)
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore')
         w.writeheader()
         for sp in sorted(_exemplars.keys()):
             w.writerow(_exemplars[sp])
@@ -399,6 +399,30 @@ def _classify_source(filename):
     return "Other"
 
 
+def _is_randall_image(filename, species=None):
+    """Check if image is a Randall photograph.
+
+    All Bishop images are Randall. Some FishBase images are also Randall
+    (same photos uploaded to both databases, or FishBase-only Randall images).
+    """
+    if "Bishop" in filename:
+        return True
+
+    # FishBase-only Randall images (from Randall analysis)
+    fishbase_randall_species = {
+        'Chaetodon burgessi', 'Chaetodon capistratus', 'Chaetodon interruptus',
+        'Chaetodon oxycephalus', 'Chaetodon quadrimaculatus', 'Chaetodon sedentarius',
+        'Chaetodon striatus', 'Chaetodon triangulum', 'Hemitaurichthys thompsoni',
+        'Johnrandallia nigrirostris', 'Prognathodes aculeatus',
+        'Roa excelsa', 'Roa jayakari', 'Roa modesta',
+    }
+
+    if species and "FishBase" in filename and species in fishbase_randall_species:
+        return True
+
+    return False
+
+
 def _apply_auto_exclude_defaults(species, images):
     """Auto-exclude iNat and FBUser images if this species hasn't been visited before.
 
@@ -512,6 +536,9 @@ def _get_species_images(species, apply_defaults=True):
         oriented_path = os.path.join(ORIENTED_DIR, sp_dir, png_name)
         has_oriented = os.path.exists(oriented_path)
 
+        # Check if this is a Randall image (Bishop or FishBase-only Randall)
+        is_randall = _is_randall_image(png_name, species)
+
         images.append({
             "png_name": png_name,
             "orig_fname": orig_fname,
@@ -525,6 +552,7 @@ def _get_species_images(species, apply_defaults=True):
             "ann_badge": ann_badge,
             "orient_warning": orient_warning,
             "is_exemplar": is_exemplar,
+            "is_randall": is_randall,
         })
 
     # Sort by source priority, then filename
@@ -821,12 +849,16 @@ def api_set_exemplar():
     if not png_name:
         return jsonify({"error": "missing png_name"}), 400
 
+    # Determine if this is a Randall image
+    is_randall = _is_randall_image(png_name, species)
+
     _exemplars[species] = {
         "species": species,
         "filename": filename,
         "png_name": png_name,
         "source": source,
         "selected_at": now,
+        "is_randall": is_randall,
     }
     _save_exemplars()
     return jsonify({"ok": True})
@@ -1462,6 +1494,9 @@ REVIEW_HTML = """<!DOCTYPE html>
   .source-FishPix { background: #d1c4e9; color: #4527a0; }
   .source-iNat { background: #fff9c4; color: #f57f17; }
   .source-Other { background: #eee; color: #666; }
+  .randall-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
+                   font-size: 10px; font-weight: 600; background: #fff3e0; color: #e65100;
+                   border: 1px solid #ffb74d; margin-left: 4px; }
   .warn-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
                 font-size: 10px; background: #ffcdd2; color: #c62828; margin-top: 2px; }
   .ann-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
@@ -1580,6 +1615,9 @@ REVIEW_HTML = """<!DOCTYPE html>
       <div class="fname">{{ im.display_name }}</div>
       <div class="source">
         <span class="source-badge source-{{ im.source }}">{{ im.source }}</span>
+        {% if im.is_randall %}
+          <span class="randall-badge">Randall</span>
+        {% endif %}
         {% if im.orient_warning %}
           <span class="warn-badge">Orient?</span>
         {% endif %}
