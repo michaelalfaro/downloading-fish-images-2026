@@ -61,6 +61,16 @@ Updated `apps/review_app.py`:
 - Exemplar selection now records `is_randall` status
 - Bishop/Randall images remain sorted first
 
+#### 5. Duplicate Image Deduplication in Visualizer
+
+The review app now hides FishBase images that are duplicates of Bishop images:
+- 169 Bishop images have FishBase equivalents
+- 207 FishBase images are hidden (duplicates of Bishop)
+- Bishop images show "FishBase: [filename]" notation for hidden equivalents
+- Non-duplicate FishBase images (different photos) still display normally
+
+This shows only the Bishop version of each Randall photograph while noting the FishBase equivalent name, avoiding visual clutter from identical images.
+
 ### New Files
 
 | File | Description |

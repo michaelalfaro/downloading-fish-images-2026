@@ -63,6 +63,8 @@ _exemplars = {}              # species -> {filename, png_name, selected_at}
 _orient_warnings = set()     # filenames with orientation uncertainty
 _initialized_species = set() # species that have had iNat defaults applied
 _orient_landmarks = {}       # filename -> {mouth_x, mouth_y, tail_x, tail_y, angle}
+_duplicate_mapping = {}      # bishop_png -> list of equivalent fishbase_pngs
+_fishbase_duplicates = set() # set of fishbase_pngs that are duplicates of bishop images
 
 
 # ══════════════════════════════════════════════════════════════
@@ -168,6 +170,91 @@ def _save_orient_landmarks():
         w.writeheader()
         for row in sorted(_orient_landmarks.values(), key=lambda r: r["filename"]):
             w.writerow(row)
+
+
+def _load_duplicate_mapping():
+    """Load or compute mapping of duplicate images between Bishop and FishBase.
+
+    Uses perceptual hashing to find images that are identical or near-identical
+    across the two collections. This allows the visualizer to show only the
+    Bishop version while noting the FishBase equivalent names.
+
+    Returns:
+        Tuple of (bishop_to_fishbase_map, fishbase_duplicates_set)
+        - bishop_to_fishbase_map: dict mapping bishop_png -> list of fishbase_pngs
+        - fishbase_duplicates_set: set of fishbase_pngs that are duplicates
+    """
+    import hashlib
+
+    bishop_to_fb = defaultdict(list)
+    fb_duplicates = set()
+
+    # Get all species directories
+    for species in _species_list:
+        sp_dir = species_to_dirname(species)
+        seg_dir = os.path.join(SEGMENTED_DIR, sp_dir)
+
+        if not os.path.isdir(seg_dir):
+            continue
+
+        files = [f for f in os.listdir(seg_dir) if f.endswith(".png")]
+
+        # Separate Bishop and FishBase files
+        bishop_files = [f for f in files if "Bishop" in f]
+        fishbase_files = [f for f in files if "FishBase" in f and "FishBaseUser" not in f]
+
+        if not bishop_files or not fishbase_files:
+            continue
+
+        # Compute hashes for this species
+        def compute_phash(filepath):
+            """Compute perceptual hash for an image."""
+            try:
+                img = cv2.imread(filepath)
+                if img is None:
+                    return None
+                img = cv2.resize(img, (16, 16))
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                avg = gray.mean()
+                return (gray > avg).flatten().tobytes()
+            except:
+                return None
+
+        # Hash all Bishop images
+        bishop_hashes = {}
+        for bf in bishop_files:
+            h = compute_phash(os.path.join(seg_dir, bf))
+            if h:
+                bishop_hashes[bf] = h
+
+        # Compare FishBase to Bishop
+        for fb in fishbase_files:
+            fb_path = os.path.join(seg_dir, fb)
+            fb_hash = compute_phash(fb_path)
+            if fb_hash is None:
+                continue
+
+            for b_file, b_hash in bishop_hashes.items():
+                # Hamming distance check - threshold 52/256 = ~20% difference
+                h1 = np.frombuffer(fb_hash, dtype=np.bool_)
+                h2 = np.frombuffer(b_hash, dtype=np.bool_)
+                dist = np.sum(h1 != h2)
+
+                if dist < 52:  # Duplicate threshold
+                    # Extract display name for FishBase file
+                    fb_display = fb
+                    prefix = sp_dir + "_"
+                    if fb_display.startswith(prefix):
+                        fb_display = fb_display[len(prefix):]
+
+                    bishop_to_fb[b_file].append({
+                        'png_name': fb,
+                        'display_name': fb_display,
+                        'hash_distance': dist,
+                    })
+                    fb_duplicates.add(fb)
+
+    return dict(bishop_to_fb), fb_duplicates
 
 
 def _apply_perspective_correction(img, dorsal_ventral_angle, head_tail_angle=0):
@@ -481,6 +568,10 @@ def _get_species_images(species, apply_defaults=True):
 
     all_files = seg_files | norm_files
 
+    # Filter out FishBase duplicates (images that are identical to Bishop images)
+    # These will be noted on the Bishop image instead of shown separately
+    all_files = {f for f in all_files if f not in _fishbase_duplicates}
+
     images = []
     source_order = {"Bishop": 0, "FishBase": 1, "FishPix": 2, "iNat": 3, "Other": 4}
 
@@ -539,6 +630,11 @@ def _get_species_images(species, apply_defaults=True):
         # Check if this is a Randall image (Bishop or FishBase-only Randall)
         is_randall = _is_randall_image(png_name, species)
 
+        # Get FishBase equivalent names for Bishop images (duplicates that are hidden)
+        fishbase_equivalents = []
+        if "Bishop" in png_name and png_name in _duplicate_mapping:
+            fishbase_equivalents = [dup['display_name'] for dup in _duplicate_mapping[png_name]]
+
         images.append({
             "png_name": png_name,
             "orig_fname": orig_fname,
@@ -553,6 +649,7 @@ def _get_species_images(species, apply_defaults=True):
             "orient_warning": orient_warning,
             "is_exemplar": is_exemplar,
             "is_randall": is_randall,
+            "fishbase_equivalents": fishbase_equivalents,
         })
 
     # Sort by source priority, then filename
@@ -1497,6 +1594,8 @@ REVIEW_HTML = """<!DOCTYPE html>
   .randall-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
                    font-size: 10px; font-weight: 600; background: #fff3e0; color: #e65100;
                    border: 1px solid #ffb74d; margin-left: 4px; }
+  .fishbase-equiv { font-size: 9px; color: #666; margin-top: 2px; font-style: italic; }
+  .fishbase-equiv-label { color: #1565c0; font-weight: 500; }
   .warn-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
                 font-size: 10px; background: #ffcdd2; color: #c62828; margin-top: 2px; }
   .ann-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
@@ -1625,6 +1724,12 @@ REVIEW_HTML = """<!DOCTYPE html>
           <span class="ann-badge">{{ im.ann_badge }}</span>
         {% endif %}
       </div>
+      {% if im.fishbase_equivalents %}
+        <div class="fishbase-equiv">
+          <span class="fishbase-equiv-label">FishBase:</span>
+          {{ im.fishbase_equivalents | join(', ') }}
+        </div>
+      {% endif %}
     </div>
     <div class="actions">
       <label>
@@ -2803,6 +2908,7 @@ def init_app():
     """Load all data into memory."""
     global _inventory, _species_list, _annotations
     global _review_state, _gestalt_k, _exemplars, _orient_warnings, _orient_landmarks
+    global _duplicate_mapping, _fishbase_duplicates
 
     print("Loading inventory...")
     _inventory = load_inventory()
@@ -2834,6 +2940,12 @@ def init_app():
     print("Loading orientation landmarks...")
     _orient_landmarks = _load_orient_landmarks()
     print(f"  {len(_orient_landmarks)} images with digitized landmarks")
+
+    print("Computing duplicate image mapping (Bishop <-> FishBase)...")
+    _duplicate_mapping, _fishbase_duplicates = _load_duplicate_mapping()
+    n_with_dups = sum(1 for v in _duplicate_mapping.values() if v)
+    print(f"  {n_with_dups} Bishop images with FishBase duplicates")
+    print(f"  {len(_fishbase_duplicates)} FishBase images to hide (duplicates)")
 
 
 def main():
