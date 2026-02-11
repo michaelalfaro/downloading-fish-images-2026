@@ -65,6 +65,9 @@ _initialized_species = set() # species that have had iNat defaults applied
 _orient_landmarks = {}       # filename -> {mouth_x, mouth_y, tail_x, tail_y, angle}
 _duplicate_mapping = {}      # bishop_png -> list of equivalent fishbase_pngs
 _fishbase_duplicates = set() # set of fishbase_pngs that are duplicates of bishop images
+_photographer_data = {}      # filename -> photographer name
+_image_metadata = {}         # filename -> metadata dict (image_type, is_grayscale, etc.)
+_miyazawa_images = {}        # img_file -> species (from Miyazawa 2020 study)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -172,24 +175,127 @@ def _save_orient_landmarks():
             w.writerow(row)
 
 
-def _load_duplicate_mapping():
-    """Load or compute mapping of duplicate images between Bishop and FishBase.
+def _compute_phash(filepath):
+    """Compute perceptual hash for an image."""
+    try:
+        img = cv2.imread(filepath)
+        if img is None:
+            return None
+        img = cv2.resize(img, (16, 16))
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        avg = gray.mean()
+        return (gray > avg).flatten().tobytes()
+    except Exception:
+        return None
 
-    Uses perceptual hashing to find images that are identical or near-identical
-    across the two collections. This allows the visualizer to show only the
-    Bishop version while noting the FishBase equivalent names.
+
+def _load_miyazawa_images():
+    """Load images from Miyazawa (2020) study.
+
+    Returns dict mapping img_file -> species for images used in the study.
+    These are the images with annotated color patterns from FishBase and FishPix.
+    """
+    miyazawa_xlsx = os.path.join(SCRIPT_DIR, '..', 'papers', 'abb9107_data_file_s1.xlsx')
+
+    if not os.path.exists(miyazawa_xlsx):
+        print(f"  Miyazawa data not found: {miyazawa_xlsx}")
+        return {}
+
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(miyazawa_xlsx, read_only=True)
+        ws = wb["A_FishPatterns_img"]
+
+        images = {}
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            img_file = row[0]  # Original filename (e.g., "12345AF.jpg" or "Chaur_u0.jpg")
+            source = row[1]    # FishBase or FishPix
+            family = row[2]
+            species = row[4]
+
+            if family == "Chaetodontidae":
+                images[img_file] = {
+                    'species': species,
+                    'source': source,
+                }
+
+        wb.close()
+        return images
+    except Exception as e:
+        print(f"  Error loading Miyazawa data: {e}")
+        return {}
+
+
+def _is_miyazawa_image(filename):
+    """Check if an image appears in Miyazawa (2020) study.
+
+    Handles various filename formats:
+    - Direct match: "12345AF.jpg"
+    - With prefix: "Chaetodon_auriga_FishPix_12345AF.jpg"
+    - FishBase style: "Chaur_u0.jpg" or "Chaetodon_auriga_FishBase_Chaur_u0.jpg"
+    """
+    import re
+
+    # Direct match
+    if filename in _miyazawa_images:
+        return True
+
+    # Try extracting the original filename part
+
+    # FishPix pattern: look for "12345AF.jpg"
+    match = re.search(r'(\d+AF\.jpg)', filename, re.IGNORECASE)
+    if match and match.group(1) in _miyazawa_images:
+        return True
+
+    # FishBase pattern: look for "Chaur_u0.jpg" style
+    match = re.search(r'([A-Z][a-z]{3,4}_u\d+\.jpg)', filename, re.IGNORECASE)
+    if match and match.group(1) in _miyazawa_images:
+        return True
+
+    # Try suffix matching (our naming adds Genus_species_Source_ prefix)
+    for miyazawa_file in _miyazawa_images:
+        if filename.endswith(miyazawa_file):
+            return True
+
+    return False
+
+
+def _load_duplicate_mapping():
+    """Compute cross-database duplicate mapping using perceptual hashing.
+
+    Compares images across ALL source pairs within each species directory
+    (Bishop, FishBase, FishWise, etc.) to identify the same photograph
+    appearing in multiple databases.
+
+    Uses direct pairwise matching only (no transitive closure) with a tight
+    threshold to avoid false positives from similar-looking fish of the same
+    species. Each non-canonical image is assigned to the single best-matching
+    canonical image from a higher-priority source.
 
     Returns:
-        Tuple of (bishop_to_fishbase_map, fishbase_duplicates_set)
-        - bishop_to_fishbase_map: dict mapping bishop_png -> list of fishbase_pngs
-        - fishbase_duplicates_set: set of fishbase_pngs that are duplicates
+        Tuple of (canonical_to_equivalents, duplicate_pngs_set)
+        - canonical_to_equivalents: dict mapping canonical_png -> list of equivalent dicts
+        - duplicate_pngs_set: set of non-canonical PNGs to hide from display
     """
-    import hashlib
+    # Source priority: lower = higher priority (kept as canonical)
+    source_priority = {"Bishop": 0, "FishBase": 1, "FishPix": 2, "FishWise": 3, "FBUser": 4, "iNat": 5, "Other": 6}
+    HASH_THRESHOLD = 15  # Very tight: ~6% of 256 bits — true duplicates only
 
-    bishop_to_fb = defaultdict(list)
-    fb_duplicates = set()
+    # Load confirmed duplicates from earlier review (these bypass hash threshold)
+    confirmed_pairs = set()
+    confirmed_csv = os.path.join(GMM_DIR, "randall_dup_confirmed.csv")
+    if os.path.exists(confirmed_csv):
+        with open(confirmed_csv, newline="") as f:
+            for row in csv.DictReader(f):
+                if row.get("is_duplicate") == "yes":
+                    fb_png = os.path.splitext(row.get("fishbase_file", ""))[0] + ".png"
+                    b_png = os.path.splitext(row.get("bishop_file", ""))[0] + ".png"
+                    if fb_png and b_png:
+                        confirmed_pairs.add((fb_png, b_png))
 
-    # Get all species directories
+    canonical_map = defaultdict(list)
+    dup_set = set()
+
     for species in _species_list:
         sp_dir = species_to_dirname(species)
         seg_dir = os.path.join(SEGMENTED_DIR, sp_dir)
@@ -198,63 +304,181 @@ def _load_duplicate_mapping():
             continue
 
         files = [f for f in os.listdir(seg_dir) if f.endswith(".png")]
-
-        # Separate Bishop and FishBase files
-        bishop_files = [f for f in files if "Bishop" in f]
-        fishbase_files = [f for f in files if "FishBase" in f and "FishBaseUser" not in f]
-
-        if not bishop_files or not fishbase_files:
+        if len(files) < 2:
             continue
 
-        # Compute hashes for this species
-        def compute_phash(filepath):
-            """Compute perceptual hash for an image."""
-            try:
-                img = cv2.imread(filepath)
-                if img is None:
-                    return None
-                img = cv2.resize(img, (16, 16))
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                avg = gray.mean()
-                return (gray > avg).flatten().tobytes()
-            except:
-                return None
+        # Group files by source
+        source_groups = defaultdict(list)
+        for f in files:
+            src = _classify_source(f)
+            source_groups[src].append(f)
 
-        # Hash all Bishop images
-        bishop_hashes = {}
-        for bf in bishop_files:
-            h = compute_phash(os.path.join(seg_dir, bf))
-            if h:
-                bishop_hashes[bf] = h
+        # Skip species with only one source
+        if len(source_groups) < 2:
+            continue
 
-        # Compare FishBase to Bishop
-        for fb in fishbase_files:
-            fb_path = os.path.join(seg_dir, fb)
-            fb_hash = compute_phash(fb_path)
-            if fb_hash is None:
-                continue
+        # Compute hashes for all files
+        hashes = {}
+        for f in files:
+            h = _compute_phash(os.path.join(seg_dir, f))
+            if h is not None:
+                hashes[f] = h
 
-            for b_file, b_hash in bishop_hashes.items():
-                # Hamming distance check - threshold 52/256 = ~20% difference
-                h1 = np.frombuffer(fb_hash, dtype=np.bool_)
-                h2 = np.frombuffer(b_hash, dtype=np.bool_)
-                dist = np.sum(h1 != h2)
+        prefix = sp_dir + "_"
 
-                if dist < 52:  # Duplicate threshold
-                    # Extract display name for FishBase file
-                    fb_display = fb
-                    prefix = sp_dir + "_"
-                    if fb_display.startswith(prefix):
-                        fb_display = fb_display[len(prefix):]
-
-                    bishop_to_fb[b_file].append({
-                        'png_name': fb,
-                        'display_name': fb_display,
+        # Process confirmed duplicate pairs first (these don't need hash check)
+        for fb_png, b_png in confirmed_pairs:
+            if fb_png in hashes and b_png in hashes:
+                src_fb = _classify_source(fb_png)
+                src_b = _classify_source(b_png)
+                pri_fb = source_priority.get(src_fb, 99)
+                pri_b = source_priority.get(src_b, 99)
+                if pri_fb < pri_b:
+                    canonical, duplicate = fb_png, b_png
+                else:
+                    canonical, duplicate = b_png, fb_png
+                if duplicate not in dup_set:
+                    dup_set.add(duplicate)
+                    h1 = np.frombuffer(hashes[canonical], dtype=np.bool_)
+                    h2 = np.frombuffer(hashes[duplicate], dtype=np.bool_)
+                    dist = int(np.sum(h1 != h2))
+                    eq_display = duplicate
+                    if eq_display.startswith(prefix):
+                        eq_display = eq_display[len(prefix):]
+                    canonical_map[canonical].append({
+                        'png_name': duplicate,
+                        'source': _classify_source(duplicate),
+                        'display_name': eq_display,
                         'hash_distance': dist,
                     })
-                    fb_duplicates.add(fb)
 
-    return dict(bishop_to_fb), fb_duplicates
+        # Pairwise cross-source comparison via perceptual hashing
+        # For each lower-priority image, find the best match in a higher-priority source
+        file_list = list(hashes.keys())
+        for f_low in file_list:
+            if f_low in dup_set:
+                continue  # Already matched via confirmed pairs
+            src_low = _classify_source(f_low)
+            pri_low = source_priority.get(src_low, 99)
+
+            best_match = None
+            best_dist = HASH_THRESHOLD + 1
+
+            for f_high in file_list:
+                if f_high == f_low or f_high in dup_set:
+                    continue
+                src_high = _classify_source(f_high)
+                pri_high = source_priority.get(src_high, 99)
+                if pri_high >= pri_low:
+                    continue  # Only match against higher-priority sources
+
+                h1 = np.frombuffer(hashes[f_high], dtype=np.bool_)
+                h2 = np.frombuffer(hashes[f_low], dtype=np.bool_)
+                dist = int(np.sum(h1 != h2))
+                if dist < best_dist:
+                    best_dist = dist
+                    best_match = f_high
+
+            if best_match is not None and best_dist <= HASH_THRESHOLD:
+                dup_set.add(f_low)
+                eq_display = f_low
+                if eq_display.startswith(prefix):
+                    eq_display = eq_display[len(prefix):]
+                canonical_map[best_match].append({
+                    'png_name': f_low,
+                    'source': _classify_source(f_low),
+                    'display_name': eq_display,
+                    'hash_distance': best_dist,
+                })
+
+    return dict(canonical_map), dup_set
+
+
+REPO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DATA_DIR = os.path.join(REPO_DIR, "data")
+
+
+def _load_photographer_data():
+    """Load photographer metadata from all available sources."""
+    data = {}
+
+    # Primary source: enriched image_metadata.csv (has ALL photographer data)
+    meta_csv = os.path.join(DATA_DIR, "image_metadata.csv")
+    if os.path.exists(meta_csv):
+        with open(meta_csv, newline="") as f:
+            for row in csv.DictReader(f):
+                fname = row.get("filename", "")
+                photographer = row.get("photographer", "").strip()
+                if fname and photographer:
+                    data[fname] = photographer
+
+    # Fallback: FishWise download manifest (in case image_metadata.csv is stale)
+    manifest = os.path.join(DATA_DIR, "fishwise", "fishwise_download_manifest.csv")
+    if os.path.exists(manifest):
+        with open(manifest, newline="") as f:
+            for row in csv.DictReader(f):
+                local_fname = row.get("local_filename", "")
+                photographer = row.get("photographer", "")
+                if local_fname and photographer and local_fname not in data:
+                    data[local_fname] = photographer
+
+    # Fallback: FishBase UserContrib metadata
+    uc_meta = os.path.join(DATA_DIR, "fishbase_usercontrib_metadata.csv")
+    if os.path.exists(uc_meta):
+        with open(uc_meta, newline="") as f:
+            for row in csv.DictReader(f):
+                fname = row.get("filename", "")
+                photographer = row.get("photographer", "")
+                if fname and photographer and fname not in data:
+                    data[fname] = photographer
+
+    # Fallback: FishBase photographer recovery CSV
+    fb_meta = os.path.join(DATA_DIR, "fishbase_photographer_metadata.csv")
+    if os.path.exists(fb_meta):
+        with open(fb_meta, newline="") as f:
+            for row in csv.DictReader(f):
+                fname = row.get("filename", "")
+                photographer = row.get("photographer", "")
+                if fname and photographer and fname not in data:
+                    data[fname] = photographer
+
+    # Fallback: iNaturalist photographer recovery CSV
+    inat_meta = os.path.join(DATA_DIR, "inaturalist_photographer_metadata.csv")
+    if os.path.exists(inat_meta):
+        with open(inat_meta, newline="") as f:
+            for row in csv.DictReader(f):
+                fname = row.get("filename", "")
+                photographer = row.get("photographer", "")
+                if fname and photographer and fname not in data:
+                    data[fname] = photographer
+
+    # Fallback: FishPix photographer recovery CSV
+    fp_meta = os.path.join(DATA_DIR, "fishpix_photographer_metadata.csv")
+    if os.path.exists(fp_meta):
+        with open(fp_meta, newline="") as f:
+            for row in csv.DictReader(f):
+                fname = row.get("filename", "")
+                photographer = row.get("photographer", "")
+                if fname and photographer and fname not in data:
+                    data[fname] = photographer
+
+    # Fallback: Bishop Museum — all Jack Randall
+    for row in _inventory:
+        if row.get("source") == "BishopMuseum" and row["filename"] not in data:
+            data[row["filename"]] = "Jack Randall"
+
+    return data
+
+
+def _load_image_metadata():
+    """Load enriched image metadata (type, quality indicators, etc.)."""
+    metadata = {}
+    csv_path = os.path.join(DATA_DIR, "image_metadata.csv")
+    if os.path.exists(csv_path):
+        with open(csv_path, newline="") as f:
+            for row in csv.DictReader(f):
+                metadata[row["filename"]] = row
+    return metadata
 
 
 def _apply_perspective_correction(img, dorsal_ventral_angle, head_tail_angle=0):
@@ -475,6 +699,8 @@ def _classify_source(filename):
     """Get image source from filename."""
     if "Bishop" in filename:
         return "Bishop"
+    elif "FishWise" in filename:
+        return "FishWise"
     elif "FishBaseUser" in filename:
         return "FBUser"
     elif "FishBase" in filename:
@@ -491,9 +717,14 @@ def _is_randall_image(filename, species=None):
 
     All Bishop images are Randall. Some FishBase images are also Randall
     (same photos uploaded to both databases, or FishBase-only Randall images).
+    FishWise images with photographer 'Jack Randall' are also Randall.
     """
     if "Bishop" in filename:
         return True
+
+    # FishWise Randall images - check photographer data
+    if "FishWise" in filename:
+        return _photographer_data.get(filename, "") == "Jack Randall"
 
     # FishBase-only Randall images (from Randall analysis)
     fishbase_randall_species = {
@@ -573,7 +804,7 @@ def _get_species_images(species, apply_defaults=True):
     all_files = {f for f in all_files if f not in _fishbase_duplicates}
 
     images = []
-    source_order = {"Bishop": 0, "FishBase": 1, "FishPix": 2, "iNat": 3, "Other": 4}
+    source_order = {"Bishop": 0, "FishBase": 1, "FishPix": 2, "FishWise": 3, "iNat": 4, "FBUser": 5, "Other": 6}
 
     for png_name in sorted(all_files):
         base = os.path.splitext(png_name)[0]
@@ -630,17 +861,40 @@ def _get_species_images(species, apply_defaults=True):
         # Check if this is a Randall image (Bishop or FishBase-only Randall)
         is_randall = _is_randall_image(png_name, species)
 
+        # Check if this image is from Miyazawa (2020) study
+        is_miyazawa = _is_miyazawa_image(orig_fname)
+
         # Get FishBase equivalent names for Bishop images (duplicates that are hidden)
         fishbase_equivalents = []
         if "Bishop" in png_name and png_name in _duplicate_mapping:
             fishbase_equivalents = [dup['display_name'] for dup in _duplicate_mapping[png_name]]
+
+        # Cross-database equivalents (generalized)
+        cross_db_equivalents = []
+        if png_name in _duplicate_mapping:
+            cross_db_equivalents = [
+                {"source": _classify_source(dup.get("png_name", "")),
+                 "name": dup["display_name"]}
+                for dup in _duplicate_mapping[png_name]
+            ]
+
+        # Photographer data
+        photographer = _photographer_data.get(orig_fname, "")
+
+        # Enriched metadata
+        meta = _image_metadata.get(orig_fname, {})
+        image_type = meta.get("image_type", "")
+        is_grayscale = meta.get("is_grayscale", "") == "yes"
+        is_lateral = meta.get("is_lateral", "") == "yes"
+        is_single_fish = meta.get("is_single_fish", "") == "yes"
+        seg_quality = meta.get("segmentation_quality", "")
 
         images.append({
             "png_name": png_name,
             "orig_fname": orig_fname,
             "display_name": display_name,
             "source": source,
-            "source_order": source_order.get(source, 4),
+            "source_order": source_order.get(source, 6),
             "has_normalized": has_normalized,
             "has_segmented": has_segmented,
             "has_oriented": has_oriented,
@@ -649,7 +903,15 @@ def _get_species_images(species, apply_defaults=True):
             "orient_warning": orient_warning,
             "is_exemplar": is_exemplar,
             "is_randall": is_randall,
+            "is_miyazawa": is_miyazawa,
             "fishbase_equivalents": fishbase_equivalents,
+            "cross_db_equivalents": cross_db_equivalents,
+            "photographer": photographer,
+            "image_type": image_type,
+            "is_grayscale": is_grayscale,
+            "is_lateral": is_lateral,
+            "is_single_fish": is_single_fish,
+            "seg_quality": seg_quality,
         })
 
     # Sort by source priority, then filename
@@ -1589,11 +1851,28 @@ REVIEW_HTML = """<!DOCTYPE html>
   .source-Bishop { background: #c8e6c9; color: #2e7d32; }
   .source-FishBase { background: #bbdefb; color: #1565c0; }
   .source-FishPix { background: #d1c4e9; color: #4527a0; }
+  .source-FishWise { background: #ffe0b2; color: #e65100; }
+  .source-FBUser { background: #f0f4c3; color: #827717; }
   .source-iNat { background: #fff9c4; color: #f57f17; }
+  .photographer-badge { display: inline-block; padding: 1px 5px; border-radius: 8px;
+                         font-size: 9px; background: #f3e5f5; color: #6a1b9a; margin-left: 2px; }
+  .type-badge { display: inline-block; padding: 1px 5px; border-radius: 8px; font-size: 9px; margin-left: 2px; }
+  .type-underwater { background: #e0f7fa; color: #006064; }
+  .type-specimen_photo { background: #efebe9; color: #4e342e; }
+  .type-illustration { background: #fce4ec; color: #880e4f; }
+  .type-photo { background: #f5f5f5; color: #616161; }
+  .quality-badges { font-size: 9px; margin-top: 2px; }
+  .quality-ok { color: #2e7d32; margin-right: 4px; }
+  .quality-warn { color: #e65100; margin-right: 4px; }
+  .cross-db-equiv { font-size: 9px; color: #666; margin-top: 2px; }
+  .equiv-label { font-weight: 500; color: #333; font-size: 9px; }
   .source-Other { background: #eee; color: #666; }
   .randall-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
                    font-size: 10px; font-weight: 600; background: #fff3e0; color: #e65100;
                    border: 1px solid #ffb74d; margin-left: 4px; }
+  .miyazawa-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
+                    font-size: 10px; font-weight: 600; background: #e3f2fd; color: #1565c0;
+                    border: 1px solid #64b5f6; margin-left: 4px; }
   .fishbase-equiv { font-size: 9px; color: #666; margin-top: 2px; font-style: italic; }
   .fishbase-equiv-label { color: #1565c0; font-weight: 500; }
   .warn-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
@@ -1717,6 +1996,15 @@ REVIEW_HTML = """<!DOCTYPE html>
         {% if im.is_randall %}
           <span class="randall-badge">Randall</span>
         {% endif %}
+        {% if im.is_miyazawa %}
+          <span class="miyazawa-badge">Miyazawa 2020</span>
+        {% endif %}
+        {% if im.photographer and im.photographer != 'Jack Randall' %}
+          <span class="photographer-badge">{{ im.photographer }}</span>
+        {% endif %}
+        {% if im.image_type %}
+          <span class="type-badge type-{{ im.image_type }}">{{ im.image_type | replace('_', ' ') }}</span>
+        {% endif %}
         {% if im.orient_warning %}
           <span class="warn-badge">Orient?</span>
         {% endif %}
@@ -1724,7 +2012,21 @@ REVIEW_HTML = """<!DOCTYPE html>
           <span class="ann-badge">{{ im.ann_badge }}</span>
         {% endif %}
       </div>
-      {% if im.fishbase_equivalents %}
+      {% if im.is_lateral or im.is_single_fish or im.is_grayscale %}
+        <div class="quality-badges">
+          {% if im.is_lateral %}<span class="quality-ok">Lateral &#10003;</span>{% endif %}
+          {% if im.is_single_fish %}<span class="quality-ok">Single &#10003;</span>{% endif %}
+          {% if im.is_grayscale %}<span class="quality-warn">B&amp;W</span>{% endif %}
+        </div>
+      {% endif %}
+      {% if im.cross_db_equivalents %}
+        <div class="cross-db-equiv">
+          <span class="equiv-label">Also in:</span>
+          {% for eq in im.cross_db_equivalents %}
+            <span class="source-badge source-{{ eq.source }}">{{ eq.source }}</span>
+          {% endfor %}
+        </div>
+      {% elif im.fishbase_equivalents %}
         <div class="fishbase-equiv">
           <span class="fishbase-equiv-label">FishBase:</span>
           {{ im.fishbase_equivalents | join(', ') }}
@@ -2909,6 +3211,7 @@ def init_app():
     global _inventory, _species_list, _annotations
     global _review_state, _gestalt_k, _exemplars, _orient_warnings, _orient_landmarks
     global _duplicate_mapping, _fishbase_duplicates
+    global _photographer_data, _image_metadata, _miyazawa_images
 
     print("Loading inventory...")
     _inventory = load_inventory()
@@ -2941,11 +3244,23 @@ def init_app():
     _orient_landmarks = _load_orient_landmarks()
     print(f"  {len(_orient_landmarks)} images with digitized landmarks")
 
-    print("Computing duplicate image mapping (Bishop <-> FishBase)...")
+    print("Loading photographer metadata...")
+    _photographer_data = _load_photographer_data()
+    print(f"  {len(_photographer_data)} images with photographer data")
+
+    print("Loading image metadata (type, quality)...")
+    _image_metadata = _load_image_metadata()
+    print(f"  {len(_image_metadata)} images with enriched metadata")
+
+    print("Computing cross-database duplicate mapping...")
     _duplicate_mapping, _fishbase_duplicates = _load_duplicate_mapping()
     n_with_dups = sum(1 for v in _duplicate_mapping.values() if v)
-    print(f"  {n_with_dups} Bishop images with FishBase duplicates")
-    print(f"  {len(_fishbase_duplicates)} FishBase images to hide (duplicates)")
+    print(f"  {n_with_dups} canonical images with cross-database duplicates")
+
+    print("Loading Miyazawa (2020) study images...")
+    _miyazawa_images = _load_miyazawa_images()
+    print(f"  {len(_miyazawa_images)} images from Miyazawa (2020) study")
+    print(f"  {len(_fishbase_duplicates)} duplicate images to hide")
 
 
 def main():
