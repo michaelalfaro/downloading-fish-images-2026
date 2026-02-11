@@ -19,7 +19,9 @@ IMAGE_DIRS = {
     "images": os.path.join(REPO_DIR, "images"),
     "images_bishop": os.path.join(REPO_DIR, "images_bishop"),
     "images_fishbase_extra": os.path.join(REPO_DIR, "images_fishbase_extra"),
+    "images_fishbase_usercontrib": os.path.join(REPO_DIR, "images_fishbase_usercontrib"),
     "images_inaturalist": os.path.join(REPO_DIR, "images_inaturalist"),
+    "images_fishwise": os.path.join(REPO_DIR, "images_fishwise"),
 }
 
 ANALYSIS_DIR = os.path.join(REPO_DIR, "analysis")
@@ -112,7 +114,7 @@ def append_annotations(new_rows, csv_path=None):
 
 def get_image_path(row):
     """Get full path for an inventory row."""
-    return os.path.join(SCRIPT_DIR, row["directory"], row["filename"])
+    return os.path.join(REPO_DIR, row["directory"], row["filename"])
 
 
 def get_images_for_species(inventory, species, annotations=None,
@@ -185,6 +187,78 @@ def lab_to_rgb_pixels(lab_pixels):
     rgb_image = lab2rgb(as_image)
     rgb_uint8 = np.clip(rgb_image * 255, 0, 255).astype(np.uint8)
     return rgb_uint8.reshape(-1, 3)
+
+
+def randalize_pixels(rgb_pixels, saturation_boost=1.15, sepia_amount=0.12,
+                     brightness_boost=1.05):
+    """Apply Randalize filter to RGB pixels (warm specimen photo style).
+
+    This normalizes image colors toward Jack Randall's specimen photo style:
+    - Slight saturation boost (more vivid colors)
+    - Warm sepia tone (removes cool underwater cast)
+    - Slight brightness increase
+
+    Args:
+        rgb_pixels: Nx3 uint8 RGB array (only non-transparent pixels)
+        saturation_boost: Saturation multiplier (default 1.15 = 15% boost)
+        sepia_amount: Sepia blend amount (default 0.12 = 12%)
+        brightness_boost: Brightness multiplier (default 1.05 = 5% boost)
+
+    Returns:
+        Nx3 uint8 RGB array with Randalize effect applied
+    """
+    # Work in float
+    rgb = rgb_pixels.astype(np.float32)
+
+    # Saturation boost (increase distance from grayscale)
+    gray = 0.299 * rgb[:, 0] + 0.587 * rgb[:, 1] + 0.114 * rgb[:, 2]
+    rgb[:, 0] = gray + (rgb[:, 0] - gray) * saturation_boost
+    rgb[:, 1] = gray + (rgb[:, 1] - gray) * saturation_boost
+    rgb[:, 2] = gray + (rgb[:, 2] - gray) * saturation_boost
+
+    # Warm sepia tone (blend toward sepia color transformation)
+    r, g, b = rgb[:, 0], rgb[:, 1], rgb[:, 2]
+    sepia_r = r * 0.393 + g * 0.769 + b * 0.189
+    sepia_g = r * 0.349 + g * 0.686 + b * 0.168
+    sepia_b = r * 0.272 + g * 0.534 + b * 0.131
+
+    rgb[:, 0] = r * (1 - sepia_amount) + sepia_r * sepia_amount
+    rgb[:, 1] = g * (1 - sepia_amount) + sepia_g * sepia_amount
+    rgb[:, 2] = b * (1 - sepia_amount) + sepia_b * sepia_amount
+
+    # Brightness boost
+    rgb *= brightness_boost
+
+    # Clamp and convert back to uint8
+    return np.clip(rgb, 0, 255).astype(np.uint8)
+
+
+def randalize_image(rgba_image):
+    """Apply Randalize filter to an RGBA image, preserving transparency.
+
+    Args:
+        rgba_image: HxWx4 uint8 RGBA array
+
+    Returns:
+        HxWx4 uint8 RGBA array with Randalize effect on non-transparent pixels
+    """
+    h, w = rgba_image.shape[:2]
+    result = rgba_image.copy()
+
+    # Get mask of non-transparent pixels
+    mask = rgba_image[:, :, 3] > 0
+
+    if np.any(mask):
+        # Extract RGB of visible pixels
+        rgb_pixels = rgba_image[mask, :3]
+
+        # Apply Randalize
+        randalized = randalize_pixels(rgb_pixels)
+
+        # Put back
+        result[mask, :3] = randalized
+
+    return result
 
 
 def all_species(inventory):

@@ -2201,16 +2201,14 @@ REVIEW_HTML = """<!DOCTYPE html>
           <div class="label oriented-label">Processed &#10003;</div>
           <img src="/image/oriented/{{ species_dirname }}/{{ im.png_name }}"
                alt="processed" loading="lazy"
-               class="{{ 'filter-randall' if im.filters.get('randall') else '' }}"
-               style="{{ 'filter: saturate(1.1) sepia(0.15) brightness(1.05);' if im.filters.get('randall') else '' }}">
+               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}">
         </div>
       {% elif im.has_normalized %}
         <div class="img-panel img-processed">
           <div class="label">Processed</div>
           <img src="/image/normalized/{{ species_dirname }}/{{ im.png_name }}"
                alt="processed" loading="lazy"
-               class="{{ 'filter-randall' if im.filters.get('randall') else '' }}"
-               style="{{ 'filter: saturate(1.1) sepia(0.15) brightness(1.05);' if im.filters.get('randall') else '' }}">
+               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}">
         </div>
       {% endif %}
       {% if not im.has_segmented and not im.has_normalized %}
@@ -2891,6 +2889,15 @@ function setViewMode(mode) {
 document.addEventListener('DOMContentLoaded', function() {
   const savedMode = localStorage.getItem('chaetview-mode') || 'both';
   setViewMode(savedMode);
+
+  // Apply Randalize filter to images that have it enabled
+  document.querySelectorAll('.img-processed img[data-has-randall="true"]').forEach(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      applyRandalizeFilter(img);
+    } else {
+      img.addEventListener('load', () => applyRandalizeFilter(img), { once: true });
+    }
+  });
 });
 
 // ══════════════════════════════════════════════════════════════
