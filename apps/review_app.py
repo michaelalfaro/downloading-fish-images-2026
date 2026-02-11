@@ -990,8 +990,25 @@ def _get_species_images(species, apply_defaults=True):
             "seg_quality": seg_quality,
         })
 
-    # Sort by source priority, then filename
-    images.sort(key=lambda x: (x["source_order"], x["png_name"]))
+    # Sort by: included first, then exemplar first, then source priority, then filename
+    # Excluded actions: exclude, alt_morph, resegment, color_correct
+    excluded_actions = {"exclude", "alt_morph", "resegment", "color_correct"}
+
+    def sort_key(x):
+        is_excluded = 1 if x["action"] in excluded_actions else 0
+        is_exemplar = 0 if x["is_exemplar"] else 1  # Exemplar first (0 before 1)
+        return (is_excluded, is_exemplar, x["source_order"], x["png_name"])
+
+    images.sort(key=sort_key)
+
+    # Add divider marker between included and excluded images
+    found_first_excluded = False
+    for im in images:
+        if im["action"] in excluded_actions and not found_first_excluded:
+            im["is_first_excluded"] = True
+            found_first_excluded = True
+        else:
+            im["is_first_excluded"] = False
 
     # Apply auto-exclude defaults if this is first visit
     if apply_defaults:
@@ -1911,8 +1928,12 @@ REVIEW_HTML = """<!DOCTYPE html>
   .card { background: white; border-radius: 8px; overflow: hidden;
           box-shadow: 0 1px 4px rgba(0,0,0,0.12); transition: box-shadow 0.2s; }
   .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-  .card.excluded { opacity: 0.4; }
+  .card.excluded { opacity: 0.5; }
   .card.fix-orient { border: 3px solid #ff9800; }
+  .excluded-divider { grid-column: 1 / -1; text-align: center; padding: 15px 0;
+                      border-top: 2px dashed #999; margin-top: 10px; }
+  .excluded-divider span { background: #f5f5f5; padding: 5px 20px; color: #666;
+                           font-weight: 500; font-size: 14px; border-radius: 4px; }
   .card.has-oriented { border: 3px solid #2196f3; background: #e3f2fd; }
   .card.alt-morph { border: 3px solid #9c27b0; }
   .card.resegment { border: 3px solid #f44336; }
@@ -2043,6 +2064,11 @@ REVIEW_HTML = """<!DOCTYPE html>
 
 <div class="grid">
 {% for im in images %}
+  {% if im.is_first_excluded %}
+  <div class="excluded-divider">
+    <span>Excluded Images</span>
+  </div>
+  {% endif %}
   <div class="card {{ 'excluded' if im.action == 'exclude' else '' }}
               {{ 'fix-orient' if im.action == 'fix_orientation' else '' }}
               {{ 'alt-morph' if im.action == 'alt_morph' else '' }}
@@ -2050,7 +2076,9 @@ REVIEW_HTML = """<!DOCTYPE html>
               {{ 'color-correct' if im.action == 'color_correct' else '' }}
               {{ 'has-oriented' if im.has_oriented else '' }}
               {{ 'is-exemplar' if im.is_exemplar else '' }}"
-       id="card-{{ loop.index0 }}">
+       id="card-{{ loop.index0 }}"
+       data-source="{{ im.source }}"
+       data-fname="{{ im.orig_fname }}">
     <div class="imgs">
       {% if im.has_normalized %}
         <div class="label">Normalized</div>
@@ -2606,7 +2634,10 @@ function toggleAction(cb) {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({filename: fname, species: SPECIES, action: sendAction})
-  }).then(r => r.json()).then(() => updateCounts());
+  }).then(r => r.json()).then(() => {
+    updateCounts();
+    reorderCards();
+  });
 }
 
 function updateCounts() {
@@ -2624,6 +2655,56 @@ function updateCounts() {
   document.getElementById('nAltMorph').textContent = nAlt;
   document.getElementById('nResegment').textContent = nReseg;
   document.getElementById('nColorCorrect').textContent = nColor;
+}
+
+function reorderCards() {
+  const grid = document.querySelector('.grid');
+  const cards = Array.from(grid.querySelectorAll('.card'));
+  const divider = grid.querySelector('.excluded-divider');
+
+  // Source priority order
+  const sourceOrder = {Bishop: 0, FishBase: 1, FishPix: 2, FishWise: 3, iNat: 4, FBUser: 5, Other: 6};
+
+  // Sort cards
+  cards.sort((a, b) => {
+    const aExcluded = a.classList.contains('excluded') || a.classList.contains('alt-morph') ||
+                      a.classList.contains('resegment') || a.classList.contains('color-correct');
+    const bExcluded = b.classList.contains('excluded') || b.classList.contains('alt-morph') ||
+                      b.classList.contains('resegment') || b.classList.contains('color-correct');
+    const aExemplar = a.classList.contains('is-exemplar');
+    const bExemplar = b.classList.contains('is-exemplar');
+    const aSource = a.dataset.source || 'Other';
+    const bSource = b.dataset.source || 'Other';
+
+    // Excluded status (included first)
+    if (aExcluded !== bExcluded) return aExcluded ? 1 : -1;
+    // Exemplar first
+    if (aExemplar !== bExemplar) return aExemplar ? -1 : 1;
+    // Source priority
+    const aOrder = sourceOrder[aSource] ?? 6;
+    const bOrder = sourceOrder[bSource] ?? 6;
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    // Filename
+    return (a.dataset.fname || '').localeCompare(b.dataset.fname || '');
+  });
+
+  // Remove divider if exists
+  if (divider) divider.remove();
+
+  // Re-append cards in sorted order, adding divider before first excluded
+  let addedDivider = false;
+  cards.forEach(card => {
+    const isExcluded = card.classList.contains('excluded') || card.classList.contains('alt-morph') ||
+                       card.classList.contains('resegment') || card.classList.contains('color-correct');
+    if (isExcluded && !addedDivider) {
+      const newDivider = document.createElement('div');
+      newDivider.className = 'excluded-divider';
+      newDivider.innerHTML = '<span>Excluded Images</span>';
+      grid.appendChild(newDivider);
+      addedDivider = true;
+    }
+    grid.appendChild(card);
+  });
 }
 
 function setExemplar(radio) {
