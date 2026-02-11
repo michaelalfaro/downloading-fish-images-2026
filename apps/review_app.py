@@ -1979,17 +1979,43 @@ REVIEW_HTML = """<!DOCTYPE html>
                 font-size: 10px; background: #ffcdd2; color: #c62828; margin-top: 2px; }
   .ann-badge { display: inline-block; padding: 1px 6px; border-radius: 8px;
                font-size: 10px; background: #ffe0b2; color: #e65100; margin-top: 2px; }
-  .card .actions { padding: 6px 10px 10px; display: flex; flex-direction: column; gap: 4px; }
-  .card .actions label { font-size: 12px; cursor: pointer; display: flex;
-                         align-items: center; gap: 6px; }
-  .card .actions input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
-  .card .actions input[type="radio"] { width: 15px; height: 15px; cursor: pointer; }
+  .card .actions { padding: 6px 10px 10px; display: flex; gap: 8px; }
+  .action-col { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .action-col-header { font-size: 10px; font-weight: 600; color: #666;
+                       text-transform: uppercase; margin-bottom: 2px;
+                       padding-bottom: 2px; border-bottom: 1px solid #ddd; }
+  .action-col.exclude-col .action-col-header { color: #c62828; }
+  .action-col.include-col .action-col-header { color: #2e7d32; }
+  .card .actions label { font-size: 11px; cursor: pointer; display: flex;
+                         align-items: center; gap: 5px; }
+  .card .actions input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
+  .card .actions input[type="radio"] { width: 14px; height: 14px; cursor: pointer; }
+  .filter-btn { background: #e8f5e9; border: 1px solid #81c784; color: #2e7d32;
+                padding: 2px 6px; border-radius: 3px; font-size: 10px; cursor: pointer; }
+  .filter-btn:hover { background: #c8e6c9; }
+  .filter-btn.active { background: #4caf50; color: white; border-color: #4caf50; }
   .exemplar-badge { background: #4caf50; color: white; padding: 2px 6px; border-radius: 4px;
                     font-size: 10px; font-weight: bold; display: inline-block; margin-left: 4px; }
   .card.is-exemplar { border: 3px solid #4caf50; }
   .card.is-exemplar .info { background: #e8f5e9; }
   .not-norm { font-size: 10px; color: #999; font-style: italic; text-align: center;
               padding: 4px; }
+
+  /* View toggle buttons */
+  .view-toggle-group { display: flex; gap: 4px; align-items: center; }
+  .view-toggle-group label { font-size: 14px; font-weight: 500; margin-right: 8px; }
+  .view-btn { padding: 5px 12px; font-size: 12px; border: 1px solid #ccc;
+              background: #f5f5f5; border-radius: 4px; cursor: pointer;
+              transition: all 0.15s; }
+  .view-btn:hover { background: #e0e0e0; }
+  .view-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+  /* Image display modes */
+  .card .imgs .img-panel { display: block; }
+  .card .imgs .img-panel.hidden { display: none; }
+  body.view-original .card .imgs .img-processed { display: none; }
+  body.view-processed .card .imgs .img-original { display: none; }
+  body.view-both .card .imgs .img-panel { display: block; }
 
   .footer { background: white; padding: 16px 20px; border-top: 1px solid #ccc;
             display: flex; gap: 16px; align-items: center; position: sticky;
@@ -2051,6 +2077,12 @@ REVIEW_HTML = """<!DOCTYPE html>
     <input type="text" id="notes" value="{{ notes }}" placeholder="Optional notes..."
            onchange="saveGestaltK()">
   </label>
+  <div class="view-toggle-group">
+    <label>View:</label>
+    <button class="view-btn" data-view="original" onclick="setViewMode('original')">Original</button>
+    <button class="view-btn active" data-view="both" onclick="setViewMode('both')">Both</button>
+    <button class="view-btn" data-view="processed" onclick="setViewMode('processed')">Processed</button>
+  </div>
   <div class="status-badge">
     {% if status == 'reviewed' %}
       <span class="badge badge-reviewed">Reviewed</span>
@@ -2080,22 +2112,28 @@ REVIEW_HTML = """<!DOCTYPE html>
        data-source="{{ im.source }}"
        data-fname="{{ im.orig_fname }}">
     <div class="imgs">
-      {% if im.has_normalized %}
-        <div class="label">Normalized</div>
-        <img src="/image/normalized/{{ species_dirname }}/{{ im.png_name }}"
-             alt="norm" loading="lazy">
+      {% if im.has_segmented %}
+        <div class="img-panel img-original">
+          <div class="label">Original</div>
+          <img src="/image/segmented/{{ species_dirname }}/{{ im.png_name }}"
+               alt="original" loading="lazy">
+        </div>
       {% endif %}
       {% if im.has_oriented %}
-        <div class="label oriented-label">Oriented &#10003;</div>
-        <img src="/image/oriented/{{ species_dirname }}/{{ im.png_name }}"
-             alt="oriented" loading="lazy">
-      {% elif im.has_segmented %}
-        <div class="label">Segmented</div>
-        <img src="/image/segmented/{{ species_dirname }}/{{ im.png_name }}"
-             alt="seg" loading="lazy">
+        <div class="img-panel img-processed">
+          <div class="label oriented-label">Processed &#10003;</div>
+          <img src="/image/oriented/{{ species_dirname }}/{{ im.png_name }}"
+               alt="processed" loading="lazy">
+        </div>
+      {% elif im.has_normalized %}
+        <div class="img-panel img-processed">
+          <div class="label">Processed</div>
+          <img src="/image/normalized/{{ species_dirname }}/{{ im.png_name }}"
+               alt="processed" loading="lazy">
+        </div>
       {% endif %}
-      {% if not im.has_normalized %}
-        <div class="not-norm">Not normalized (iNat excluded)</div>
+      {% if not im.has_segmented and not im.has_normalized %}
+        <div class="not-norm">Not processed (iNat excluded)</div>
       {% endif %}
     </div>
     <div class="info">
@@ -2143,46 +2181,56 @@ REVIEW_HTML = """<!DOCTYPE html>
       {% endif %}
     </div>
     <div class="actions">
-      <label>
-        <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="exclude"
-               {{ 'checked' if im.action == 'exclude' else '' }}
-               onchange="toggleAction(this)">
-        Exclude
-      </label>
-      <label>
-        <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="fix_orientation"
-               data-png="{{ im.png_name }}"
-               {{ 'checked' if im.action == 'fix_orientation' else '' }}
-               onchange="handleFixOrientation(this)">
-        Fix Orient
-      </label>
-      <label>
-        <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="alt_morph"
-               {{ 'checked' if im.action == 'alt_morph' else '' }}
-               onchange="toggleAction(this)">
-        Alt Morph
-      </label>
-      <label>
-        <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="resegment"
-               data-png="{{ im.png_name }}"
-               {{ 'checked' if im.action == 'resegment' else '' }}
-               onchange="toggleAction(this)">
-        Resegment
-      </label>
-      <label>
-        <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="color_correct"
-               {{ 'checked' if im.action == 'color_correct' else '' }}
-               onchange="toggleAction(this)">
-        Color Fix
-      </label>
-      <hr style="margin: 4px 0; border: none; border-top: 1px solid #ddd;">
-      <label style="color: #4caf50; font-weight: 600;">
-        <input type="radio" name="exemplar" data-fname="{{ im.orig_fname }}"
-               data-png="{{ im.png_name }}" data-source="{{ im.source }}"
-               {{ 'checked' if im.is_exemplar else '' }}
-               onchange="setExemplar(this)">
-        &#9733; Exemplar
-      </label>
+      <div class="action-col exclude-col">
+        <div class="action-col-header">Exclude</div>
+        <label>
+          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="exclude"
+                 {{ 'checked' if im.action == 'exclude' else '' }}
+                 onchange="toggleAction(this)">
+          Exclude
+        </label>
+        <label>
+          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="alt_morph"
+                 {{ 'checked' if im.action == 'alt_morph' else '' }}
+                 onchange="toggleAction(this)">
+          Alt Morph
+        </label>
+        <label>
+          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="resegment"
+                 data-png="{{ im.png_name }}"
+                 {{ 'checked' if im.action == 'resegment' else '' }}
+                 onchange="toggleAction(this)">
+          Resegment
+        </label>
+        <label>
+          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="color_correct"
+                 {{ 'checked' if im.action == 'color_correct' else '' }}
+                 onchange="toggleAction(this)">
+          Color Fix
+        </label>
+      </div>
+      <div class="action-col include-col">
+        <div class="action-col-header">Include</div>
+        <label>
+          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="fix_orientation"
+                 data-png="{{ im.png_name }}"
+                 {{ 'checked' if im.action == 'fix_orientation' else '' }}
+                 onchange="handleFixOrientation(this)">
+          Reorient
+        </label>
+        <label style="color: #4caf50; font-weight: 600;">
+          <input type="radio" name="exemplar" data-fname="{{ im.orig_fname }}"
+                 data-png="{{ im.png_name }}" data-source="{{ im.source }}"
+                 {{ 'checked' if im.is_exemplar else '' }}
+                 onchange="setExemplar(this)">
+          ★ Exemplar
+        </label>
+        <button class="filter-btn {{ 'active' if im.is_randall else '' }}"
+                data-fname="{{ im.orig_fname }}" data-filter="randall"
+                onclick="toggleFilter(this)" title="Normalize toward Randall reference">
+          Randall
+        </button>
+      </div>
     </div>
   </div>
 {% endfor %}
@@ -2732,6 +2780,49 @@ function setExemplar(radio) {
   }).then(r => r.json()).then(() => {
     document.getElementById('exemplarStatus').innerHTML = '&#9733; Exemplar set';
   });
+}
+
+// ══════════════════════════════════════════════════════════════
+// View Mode Toggle
+// ══════════════════════════════════════════════════════════════
+
+function setViewMode(mode) {
+  // Remove all view classes
+  document.body.classList.remove('view-original', 'view-processed', 'view-both');
+  // Add selected view class
+  document.body.classList.add('view-' + mode);
+
+  // Update button active states
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === mode);
+  });
+
+  // Save preference (optional - persists across page loads)
+  localStorage.setItem('chaetview-mode', mode);
+}
+
+// Initialize view mode from localStorage or default to 'both'
+document.addEventListener('DOMContentLoaded', function() {
+  const savedMode = localStorage.getItem('chaetview-mode') || 'both';
+  setViewMode(savedMode);
+});
+
+// ══════════════════════════════════════════════════════════════
+// Filter Buttons (Randall, etc.)
+// ══════════════════════════════════════════════════════════════
+
+function toggleFilter(btn) {
+  const fname = btn.dataset.fname;
+  const filter = btn.dataset.filter;
+  const isActive = btn.classList.contains('active');
+
+  // Toggle the button state
+  btn.classList.toggle('active');
+
+  // For now, Randall filter is just a visual indicator
+  // In the future, this could trigger actual normalization processing
+  // Save filter state to server (placeholder - implement if needed)
+  console.log(`Filter ${filter} ${isActive ? 'disabled' : 'enabled'} for ${fname}`);
 }
 
 let gestaltTimer = null;
