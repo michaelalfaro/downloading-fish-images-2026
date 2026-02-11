@@ -8,6 +8,13 @@ This module provides a centralized way to track:
 - Quality attributes (is_randall, is_underwater, etc.)
 - Processing status (segmented, normalized, oriented)
 
+IMPORTANT DISTINCTION:
+- "source" = the DATABASE where an image comes from (FishBase, FishPix, etc.)
+- "in_miyazawa_2020" = whether the image was used in the Miyazawa (2020) study
+  Miyazawa (2020) used a SUBSET of images from FishBase AND FishPix.
+  For Chaetodontidae: 58 from FishBase + 73 from FishPix = 131 total.
+  But FishPix alone has 4903 Chaetodontidae images!
+
 The metadata is stored in data/image_metadata.csv and can be loaded
 by the visualizer and analysis scripts.
 

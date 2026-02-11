@@ -53,9 +53,13 @@ USER_AGENT = (
 )
 
 # FishPix base URLs
-FISHPIX_SEARCH_URL = "https://fishpix.kahaku.go.jp/fishimage-e/search_result.php"
+# Search uses GET: /fishimage-e/search?FAMILY=Chaetodontidae&FAMILY_OPT=0&START=1
+FISHPIX_SEARCH_URL = "https://fishpix.kahaku.go.jp/fishimage-e/search"
 FISHPIX_DETAIL_URL = "https://fishpix.kahaku.go.jp/fishimage-e/detail.php"
 FISHPIX_IMAGE_BASE = "https://fishpix.kahaku.go.jp/photos"
+
+# Results per page (FishPix default)
+RESULTS_PER_PAGE = 20
 
 
 # ---------- Miyazawa data loader ----------
@@ -95,61 +99,82 @@ def load_miyazawa_fishpix_images(xlsx_path, family_filter=None):
 
 
 # ---------- URL construction ----------
-def fishpix_image_url(photo_id, ext="jpg"):
+def fishpix_image_url(photo_id, nr_prefix=None, ext="jpg"):
     """Construct FishPix image URL from photo ID.
 
-    Photo IDs follow pattern: 12345AF.jpg
+    Photo IDs follow pattern: 12345 or 12345AF
+    Thumbnails: NR0012/12345AI.jpg (I = thumbnail)
+    Full images: NR0012/12345AF.jpg (F = full)
     URL: https://fishpix.kahaku.go.jp/photos/NR0012/12345AF.jpg
+
+    Args:
+        photo_id: Numeric photo ID (e.g., "12345" or "12345AF")
+        nr_prefix: If known, the NR prefix (e.g., "NR0012")
+        ext: File extension (default: jpg)
+
+    Returns tuple: (url, filename)
     """
-    # Extract numeric ID
-    numeric_id = int(re.sub(r'\D', '', str(photo_id).split('AF')[0]))
-    prefix = f"NR{numeric_id // 1000:04d}"
+    # Extract numeric ID, stripping any suffixes like AF
+    numeric_str = re.sub(r'[^\d]', '', str(photo_id))
+    numeric_id = int(numeric_str) if numeric_str else 0
+
+    # Use provided prefix or calculate
+    if nr_prefix:
+        prefix = nr_prefix
+    else:
+        prefix = f"NR{numeric_id // 1000:04d}"
+
     filename = f"{numeric_id}AF.{ext}"
-    return f"{FISHPIX_IMAGE_BASE}/{prefix}/{filename}", filename
+    url = f"{FISHPIX_IMAGE_BASE}/{prefix}/{filename}"
+    return url, filename
 
 
 def parse_fishpix_search_results(html_content):
     """Parse FishPix search results HTML to extract image info.
 
-    Note: FishPix uses a table-based layout. We look for patterns like:
-    - Species names in links to detail.php
-    - Image IDs in thumbnail URLs
-    - Photographer info in text
+    FishPix search results have this structure for each image:
+    - Thumbnail: ../photos/NR0010/10004AI.jpg (AI = thumbnail)
+    - Full image: ../photos/NR0010/10004AF.jpg (AF = full)
+    - Catalog: [KPM-NR 10004]
+    - Species: Chaetodon vagabundus Linnaeus, 1758 (plain text after image)
+
+    Returns list of dicts with pic_id, nr_prefix, species.
     """
     results = []
 
-    # Pattern for detail page links with species info
-    # <a href="detail.php?...>Species Name</a>
-    detail_pattern = re.compile(
-        r'detail\.php\?[^"]*PIC_ID=(\d+)[^"]*"[^>]*>([^<]+)</a>',
-        re.IGNORECASE
-    )
-
-    # Pattern for thumbnail images that contain photo IDs
-    # src="/fishimage-e/thumbnail.php?NR=NR0012&PIC=12345AF"
+    # Pattern to find thumbnail image references
+    # ../photos/NR0010/10004AI.jpg
     thumb_pattern = re.compile(
-        r'thumbnail\.php\?NR=(NR\d+)&(?:amp;)?PIC=(\d+AF)',
+        r'\.\./photos/(NR\d{4})/(\d+)AI\.jpg',
         re.IGNORECASE
     )
 
-    # Pattern for species name in various formats
-    species_pattern = re.compile(
-        r'<[^>]*>([A-Z][a-z]+\s+[a-z]+(?:\s+[a-z]+)?)</[^>]*>',
-        re.MULTILINE
-    )
-
-    # Find all thumbnails and associated data
+    # Find all thumbnails and extract associated species
     for match in thumb_pattern.finditer(html_content):
-        nr_prefix = match.group(1)
-        pic_id = match.group(2)
+        nr_prefix = match.group(1)  # e.g., NR0010
+        pic_id = match.group(2)      # e.g., 10004
 
-        # Look for species name nearby in the HTML
-        start_pos = max(0, match.start() - 500)
-        end_pos = min(len(html_content), match.end() + 500)
-        context = html_content[start_pos:end_pos]
+        # Look for species name AFTER this thumbnail (within ~500 chars)
+        # Species appears as plain text like "Chaetodon vagabundus Linnaeus, 1758"
+        # or "Heniochus chrysostomus Cuvier, 1831"
+        after_pos = match.end()
+        end_pos = min(len(html_content), after_pos + 600)
+        context_after = html_content[after_pos:end_pos]
 
-        species_match = species_pattern.search(context)
-        species = species_match.group(1) if species_match else "Unknown"
+        # Species pattern: Genus species Author, Year
+        # Capture just Genus species (first two words)
+        species_pattern = re.compile(
+            r'([A-Z][a-z]+)\s+([a-z]+)\s+[A-Z][a-z]+',
+            re.MULTILINE
+        )
+        species_match = species_pattern.search(context_after)
+
+        if species_match:
+            genus = species_match.group(1)
+            epithet = species_match.group(2)
+            species = f"{genus} {epithet}"
+        else:
+            species = "Unknown"
 
         results.append({
             'pic_id': pic_id,
@@ -158,6 +183,19 @@ def parse_fishpix_search_results(html_content):
         })
 
     return results
+
+
+def extract_total_hits(html_content):
+    """Extract total number of hits from search results page.
+
+    FishPix shows "4903 hits" or similar at top of results.
+    """
+    # Pattern: "4903 hits" or "4,903 hits"
+    hits_pattern = re.compile(r'([\d,]+)\s*hits?', re.IGNORECASE)
+    match = hits_pattern.search(html_content)
+    if match:
+        return int(match.group(1).replace(',', ''))
+    return 0
 
 
 def fetch_url(url, timeout=30):
@@ -170,12 +208,14 @@ def fetch_url(url, timeout=30):
         return None
 
 
-def search_fishpix_by_family(family_name, cache_file=None):
+def search_fishpix_by_family(family_name, cache_file=None, delay=0.5):
     """Search FishPix for all images in a family.
 
-    FishPix search form submits to search_result.php with parameters:
-    - FAMILY: family name
-    - Or GENUS/SPECIES for more specific searches
+    FishPix search uses GET requests:
+    https://fishpix.kahaku.go.jp/fishimage-e/search?FAMILY=Chaetodontidae&FAMILY_OPT=0&START=1
+
+    Pagination via START parameter (1, 21, 41, 61, ...)
+    Returns 20 results per page.
 
     Returns list of image records.
     """
@@ -187,77 +227,56 @@ def search_fishpix_by_family(family_name, cache_file=None):
 
     print(f"  Searching FishPix for family: {family_name}")
 
-    # Try multiple search approaches
     all_results = []
+    total_hits = 0
 
-    # Approach 1: Direct family search via POST
-    search_params = {
-        'FAMILY': family_name,
-        'GENUS': '',
-        'SPECIES': '',
-        'AUTHOR': '',
-        'Std_Name': '',
-        'JP_Name': '',
-        'Phot_Name': '',
-        'search': 'Search',
-    }
+    # First request to get total count
+    first_url = f"{FISHPIX_SEARCH_URL}?FAMILY={quote(family_name)}&FAMILY_OPT=0&START=1"
+    html = fetch_url(first_url)
 
-    # FishPix uses POST for search
-    try:
-        data = urlencode(search_params).encode('utf-8')
-        req = urllib.request.Request(
-            FISHPIX_SEARCH_URL,
-            data=data,
-            headers={
-                "User-Agent": USER_AGENT,
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
-        )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            html = resp.read().decode('utf-8', errors='replace')
+    if not html:
+        print(f"  ERROR: Could not fetch search results")
+        return []
 
-            # Check if we got results
-            if 'No data found' in html or 'not found' in html.lower():
-                print(f"  No results found for family {family_name}")
-            else:
-                results = parse_fishpix_search_results(html)
-                all_results.extend(results)
-                print(f"  Found {len(results)} images in initial search")
+    # Check for no results
+    if 'No data found' in html or '0 hits' in html.lower():
+        print(f"  No results found for family {family_name}")
+        return []
 
-                # Check for pagination
-                # FishPix shows ~50 results per page
-                page_pattern = re.compile(r'page=(\d+)')
-                pages = set(int(m.group(1)) for m in page_pattern.finditer(html))
-                if pages:
-                    max_page = max(pages)
-                    print(f"  Detected {max_page} pages of results")
+    # Extract total hits
+    total_hits = extract_total_hits(html)
+    print(f"  Total images available: {total_hits}")
 
-                    for page in range(2, max_page + 1):
-                        time.sleep(1)  # Be polite
-                        page_params = search_params.copy()
-                        page_params['page'] = page
-                        data = urlencode(page_params).encode('utf-8')
-                        req = urllib.request.Request(
-                            FISHPIX_SEARCH_URL,
-                            data=data,
-                            headers={
-                                "User-Agent": USER_AGENT,
-                                "Content-Type": "application/x-www-form-urlencoded",
-                            }
-                        )
-                        try:
-                            with urllib.request.urlopen(req, timeout=60) as resp2:
-                                html2 = resp2.read().decode('utf-8', errors='replace')
-                                page_results = parse_fishpix_search_results(html2)
-                                all_results.extend(page_results)
-                                print(f"    Page {page}: {len(page_results)} images")
-                        except Exception as e:
-                            print(f"    Page {page} failed: {e}")
+    # Parse first page
+    results = parse_fishpix_search_results(html)
+    all_results.extend(results)
+    print(f"  Page 1: {len(results)} images")
 
-    except Exception as e:
-        print(f"  Search failed: {e}")
+    # Calculate number of pages needed
+    if total_hits > RESULTS_PER_PAGE:
+        n_pages = (total_hits + RESULTS_PER_PAGE - 1) // RESULTS_PER_PAGE
+        print(f"  Need to fetch {n_pages} pages total")
 
-    # Deduplicate by pic_id
+        # Fetch remaining pages
+        for page in range(2, n_pages + 1):
+            start = (page - 1) * RESULTS_PER_PAGE + 1
+            page_url = f"{FISHPIX_SEARCH_URL}?FAMILY={quote(family_name)}&FAMILY_OPT=0&START={start}"
+
+            time.sleep(delay)  # Be polite to server
+
+            html = fetch_url(page_url)
+            if not html:
+                print(f"    Page {page} (START={start}): FAILED")
+                continue
+
+            page_results = parse_fishpix_search_results(html)
+            all_results.extend(page_results)
+
+            # Progress update every 10 pages
+            if page % 10 == 0 or page == n_pages:
+                print(f"    Pages 1-{page}: {len(all_results)} images collected")
+
+    # Deduplicate by pic_id (in case of any overlap)
     seen = set()
     unique_results = []
     for r in all_results:
@@ -265,12 +284,14 @@ def search_fishpix_by_family(family_name, cache_file=None):
             seen.add(r['pic_id'])
             unique_results.append(r)
 
+    print(f"  Total unique images: {len(unique_results)}")
+
     # Save to cache
     if cache_file:
         os.makedirs(os.path.dirname(cache_file), exist_ok=True)
         with open(cache_file, 'w') as f:
             json.dump(unique_results, f, indent=2)
-        print(f"  Cached {len(unique_results)} results to {cache_file}")
+        print(f"  Cached results to {cache_file}")
 
     return unique_results
 
@@ -369,7 +390,8 @@ def main():
         # Mark Miyazawa images
         for result in search_results:
             pic_id = result['pic_id']
-            img_file = f"{pic_id}.jpg"
+            # Miyazawa filenames are like "12345AF.jpg"
+            img_file = f"{pic_id}AF.jpg"
             result['in_miyazawa'] = img_file in miyazawa_images
             if result['in_miyazawa']:
                 # Use species from Miyazawa if available (more reliable)
@@ -416,8 +438,9 @@ def main():
         pic_id = result['pic_id']
         species = result.get('species', 'Unknown')
         in_miyazawa = result.get('in_miyazawa', False)
+        nr_prefix = result.get('nr_prefix')  # Use if available from search
 
-        url, original_filename = fishpix_image_url(pic_id)
+        url, original_filename = fishpix_image_url(pic_id, nr_prefix=nr_prefix)
         local_filename = safe_filename(species, pic_id)
         dest_path = os.path.join(image_dir, local_filename)
 
