@@ -798,7 +798,9 @@ def _is_randall_image(filename, species=None):
 
     # FishWise Randall images - check photographer data
     if "FishWise" in filename:
-        return _photographer_data.get(filename, "") == "Jack Randall"
+        # Photographer data is keyed by .jpg, but filename may be .png
+        jpg_name = os.path.splitext(filename)[0] + ".jpg"
+        return _photographer_data.get(jpg_name, "") == "Jack Randall"
 
     # FishBase-only Randall images (from Randall analysis)
     fishbase_randall_species = {
