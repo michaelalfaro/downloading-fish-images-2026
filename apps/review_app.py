@@ -2908,17 +2908,14 @@ function toggleFilter(btn) {
   btn.classList.toggle('active');
   const nowActive = btn.classList.contains('active');
 
-  // Apply visual filter effect to the processed image
+  // Apply visual filter effect to the processed image (preserving transparency)
   const processedImg = card.querySelector('.img-processed img');
   if (processedImg) {
     if (filter === 'randall') {
-      // Randalize effect: warm tones, slight saturation boost (specimen photo style)
       if (nowActive) {
-        processedImg.style.filter = 'saturate(1.1) sepia(0.15) brightness(1.05)';
-        processedImg.classList.add('filter-randall');
+        applyRandalizeFilter(processedImg);
       } else {
-        processedImg.style.filter = '';
-        processedImg.classList.remove('filter-randall');
+        removeRandalizeFilter(processedImg);
       }
     }
   }
@@ -2940,6 +2937,69 @@ function toggleFilter(btn) {
   }).catch(err => {
     console.error('Filter save error:', err);
   });
+}
+
+// Apply Randalize filter using canvas (preserves transparency)
+function applyRandalizeFilter(img) {
+  // Store original src if not already stored
+  if (!img.dataset.originalSrc) {
+    img.dataset.originalSrc = img.src;
+  }
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const processImage = () => {
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    ctx.drawImage(img, 0, 0);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    // Apply Randalize: warm tones, saturation boost - only on non-transparent pixels
+    for (let i = 0; i < data.length; i += 4) {
+      const alpha = data[i + 3];
+      if (alpha > 0) {
+        let r = data[i], g = data[i + 1], b = data[i + 2];
+
+        // Saturation boost
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        r = gray + (r - gray) * 1.15;
+        g = gray + (g - gray) * 1.15;
+        b = gray + (b - gray) * 1.15;
+
+        // Warm sepia tone
+        const sep = 0.12;
+        const newR = r * (1 - sep) + (r * 0.393 + g * 0.769 + b * 0.189) * sep;
+        const newG = g * (1 - sep) + (r * 0.349 + g * 0.686 + b * 0.168) * sep;
+        const newB = b * (1 - sep) + (r * 0.272 + g * 0.534 + b * 0.131) * sep;
+
+        // Brightness boost
+        data[i] = Math.min(255, Math.max(0, newR * 1.05));
+        data[i + 1] = Math.min(255, Math.max(0, newG * 1.05));
+        data[i + 2] = Math.min(255, Math.max(0, newB * 1.05));
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    img.src = canvas.toDataURL('image/png');
+    img.classList.add('filter-randall');
+  };
+
+  if (img.complete && img.naturalWidth > 0) {
+    processImage();
+  } else {
+    img.onload = processImage;
+  }
+}
+
+// Remove Randalize filter (restore original)
+function removeRandalizeFilter(img) {
+  if (img.dataset.originalSrc) {
+    img.src = img.dataset.originalSrc;
+    img.classList.remove('filter-randall');
+  }
 }
 
 let gestaltTimer = null;
