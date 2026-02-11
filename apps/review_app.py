@@ -65,6 +65,7 @@ _initialized_species = set() # species that have had iNat defaults applied
 _orient_landmarks = {}       # filename -> {mouth_x, mouth_y, tail_x, tail_y, angle}
 _duplicate_mapping = {}      # bishop_png -> list of equivalent fishbase_pngs
 _fishbase_duplicates = set() # set of fishbase_pngs that are duplicates of bishop images
+_phash_cache = {}            # filepath -> hash bytes (cached perceptual hashes)
 _photographer_data = {}      # filename -> photographer name
 _image_metadata = {}         # filename -> metadata dict (image_type, is_grayscale, etc.)
 _miyazawa_images = {}        # img_file -> species (from Miyazawa 2020 study)
@@ -175,8 +176,47 @@ def _save_orient_landmarks():
             w.writerow(row)
 
 
+PHASH_CACHE_FILE = os.path.join(GMM_DIR, "phash_cache.pkl")
+
+
+def _load_phash_cache():
+    """Load cached perceptual hashes from disk."""
+    if os.path.exists(PHASH_CACHE_FILE):
+        try:
+            import pickle
+            with open(PHASH_CACHE_FILE, "rb") as f:
+                return pickle.load(f)
+        except Exception as e:
+            print(f"  Warning: Could not load phash cache: {e}")
+    return {}
+
+
+def _save_phash_cache():
+    """Save perceptual hash cache to disk."""
+    try:
+        import pickle
+        ensure_dir(os.path.dirname(PHASH_CACHE_FILE))
+        with open(PHASH_CACHE_FILE, "wb") as f:
+            pickle.dump(_phash_cache, f)
+    except Exception as e:
+        print(f"  Warning: Could not save phash cache: {e}")
+
+
 def _compute_phash(filepath):
-    """Compute perceptual hash for an image."""
+    """Compute perceptual hash for an image, using cache when available."""
+    global _phash_cache
+
+    # Check cache first (keyed by filepath and mtime)
+    try:
+        mtime = os.path.getmtime(filepath)
+        cache_key = (filepath, mtime)
+
+        if cache_key in _phash_cache:
+            return _phash_cache[cache_key]
+    except Exception:
+        cache_key = None
+
+    # Compute hash
     try:
         img = cv2.imread(filepath)
         if img is None:
@@ -184,7 +224,13 @@ def _compute_phash(filepath):
         img = cv2.resize(img, (16, 16))
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         avg = gray.mean()
-        return (gray > avg).flatten().tobytes()
+        phash = (gray > avg).flatten().tobytes()
+
+        # Cache it
+        if cache_key is not None:
+            _phash_cache[cache_key] = phash
+
+        return phash
     except Exception:
         return None
 
@@ -292,6 +338,19 @@ def _load_duplicate_mapping():
                     b_png = os.path.splitext(row.get("bishop_file", ""))[0] + ".png"
                     if fb_png and b_png:
                         confirmed_pairs.add((fb_png, b_png))
+
+    # Load FishWise Randall duplicates (Bishop <-> FishWise)
+    fw_randall_csv = os.path.join(DATA_DIR, "fishwise_randall_to_exclude.csv")
+    if os.path.exists(fw_randall_csv):
+        with open(fw_randall_csv, newline="") as f:
+            for row in csv.DictReader(f):
+                fw_file = row.get("fishwise_file", "")
+                bishop_file = row.get("duplicate_of_bishop", "")
+                if fw_file and bishop_file:
+                    # Convert to PNG names (segmented images)
+                    fw_png = os.path.splitext(fw_file)[0] + ".png"
+                    b_png = os.path.splitext(bishop_file)[0] + ".png"
+                    confirmed_pairs.add((fw_png, b_png))
 
     canonical_map = defaultdict(list)
     dup_set = set()
@@ -461,6 +520,21 @@ def _load_photographer_data():
                 photographer = row.get("photographer", "")
                 if fname and photographer and fname not in data:
                     data[fname] = photographer
+
+    # FishWise attributions (includes Jack Randall photos)
+    fw_attr = os.path.join(REPO_DIR, "fishwise_attributions", "attributions.csv")
+    if os.path.exists(fw_attr):
+        with open(fw_attr, newline="") as f:
+            for row in csv.DictReader(f):
+                species = row.get("species", "")
+                photographer = row.get("photographer", "")
+                fw_filename = row.get("filename", "")  # e.g., "000669F000024W000002.jpg"
+                if species and photographer and fw_filename:
+                    # Convert to local filename format: Species_name_FishWise_ID.jpg
+                    fw_id = fw_filename.replace(".jpg", "")
+                    local_fname = f"{species.replace(' ', '_')}_FishWise_{fw_id}.jpg"
+                    if local_fname not in data:
+                        data[local_fname] = photographer
 
     # Fallback: Bishop Museum — all Jack Randall
     for row in _inventory:
@@ -1017,6 +1091,7 @@ def review(species_dirname):
     n_fix = sum(1 for im in images if im["action"] == "fix_orientation")
     n_alt_morph = sum(1 for im in images if im["action"] == "alt_morph")
     n_resegment = sum(1 for im in images if im["action"] == "resegment")
+    n_color_correct = sum(1 for im in images if im["action"] == "color_correct")
     has_exemplar = species in _exemplars
 
     return render_template_string(REVIEW_HTML,
@@ -1034,6 +1109,7 @@ def review(species_dirname):
                                   n_fix=n_fix,
                                   n_alt_morph=n_alt_morph,
                                   n_resegment=n_resegment,
+                                  n_color_correct=n_color_correct,
                                   has_exemplar=has_exemplar)
 
 
@@ -1088,7 +1164,7 @@ def api_save_image_action():
     if not filename or not species:
         return jsonify({"error": "missing filename or species"}), 400
 
-    valid_actions = ("keep", "exclude", "fix_orientation", "alt_morph", "resegment")
+    valid_actions = ("keep", "exclude", "fix_orientation", "alt_morph", "resegment", "color_correct")
     if action not in valid_actions:
         return jsonify({"error": "invalid action"}), 400
 
@@ -1838,6 +1914,7 @@ REVIEW_HTML = """<!DOCTYPE html>
   .card.has-oriented { border: 3px solid #2196f3; background: #e3f2fd; }
   .card.alt-morph { border: 3px solid #9c27b0; }
   .card.resegment { border: 3px solid #f44336; }
+  .card.color-correct { border: 3px solid #00bcd4; }
   .card .imgs { background: #b4b4b4; padding: 4px; text-align: center; }
   .card .imgs img { display: block; margin: 0 auto 4px auto; max-width: 100%;
                     height: auto; border-radius: 2px; }
@@ -1967,6 +2044,8 @@ REVIEW_HTML = """<!DOCTYPE html>
   <div class="card {{ 'excluded' if im.action == 'exclude' else '' }}
               {{ 'fix-orient' if im.action == 'fix_orientation' else '' }}
               {{ 'alt-morph' if im.action == 'alt_morph' else '' }}
+              {{ 'resegment' if im.action == 'resegment' else '' }}
+              {{ 'color-correct' if im.action == 'color_correct' else '' }}
               {{ 'has-oriented' if im.has_oriented else '' }}
               {{ 'is-exemplar' if im.is_exemplar else '' }}"
        id="card-{{ loop.index0 }}">
@@ -2045,20 +2124,26 @@ REVIEW_HTML = """<!DOCTYPE html>
                data-png="{{ im.png_name }}"
                {{ 'checked' if im.action == 'fix_orientation' else '' }}
                onchange="handleFixOrientation(this)">
-        Fix Orientation
+        Fix Orient
       </label>
       <label>
         <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="alt_morph"
                {{ 'checked' if im.action == 'alt_morph' else '' }}
                onchange="toggleAction(this)">
-        Alt Morph - Exclude
+        Alt Morph
       </label>
       <label>
         <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="resegment"
                data-png="{{ im.png_name }}"
                {{ 'checked' if im.action == 'resegment' else '' }}
                onchange="toggleAction(this)">
-        Needs Resegment
+        Resegment
+      </label>
+      <label>
+        <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="color_correct"
+               {{ 'checked' if im.action == 'color_correct' else '' }}
+               onchange="toggleAction(this)">
+        Color Fix
       </label>
       <hr style="margin: 4px 0; border: none; border-top: 1px solid #ddd;">
       <label style="color: #4caf50; font-weight: 600;">
@@ -2080,6 +2165,7 @@ REVIEW_HTML = """<!DOCTYPE html>
     <span id="nFix">{{ n_fix }}</span> fix &middot;
     <span id="nAltMorph">{{ n_alt_morph }}</span> alt &middot;
     <span id="nResegment">{{ n_resegment }}</span> reseg &middot;
+    <span id="nColorCorrect">{{ n_color_correct }}</span> color &middot;
     <span id="exemplarStatus">{{ '&#9733; Exemplar set' if has_exemplar else 'No exemplar' | safe }}</span>
   </div>
   {% if prev_sp %}
@@ -2492,16 +2578,18 @@ function toggleAction(cb) {
   const fixCb = card.querySelector('[data-action="fix_orientation"]');
   const altCb = card.querySelector('[data-action="alt_morph"]');
   const resegCb = card.querySelector('[data-action="resegment"]');
+  const colorCb = card.querySelector('[data-action="color_correct"]');
 
   // Determine what action to send (only one can be active)
   let sendAction = "keep";
   if (cb.checked) {
     sendAction = action;
-    // Uncheck others
-    if (action === "exclude") { fixCb.checked = false; altCb.checked = false; resegCb.checked = false; }
-    if (action === "fix_orientation") { excludeCb.checked = false; altCb.checked = false; resegCb.checked = false; }
-    if (action === "alt_morph") { excludeCb.checked = false; fixCb.checked = false; resegCb.checked = false; }
-    if (action === "resegment") { excludeCb.checked = false; fixCb.checked = false; altCb.checked = false; }
+    // Uncheck others and auto-exclude for alt_morph, resegment, color_correct
+    if (action === "exclude") { fixCb.checked = false; altCb.checked = false; resegCb.checked = false; colorCb.checked = false; }
+    if (action === "fix_orientation") { excludeCb.checked = false; altCb.checked = false; resegCb.checked = false; colorCb.checked = false; }
+    if (action === "alt_morph") { fixCb.checked = false; resegCb.checked = false; colorCb.checked = false; excludeCb.checked = true; }
+    if (action === "resegment") { fixCb.checked = false; altCb.checked = false; colorCb.checked = false; excludeCb.checked = true; }
+    if (action === "color_correct") { fixCb.checked = false; altCb.checked = false; resegCb.checked = false; excludeCb.checked = true; }
   }
 
   // Update card styling
@@ -2509,6 +2597,7 @@ function toggleAction(cb) {
   card.classList.toggle('fix-orient', fixCb.checked);
   card.classList.toggle('alt-morph', altCb.checked);
   card.classList.toggle('resegment', resegCb.checked);
+  card.classList.toggle('color-correct', colorCb.checked);
 
   // Save
   fetch('/api/save_image_action', {
@@ -2520,17 +2609,19 @@ function toggleAction(cb) {
 
 function updateCounts() {
   const cards = document.querySelectorAll('.card');
-  let nExcl = 0, nFix = 0, nAlt = 0, nReseg = 0;
+  let nExcl = 0, nFix = 0, nAlt = 0, nReseg = 0, nColor = 0;
   cards.forEach(c => {
     if (c.querySelector('[data-action="exclude"]').checked) nExcl++;
     if (c.querySelector('[data-action="fix_orientation"]').checked) nFix++;
     if (c.querySelector('[data-action="alt_morph"]').checked) nAlt++;
     if (c.querySelector('[data-action="resegment"]').checked) nReseg++;
+    if (c.querySelector('[data-action="color_correct"]').checked) nColor++;
   });
   document.getElementById('nExcluded').textContent = nExcl;
   document.getElementById('nFix').textContent = nFix;
   document.getElementById('nAltMorph').textContent = nAlt;
   document.getElementById('nResegment').textContent = nReseg;
+  document.getElementById('nColorCorrect').textContent = nColor;
 }
 
 function setExemplar(radio) {
@@ -3252,10 +3343,21 @@ def init_app():
     _image_metadata = _load_image_metadata()
     print(f"  {len(_image_metadata)} images with enriched metadata")
 
+    print("Loading perceptual hash cache...")
+    global _phash_cache
+    _phash_cache = _load_phash_cache()
+    cached_count = len(_phash_cache)
+    print(f"  {cached_count} cached hashes loaded")
+
     print("Computing cross-database duplicate mapping...")
     _duplicate_mapping, _fishbase_duplicates = _load_duplicate_mapping()
     n_with_dups = sum(1 for v in _duplicate_mapping.values() if v)
     print(f"  {n_with_dups} canonical images with cross-database duplicates")
+
+    # Save updated cache if new hashes were computed
+    if len(_phash_cache) > cached_count:
+        print(f"  Saving {len(_phash_cache) - cached_count} new hashes to cache...")
+        _save_phash_cache()
 
     print("Loading Miyazawa (2020) study images...")
     _miyazawa_images = _load_miyazawa_images()

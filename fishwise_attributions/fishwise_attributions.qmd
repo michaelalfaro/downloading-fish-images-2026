@@ -1,0 +1,101 @@
+---
+title: "FishWise Professional — Chaetodontidae Attribution Scrape"
+subtitle: "Query design and scraping strategy"
+author: "Image collection pipeline"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+# Purpose
+
+This folder documents a **gentle, metadata-only** scrape of [FishWise Professional](https://www.fishwisepro.com) to collect **image attributions** (species, photographer, filenames, URLs) for Chaetodontidae. No images are downloaded; we only record who to credit and where the images live. The scrape uses the existing FishWise species ID (SID) cache and one HTTP request per species.
+
+# Data source
+
+- **Site:** FishWise Professional (`fishwisepro.com`) — ASP.NET + DevExpress, AJAX-heavy.
+- **Scope:** Chaetodontidae (130 species in our project list).
+- **Pages used:** Per-species image galleries:  
+  `https://www.fishwisepro.com/Pictures/?SID={sid}&Find=0`  
+  The `sid` values come from `data/fishwise/fishwise_sid_cache.json`, which was populated by:
+
+  1. Paginating the family gallery (fid=438) with Selenium and reading SIDs from image filenames.
+  2. For species not seen in the gallery, resolving SIDs via the site’s **Quick Search** form and parsing result links.
+
+  See `scripts/download/update_fishwise_sid_cache.py` and the main project notes for SID discovery details.
+
+# Scraping strategy
+
+## Query design
+
+- **One request per species.** We do not re-scrape the family gallery; we use the cached SIDs and hit the per-species gallery URL for each of the 130 target species.
+- **Single page per species.** Each `/Pictures/?SID={sid}&Find=0` response is one HTML page. We parse it once; we do not paginate within a species (if a species had many images and multiple pages, only the first page is scraped — acceptable for attribution inventory).
+- **No images downloaded.** We only parse the HTML to extract metadata; no image bytes are requested or saved.
+
+## Parsing
+
+From each gallery page we extract `<img>` tags that match:
+
+- `src="/pics/{JPG|GIF}/TN/TN{filename}"`  
+  Filename format: `{6-digit SID}F...W....{ext}` (e.g. `045446F000024W000001.jpg`).
+- `alt="Species - Photographer"`  
+  We split on the last `" - "` to get species name and photographer (attribution).
+
+We record: `species`, `photographer`, `filename`, `thumb_url`, `full_url`, `format`, `sid`.
+
+## Politeness
+
+- **Delay between requests:** Default 2.5 s (configurable via `--delay`). No parallel requests.
+- **User-Agent:** Identifies the script as a metadata scrape (`Chaetodontidae-attribution-scrape`).
+- **Timeout:** 30 s per request; on failure we log and continue.
+- **No retries** in the default script to avoid bursts; re-run the script to retry failed species.
+
+## Output
+
+- **File:** `attributions.csv` in this folder.
+- **Columns:** `species`, `photographer`, `filename`, `thumb_url`, `full_url`, `format`, `sid`.
+
+# How to run
+
+From the project root or from this folder:
+
+```bash
+cd /path/to/downloading-fish-images-2026/fishwise_attributions
+python scrape_attributions.py --delay 2.5
+```
+
+Optional:
+
+- `--dry-run` — print URLs only, no HTTP requests.
+- `--delay 3` — increase delay between requests.
+
+# Summary of scraped attributions
+
+After running the scraper, the chunk below summarizes the attribution data (run Quarto render with the CSV present).
+
+```{r attributions-summary}
+attrib_file <- "attributions.csv"
+if (file.exists(attrib_file)) {
+  attr <- read.csv(attrib_file)
+  cat("**Total image records:**", nrow(attr), "\n\n")
+  cat("**Species with at least one image:**", length(unique(attr$species)), "\n\n")
+  cat("**Unique photographers (top 15):**\n\n")
+  photog <- as.data.frame(sort(table(attr$photographer), decreasing = TRUE))
+  names(photog) <- c("Photographer", "Count")
+  knitr::kable(head(photog, 15))
+} else {
+  cat("No `attributions.csv` found. Run `python scrape_attributions.py` first.\n")
+}
+```
+
+# References
+
+- SID cache: `data/fishwise/fishwise_sid_cache.json`
+- SID update script: `scripts/download/update_fishwise_sid_cache.py`
+- Broader FishWise metadata (family gallery + overlap classification): `scripts/download/scrape_fishwise_metadata.py`, outputs in `data/fishwise/`
