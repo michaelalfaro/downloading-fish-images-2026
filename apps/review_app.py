@@ -69,6 +69,7 @@ _phash_cache = {}            # filepath -> hash bytes (cached perceptual hashes)
 _photographer_data = {}      # filename -> photographer name
 _image_metadata = {}         # filename -> metadata dict (image_type, is_grayscale, etc.)
 _miyazawa_images = {}        # img_file -> species (from Miyazawa 2020 study)
+_image_filters = {}          # filename -> {filter_name: enabled} (e.g., {"randall": True})
 
 
 # ══════════════════════════════════════════════════════════════
@@ -988,6 +989,7 @@ def _get_species_images(species, apply_defaults=True):
             "is_lateral": is_lateral,
             "is_single_fish": is_single_fish,
             "seg_quality": seg_quality,
+            "filters": _image_filters.get(orig_fname, {}),
         })
 
     # Sort by: included first, then exemplar first, then source priority, then filename
@@ -1252,6 +1254,27 @@ def api_save_gestalt_k():
 
     _save_gestalt_k()
     return jsonify({"ok": True})
+
+
+@app.route("/api/save_filter", methods=["POST"])
+def api_save_filter():
+    """Save filter state for an image."""
+    data = request.get_json()
+    filename = data.get("filename", "")
+    filter_name = data.get("filter", "")
+    enabled = data.get("enabled", False)
+
+    if not filename or not filter_name:
+        return jsonify({"error": "missing filename or filter"}), 400
+
+    if filename not in _image_filters:
+        _image_filters[filename] = {}
+
+    _image_filters[filename][filter_name] = enabled
+
+    # Note: Filter state is kept in memory for now
+    # Could persist to CSV if needed for permanent storage
+    return jsonify({"ok": True, "filter": filter_name, "enabled": enabled})
 
 
 @app.route("/api/mark_reviewed", methods=["POST"])
@@ -1987,13 +2010,67 @@ REVIEW_HTML = """<!DOCTYPE html>
   .action-col.exclude-col .action-col-header { color: #c62828; }
   .action-col.include-col .action-col-header { color: #2e7d32; }
   .card .actions label { font-size: 11px; cursor: pointer; display: flex;
-                         align-items: center; gap: 5px; }
+                         align-items: center; gap: 5px; position: relative; }
   .card .actions input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
   .card .actions input[type="radio"] { width: 14px; height: 14px; cursor: pointer; }
-  .filter-btn { background: #e8f5e9; border: 1px solid #81c784; color: #2e7d32;
-                padding: 2px 6px; border-radius: 3px; font-size: 10px; cursor: pointer; }
-  .filter-btn:hover { background: #c8e6c9; }
-  .filter-btn.active { background: #4caf50; color: white; border-color: #4caf50; }
+  .exemplar-label { color: #4caf50; font-weight: 600; }
+
+  /* Tooltips */
+  .has-tooltip { position: relative; }
+  .has-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px;
+    background: #333;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: normal;
+    white-space: nowrap;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    max-width: 250px;
+    white-space: normal;
+  }
+  .has-tooltip:hover::after { opacity: 1; visibility: visible; }
+
+  /* Filter section */
+  .filter-section { margin-top: 4px; padding-top: 4px; border-top: 1px dashed #c8e6c9; }
+  .filter-header { font-size: 9px; color: #666; text-transform: uppercase; margin-bottom: 3px; }
+  .filter-btn { background: #f1f8e9; border: 1px solid #aed581; color: #558b2f;
+                padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;
+                display: flex; align-items: center; gap: 4px; width: 100%;
+                position: relative; transition: all 0.2s; }
+  .filter-btn:hover { background: #dcedc8; border-color: #8bc34a; }
+  .filter-btn.active { background: #7cb342; color: white; border-color: #689f38; }
+  .filter-btn .filter-icon { font-size: 12px; }
+  .filter-btn .filter-tooltip {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px;
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: normal;
+    width: 200px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .filter-btn:hover .filter-tooltip { opacity: 1; visibility: visible; }
   .exemplar-badge { background: #4caf50; color: white; padding: 2px 6px; border-radius: 4px;
                     font-size: 10px; font-weight: bold; display: inline-block; margin-left: 4px; }
   .card.is-exemplar { border: 3px solid #4caf50; }
@@ -2123,13 +2200,17 @@ REVIEW_HTML = """<!DOCTYPE html>
         <div class="img-panel img-processed">
           <div class="label oriented-label">Processed &#10003;</div>
           <img src="/image/oriented/{{ species_dirname }}/{{ im.png_name }}"
-               alt="processed" loading="lazy">
+               alt="processed" loading="lazy"
+               class="{{ 'filter-randall' if im.filters.get('randall') else '' }}"
+               style="{{ 'filter: saturate(1.1) sepia(0.15) brightness(1.05);' if im.filters.get('randall') else '' }}">
         </div>
       {% elif im.has_normalized %}
         <div class="img-panel img-processed">
           <div class="label">Processed</div>
           <img src="/image/normalized/{{ species_dirname }}/{{ im.png_name }}"
-               alt="processed" loading="lazy">
+               alt="processed" loading="lazy"
+               class="{{ 'filter-randall' if im.filters.get('randall') else '' }}"
+               style="{{ 'filter: saturate(1.1) sepia(0.15) brightness(1.05);' if im.filters.get('randall') else '' }}">
         </div>
       {% endif %}
       {% if not im.has_segmented and not im.has_normalized %}
@@ -2183,26 +2264,26 @@ REVIEW_HTML = """<!DOCTYPE html>
     <div class="actions">
       <div class="action-col exclude-col">
         <div class="action-col-header">Exclude</div>
-        <label>
+        <label class="has-tooltip" data-tooltip="Remove this image from the analysis entirely">
           <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="exclude"
                  {{ 'checked' if im.action == 'exclude' else '' }}
                  onchange="toggleAction(this)">
           Exclude
         </label>
-        <label>
+        <label class="has-tooltip" data-tooltip="Exclude: different color morph (juvenile, male/female, regional variant)">
           <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="alt_morph"
                  {{ 'checked' if im.action == 'alt_morph' else '' }}
                  onchange="toggleAction(this)">
           Alt Morph
         </label>
-        <label>
+        <label class="has-tooltip" data-tooltip="Exclude: segmentation mask needs to be regenerated">
           <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="resegment"
                  data-png="{{ im.png_name }}"
                  {{ 'checked' if im.action == 'resegment' else '' }}
                  onchange="toggleAction(this)">
           Resegment
         </label>
-        <label>
+        <label class="has-tooltip" data-tooltip="Exclude: color correction needed (white balance, exposure)">
           <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="color_correct"
                  {{ 'checked' if im.action == 'color_correct' else '' }}
                  onchange="toggleAction(this)">
@@ -2211,25 +2292,30 @@ REVIEW_HTML = """<!DOCTYPE html>
       </div>
       <div class="action-col include-col">
         <div class="action-col-header">Include</div>
-        <label>
-          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="fix_orientation"
-                 data-png="{{ im.png_name }}"
-                 {{ 'checked' if im.action == 'fix_orientation' else '' }}
-                 onchange="handleFixOrientation(this)">
-          Reorient
-        </label>
-        <label style="color: #4caf50; font-weight: 600;">
+        <label class="exemplar-label has-tooltip" data-tooltip="Set as the reference image for this species">
           <input type="radio" name="exemplar" data-fname="{{ im.orig_fname }}"
                  data-png="{{ im.png_name }}" data-source="{{ im.source }}"
                  {{ 'checked' if im.is_exemplar else '' }}
                  onchange="setExemplar(this)">
           ★ Exemplar
         </label>
-        <button class="filter-btn {{ 'active' if im.is_randall else '' }}"
-                data-fname="{{ im.orig_fname }}" data-filter="randall"
-                onclick="toggleFilter(this)" title="Normalize toward Randall reference">
-          Randall
-        </button>
+        <label class="has-tooltip" data-tooltip="Manually adjust orientation (rotate, flip) to face left">
+          <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="fix_orientation"
+                 data-png="{{ im.png_name }}"
+                 {{ 'checked' if im.action == 'fix_orientation' else '' }}
+                 onchange="handleFixOrientation(this)">
+          Reorient
+        </label>
+        <div class="filter-section">
+          <div class="filter-header has-tooltip" data-tooltip="Apply color/style filters to normalize images">Filters</div>
+          <button class="filter-btn {{ 'active' if im.filters.get('randall') else '' }}"
+                  data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
+                  data-filter="randall"
+                  onclick="toggleFilter(this)">
+            <span class="filter-icon">🎨</span> Randalize
+            <span class="filter-tooltip">Normalize colors toward Randall reference style (specimen photo lighting)</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -2813,16 +2899,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function toggleFilter(btn) {
   const fname = btn.dataset.fname;
+  const pngName = btn.dataset.png;
   const filter = btn.dataset.filter;
   const isActive = btn.classList.contains('active');
+  const card = btn.closest('.card');
 
   // Toggle the button state
   btn.classList.toggle('active');
+  const nowActive = btn.classList.contains('active');
 
-  // For now, Randall filter is just a visual indicator
-  // In the future, this could trigger actual normalization processing
-  // Save filter state to server (placeholder - implement if needed)
-  console.log(`Filter ${filter} ${isActive ? 'disabled' : 'enabled'} for ${fname}`);
+  // Apply visual filter effect to the processed image
+  const processedImg = card.querySelector('.img-processed img');
+  if (processedImg) {
+    if (filter === 'randall') {
+      // Randalize effect: warm tones, slight saturation boost (specimen photo style)
+      if (nowActive) {
+        processedImg.style.filter = 'saturate(1.1) sepia(0.15) brightness(1.05)';
+        processedImg.classList.add('filter-randall');
+      } else {
+        processedImg.style.filter = '';
+        processedImg.classList.remove('filter-randall');
+      }
+    }
+  }
+
+  // Save filter state to server
+  fetch('/api/save_filter', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      filename: fname,
+      species: SPECIES,
+      filter: filter,
+      enabled: nowActive
+    })
+  }).then(r => r.json()).then(data => {
+    if (data.ok) {
+      console.log(`Filter ${filter} ${nowActive ? 'enabled' : 'disabled'} for ${fname}`);
+    }
+  }).catch(err => {
+    console.error('Filter save error:', err);
+  });
 }
 
 let gestaltTimer = null;
