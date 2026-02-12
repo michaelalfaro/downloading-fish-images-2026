@@ -940,7 +940,7 @@ def _get_species_images(species, apply_defaults=True):
     all_files = {f for f in all_files if f not in _fishbase_duplicates}
 
     images = []
-    source_order = {"Bishop": 0, "FishBase": 1, "FishPix": 2, "FishWise": 3, "iNat": 4, "FBUser": 5, "Other": 6}
+    source_order = {"Bishop": 0, "FishBase": 1, "FishWise": 2, "FishPix": 3, "iNat": 4, "FBUser": 5, "Other": 6}
 
     for png_name in sorted(all_files):
         base = os.path.splitext(png_name)[0]
@@ -3220,7 +3220,7 @@ function reorderCards() {
   const divider = grid.querySelector('.excluded-divider');
 
   // Source priority order
-  const sourceOrder = {Bishop: 0, FishBase: 1, FishPix: 2, FishWise: 3, iNat: 4, FBUser: 5, Other: 6};
+  const sourceOrder = {Bishop: 0, FishBase: 1, FishWise: 2, FishPix: 3, iNat: 4, FBUser: 5, Other: 6};
 
   // Sort cards
   cards.sort((a, b) => {
