@@ -36,9 +36,11 @@ from flask import (
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'scripts', 'utils'))
 from analysis_utils import (
-    SCRIPT_DIR, GMM_DIR, SEGMENTED_DIR, NORMALIZED_DIR, ANNOTATIONS_CSV,
-    load_inventory, load_annotations, append_annotations, save_annotations,
+    SCRIPT_DIR, REPO_DIR, GMM_DIR, SEGMENTED_DIR, NORMALIZED_DIR, ANNOTATIONS_CSV,
+    IMAGE_DIRS, load_inventory, load_annotations, append_annotations, save_annotations,
     species_to_dirname, dirname_to_species, all_species, ensure_dir,
+    estimate_seathru_params, seathru_image, seathru_depth_correct,
+    load_depth_map, load_depth_estimates, WB_METHODS, DEPTH_CSV,
 )
 
 app = Flask(__name__)
@@ -49,6 +51,7 @@ GESTALT_CSV = os.path.join(GMM_DIR, "species_gestalt_k.csv")
 EXEMPLAR_CSV = os.path.join(GMM_DIR, "species_exemplar.csv")
 ORIENT_REVIEW_CSV = os.path.join(GMM_DIR, "orientation_review.csv")
 ORIENT_LANDMARKS_CSV = os.path.join(GMM_DIR, "orientation_landmarks.csv")
+FILTERS_CSV = os.path.join(GMM_DIR, "image_filters.csv")
 ORIENTED_DIR = os.path.join(GMM_DIR, "oriented")
 PERSPECTIVE_DIR = os.path.join(GMM_DIR, "perspective_corrected")  # For images with perspective correction
 THUMB_HEIGHT = 200
@@ -70,6 +73,9 @@ _photographer_data = {}      # filename -> photographer name
 _image_metadata = {}         # filename -> metadata dict (image_type, is_grayscale, etc.)
 _miyazawa_images = {}        # img_file -> species (from Miyazawa 2020 study)
 _image_filters = {}          # filename -> {filter_name: enabled} (e.g., {"randall": True})
+_underwater_flags = {}       # filename -> {whole_is_uw, body_is_uw, whole_uw_score, ...}
+_depth_estimates = {}        # filename -> {mean_depth, median_depth, ...}
+_orig_image_index = {}       # png_basename (no ext) -> original image path
 
 
 # ══════════════════════════════════════════════════════════════
@@ -556,6 +562,46 @@ def _load_image_metadata():
     return metadata
 
 
+def _load_underwater_flags():
+    """Load underwater detection report into a dict keyed by filename."""
+    flags = {}
+    csv_path = os.path.join(GMM_DIR, "underwater_detection_report.csv")
+    if os.path.exists(csv_path):
+        with open(csv_path, newline="") as f:
+            for row in csv.DictReader(f):
+                flags[row["filename"]] = row
+    return flags
+
+
+def _load_image_filters():
+    """Load persisted filter state from CSV."""
+    filters = {}
+    if os.path.exists(FILTERS_CSV):
+        with open(FILTERS_CSV, newline="") as f:
+            for row in csv.DictReader(f):
+                fname = row["filename"]
+                filter_name = row["filter"]
+                enabled = row["enabled"] == "True"
+                if fname not in filters:
+                    filters[fname] = {}
+                filters[fname][filter_name] = enabled
+    return filters
+
+
+def _save_image_filters():
+    """Persist filter state to CSV."""
+    rows = []
+    for fname, fdict in _image_filters.items():
+        for filter_name, enabled in fdict.items():
+            if enabled:  # only persist enabled filters
+                rows.append({"filename": fname, "filter": filter_name,
+                             "enabled": str(enabled)})
+    with open(FILTERS_CSV, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["filename", "filter", "enabled"])
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def _apply_perspective_correction(img, dorsal_ventral_angle, head_tail_angle=0):
     """Apply perspective correction centered around image center (no translation).
 
@@ -966,6 +1012,21 @@ def _get_species_images(species, apply_defaults=True):
         is_single_fish = meta.get("is_single_fish", "") == "yes"
         seg_quality = meta.get("segmentation_quality", "")
 
+        # Underwater detection flags
+        uw = _underwater_flags.get(orig_fname, {})
+        uw_whole = uw.get("whole_is_uw", "") == "True"
+        uw_body = uw.get("body_is_uw", "") == "True"
+
+        # Depth estimates
+        depth = _depth_estimates.get(orig_fname, {})
+        has_depth = bool(depth.get("whole_mean_depth", ""))
+        depth_mean = depth.get("whole_mean_depth", "")
+        depth_range = depth.get("depth_range_m", "")
+        body_depth_mean = depth.get("body_mean_depth", "")
+        # Flag Bishop museum specimens where depth estimate is camera
+        # distance to a jar/tray, not underwater depth
+        depth_is_specimen = has_depth and source == "Bishop"
+
         images.append({
             "png_name": png_name,
             "orig_fname": orig_fname,
@@ -989,6 +1050,13 @@ def _get_species_images(species, apply_defaults=True):
             "is_lateral": is_lateral,
             "is_single_fish": is_single_fish,
             "seg_quality": seg_quality,
+            "uw_whole": uw_whole,
+            "uw_body": uw_body,
+            "has_depth": has_depth,
+            "depth_mean": depth_mean,
+            "depth_range": depth_range,
+            "body_depth_mean": body_depth_mean,
+            "depth_is_specimen": depth_is_specimen,
             "filters": _image_filters.get(orig_fname, {}),
         })
 
@@ -1157,6 +1225,66 @@ def serve_image(img_type, species_dirname, filename):
             new_w = max(1, int(w * scale))
             img = img.resize((new_w, THUMB_HEIGHT), Image.LANCZOS)
 
+        # Apply Sea-thru correction if requested
+        # Estimates params from the full original JPEG (better water column info),
+        # then applies them to the segmented/oriented fish pixels.
+        # Supports different white balance methods via wb_method parameter:
+        #   - max_channel (default): original Sea-thru behavior
+        #   - gray_world: assume average color should be neutral (paper Sec 4.4.2)
+        #   - gray_world_10p: gray world using top 10% brightest pixels
+        #   - red_boost: boost red toward green (counteract underwater absorption)
+        seathru_mode = request.args.get("seathru")
+        if seathru_mode and seathru_mode != "0":
+            # seathru=1 means default (max_channel), otherwise it's the wb_method name
+            wb_method = seathru_mode if seathru_mode in WB_METHODS else "max_channel"
+
+            arr_rgba = np.array(img, dtype=np.uint8)
+
+            if wb_method == "depth_seathru":
+                # Depth-aware physics correction
+                base_no_ext = os.path.splitext(filename)[0]
+                # Find original filename to load depth map
+                orig_fname = None
+                for inv_row in _inventory:
+                    inv_base = os.path.splitext(inv_row["filename"])[0]
+                    if inv_base == base_no_ext:
+                        orig_fname = inv_row["filename"]
+                        break
+                depth_map = load_depth_map(orig_fname) if orig_fname else None
+                if depth_map is not None:
+                    # Resize depth to match thumbnail
+                    if depth_map.shape[:2] != arr_rgba.shape[:2]:
+                        depth_pil = Image.fromarray(depth_map)
+                        depth_pil = depth_pil.resize(
+                            (arr_rgba.shape[1], arr_rgba.shape[0]),
+                            Image.LANCZOS)
+                        depth_map = np.array(depth_pil, dtype=np.float32)
+                    arr_rgba = seathru_depth_correct(arr_rgba, depth_map)
+                else:
+                    # Fall back to gray_world if no depth map
+                    arr_rgba = seathru_image(arr_rgba, wb_method="gray_world")
+            else:
+                base = os.path.splitext(filename)[0]
+                orig_path = _orig_image_index.get(base)
+                params = None
+                if orig_path and os.path.exists(orig_path):
+                    try:
+                        orig_img = Image.open(orig_path).convert("RGB")
+                        # Downsample for speed
+                        ow, oh = orig_img.size
+                        if max(ow, oh) > 512:
+                            s = 512 / max(ow, oh)
+                            orig_img = orig_img.resize(
+                                (max(1, int(ow * s)), max(1, int(oh * s))),
+                                Image.LANCZOS)
+                        orig_pixels = np.array(orig_img).reshape(-1, 3)
+                        params = estimate_seathru_params(orig_pixels, wb_method=wb_method)
+                    except Exception:
+                        pass  # fall back to self-estimation
+                arr_rgba = seathru_image(arr_rgba, params=params, wb_method=wb_method)
+
+            img = Image.fromarray(arr_rgba, "RGBA")
+
         # Composite on gray background
         arr = np.array(img, dtype=np.float32)
         rgb = arr[:, :, :3]
@@ -1169,6 +1297,28 @@ def serve_image(img_type, species_dirname, filename):
         out.save(buf, format="PNG", optimize=True)
         buf.seek(0)
         return send_file(buf, mimetype="image/png")
+    except Exception as e:
+        return f"Error: {e}", 500
+
+
+@app.route("/image/source/<filename>")
+def serve_source_image(filename):
+    """Serve the original unsegmented source image (JPEG) as a thumbnail."""
+    base = os.path.splitext(filename)[0]
+    orig_path = _orig_image_index.get(base)
+    if not orig_path or not os.path.exists(orig_path):
+        return "Not found", 404
+    try:
+        img = Image.open(orig_path).convert("RGB")
+        w, h = img.size
+        if h > 0:
+            scale = THUMB_HEIGHT / h
+            new_w = max(1, int(w * scale))
+            img = img.resize((new_w, THUMB_HEIGHT), Image.LANCZOS)
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=85)
+        buf.seek(0)
+        return send_file(buf, mimetype="image/jpeg")
     except Exception as e:
         return f"Error: {e}", 500
 
@@ -1258,11 +1408,16 @@ def api_save_gestalt_k():
 
 @app.route("/api/save_filter", methods=["POST"])
 def api_save_filter():
-    """Save filter state for an image."""
+    """Save filter state for an image.
+
+    For Sea-thru filter, also accepts 'method' parameter to store the
+    white balance method: gray_world, gray_world_10p, red_boost, max_channel
+    """
     data = request.get_json()
     filename = data.get("filename", "")
     filter_name = data.get("filter", "")
     enabled = data.get("enabled", False)
+    method = data.get("method", None)  # For Sea-thru wb_method
 
     if not filename or not filter_name:
         return jsonify({"error": "missing filename or filter"}), 400
@@ -1272,9 +1427,93 @@ def api_save_filter():
 
     _image_filters[filename][filter_name] = enabled
 
-    # Note: Filter state is kept in memory for now
-    # Could persist to CSV if needed for permanent storage
-    return jsonify({"ok": True, "filter": filter_name, "enabled": enabled})
+    # Store Sea-thru method if provided
+    if filter_name == "seathru" and method:
+        _image_filters[filename]["seathru_method"] = method
+
+    _save_image_filters()
+
+    return jsonify({"ok": True, "filter": filter_name, "enabled": enabled, "method": method})
+
+
+@app.route("/api/export_metadata")
+def api_export_metadata():
+    """Export all image metadata as a CSV download.
+
+    Query params:
+        scope: "included" (default) or "all"
+            - included: only images with action "keep"
+            - all: all images regardless of action
+    """
+    scope = request.args.get("scope", "included")
+    excluded_actions = {"exclude", "alt_morph", "resegment", "color_correct"}
+
+    fieldnames = [
+        "filename", "species", "source", "photographer", "image_type",
+        "is_lateral", "is_single_fish", "is_grayscale", "segmentation_quality",
+        "uw_whole", "uw_body", "uw_score_whole", "uw_score_body",
+        "mean_depth", "median_depth", "depth_range_m", "body_mean_depth",
+        "action", "has_seathru", "seathru_method", "has_randall", "is_exemplar",
+    ]
+
+    rows = []
+    for row in _inventory:
+        fname = row["filename"]
+        species = row["species"]
+
+        # Action/review state
+        review = _review_state.get(fname, {})
+        action = review.get("action", "keep")
+
+        # Filter by scope
+        if scope == "included" and action in excluded_actions:
+            continue
+
+        # Metadata
+        meta = _image_metadata.get(fname, {})
+        uw = _underwater_flags.get(fname, {})
+        depth = _depth_estimates.get(fname, {})
+        filters = _image_filters.get(fname, {})
+
+        # Exemplar check
+        exemplar_data = _exemplars.get(species, {})
+        is_exemplar = exemplar_data.get("filename", "") == fname
+
+        rows.append({
+            "filename": fname,
+            "species": species,
+            "source": row.get("source", ""),
+            "photographer": _photographer_data.get(fname, ""),
+            "image_type": meta.get("image_type", ""),
+            "is_lateral": meta.get("is_lateral", ""),
+            "is_single_fish": meta.get("is_single_fish", ""),
+            "is_grayscale": meta.get("is_grayscale", ""),
+            "segmentation_quality": meta.get("segmentation_quality", ""),
+            "uw_whole": uw.get("whole_is_uw", ""),
+            "uw_body": uw.get("body_is_uw", ""),
+            "uw_score_whole": uw.get("whole_uw_score", ""),
+            "uw_score_body": uw.get("body_uw_score", ""),
+            "mean_depth": depth.get("whole_mean_depth", ""),
+            "median_depth": depth.get("whole_median_depth", ""),
+            "depth_range_m": depth.get("depth_range_m", ""),
+            "body_mean_depth": depth.get("body_mean_depth", ""),
+            "action": action,
+            "has_seathru": str(bool(filters.get("seathru"))),
+            "seathru_method": filters.get("seathru_method", ""),
+            "has_randall": str(bool(filters.get("randall"))),
+            "is_exemplar": str(is_exemplar),
+        })
+
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(rows)
+
+    output = io.BytesIO(buf.getvalue().encode("utf-8"))
+    output.seek(0)
+    dl_name = f"chaetodontidae_metadata_{scope}.csv"
+    return send_file(output, mimetype="text/csv",
+                     as_attachment=True, download_name=dl_name)
 
 
 @app.route("/api/mark_reviewed", methods=["POST"])
@@ -1823,6 +2062,17 @@ INDEX_HTML = """<!DOCTYPE html>
   .jump-to select { padding: 4px 8px; font-size: 14px; }
   .counts { color: #888; font-size: 13px; }
   .summary { margin: 12px 0; font-size: 14px; color: #555; }
+  .export-dropdown { position: relative; display: inline-block; }
+  .export-btn { padding: 5px 12px; font-size: 13px; cursor: pointer;
+                background: #e8f5e9; border: 1px solid #81c784; border-radius: 4px; }
+  .export-btn:hover { background: #c8e6c9; }
+  .export-menu { display: none; position: absolute; top: 100%; left: 0;
+                 background: white; border: 1px solid #ddd; border-radius: 4px;
+                 box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; min-width: 180px; }
+  .export-menu.open { display: block; }
+  .export-menu a { display: block; padding: 8px 12px; color: #333;
+                   text-decoration: none; font-size: 13px; }
+  .export-menu a:hover { background: #f5f5f5; }
 </style>
 </head>
 <body>
@@ -1848,6 +2098,13 @@ INDEX_HTML = """<!DOCTYPE html>
       <option value="{{ s.dirname }}">{{ s.species }}</option>
       {% endfor %}
     </select>
+  </div>
+  <div class="export-dropdown">
+    <button class="export-btn" onclick="this.nextElementSibling.classList.toggle('open')">&#x1F4E5; Export CSV</button>
+    <div class="export-menu">
+      <a href="/api/export_metadata?scope=included">Export Included</a>
+      <a href="/api/export_metadata?scope=all">Export All</a>
+    </div>
   </div>
 </div>
 
@@ -1910,6 +2167,12 @@ function jumpToSpecies() {
     window.location = '/review/' + sel.value;
   }
 }
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.export-dropdown')) {
+    document.querySelectorAll('.export-menu').forEach(m => m.classList.remove('open'));
+  }
+});
 </script>
 </body>
 </html>"""
@@ -1987,6 +2250,38 @@ REVIEW_HTML = """<!DOCTYPE html>
   .quality-badges { font-size: 9px; margin-top: 2px; }
   .quality-ok { color: #2e7d32; margin-right: 4px; }
   .quality-warn { color: #e65100; margin-right: 4px; }
+  .uw-badges { font-size: 9px; margin-top: 2px; }
+  .uw-badge { display: inline-block; padding: 1px 5px; border-radius: 8px;
+              font-size: 9px; font-weight: 600; margin-right: 3px; }
+  .uw-whole { background: #e3f2fd; color: #1565c0; }
+  .uw-body { background: #e0f7fa; color: #00838f; }
+  .depth-badges { font-size: 9px; margin-top: 2px; }
+  .depth-badge { display: inline-block; padding: 1px 5px; border-radius: 8px;
+                 font-size: 9px; font-weight: 600; background: #e0f2f1; color: #00695c; }
+  .depth-badge.depth-warn { background: #fff3e0; color: #e65100; }
+
+  /* Show Source button */
+  .show-source-btn { background: none; border: 1px dashed #999; color: #666;
+    padding: 1px 6px; border-radius: 3px; font-size: 9px; cursor: pointer;
+    margin-top: 3px; }
+  .show-source-btn:hover { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+
+  /* Original source image popup overlay */
+  .source-popup-overlay { display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000;
+    justify-content: center; align-items: center; }
+  .source-popup-overlay.visible { display: flex; }
+  .source-popup { position: relative; max-width: 80vw; max-height: 85vh;
+    background: #222; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .source-popup img { display: block; max-width: 80vw; max-height: 80vh;
+    object-fit: contain; }
+  .source-popup .popup-header { display: flex; justify-content: space-between;
+    align-items: center; padding: 6px 12px; background: #333; }
+  .source-popup .popup-title { color: #ff9800; font-size: 12px; font-weight: 600; }
+  .source-popup .popup-close { background: none; border: none; color: #aaa;
+    font-size: 18px; cursor: pointer; padding: 0 4px; }
+  .source-popup .popup-close:hover { color: white; }
   .cross-db-equiv { font-size: 9px; color: #666; margin-top: 2px; }
   .equiv-label { font-weight: 500; color: #333; font-size: 9px; }
   .source-Other { background: #eee; color: #666; }
@@ -2071,6 +2366,18 @@ REVIEW_HTML = """<!DOCTYPE html>
     pointer-events: none;
   }
   .filter-btn:hover .filter-tooltip { opacity: 1; visibility: visible; }
+  /* Sea-thru inline buttons */
+  .seathru-buttons { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 3px; }
+  .seathru-btn-inline { background: #e3f2fd; border: 1px solid #90caf9; color: #1565c0;
+                        padding: 2px 6px; border-radius: 3px; font-size: 9px; cursor: pointer;
+                        white-space: nowrap; transition: all 0.15s; }
+  .seathru-btn-inline:hover { background: #bbdefb; border-color: #64b5f6; }
+  .seathru-btn-inline.active { background: #1976d2; color: white; border-color: #1565c0; }
+  .seathru-btn-inline.recommended { box-shadow: 0 0 0 1px #42a5f5; }
+  .seathru-btn-inline.depth-btn { background: #e0f2f1; border-color: #80cbc4; color: #00695c; }
+  .seathru-btn-inline.depth-btn:hover { background: #b2dfdb; border-color: #4db6ac; }
+  .seathru-btn-inline.depth-btn.active { background: #00897b; color: white; border-color: #00695c; }
+
   .exemplar-badge { background: #4caf50; color: white; padding: 2px 6px; border-radius: 4px;
                     font-size: 10px; font-weight: bold; display: inline-block; margin-left: 4px; }
   .card.is-exemplar { border: 3px solid #4caf50; }
@@ -2201,19 +2508,24 @@ REVIEW_HTML = """<!DOCTYPE html>
           <div class="label oriented-label">Processed &#10003;</div>
           <img src="/image/oriented/{{ species_dirname }}/{{ im.png_name }}"
                alt="processed" loading="lazy"
-               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}">
+               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}"
+               data-has-seathru="{{ 'true' if im.filters.get('seathru') else 'false' }}"
+               data-seathru-method="{{ im.filters.get('seathru_method', 'gray_world') }}">
         </div>
       {% elif im.has_normalized %}
         <div class="img-panel img-processed">
           <div class="label">Processed</div>
           <img src="/image/normalized/{{ species_dirname }}/{{ im.png_name }}"
                alt="processed" loading="lazy"
-               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}">
+               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}"
+               data-has-seathru="{{ 'true' if im.filters.get('seathru') else 'false' }}"
+               data-seathru-method="{{ im.filters.get('seathru_method', 'gray_world') }}">
         </div>
       {% endif %}
       {% if not im.has_segmented and not im.has_normalized %}
         <div class="not-norm">Not processed (iNat excluded)</div>
       {% endif %}
+      <button class="show-source-btn" onclick="showSourcePopup('{{ im.orig_fname }}', '{{ im.display_name }}')">Show source image</button>
     </div>
     <div class="info">
       <div class="fname">{{ im.display_name }}</div>
@@ -2243,6 +2555,21 @@ REVIEW_HTML = """<!DOCTYPE html>
           {% if im.is_lateral %}<span class="quality-ok">Lateral &#10003;</span>{% endif %}
           {% if im.is_single_fish %}<span class="quality-ok">Single &#10003;</span>{% endif %}
           {% if im.is_grayscale %}<span class="quality-warn">B&amp;W</span>{% endif %}
+        </div>
+      {% endif %}
+      {% if im.uw_whole or im.uw_body %}
+        <div class="uw-badges">
+          {% if im.uw_whole %}<span class="uw-badge uw-whole">UW image</span>{% endif %}
+          {% if im.uw_body %}<span class="uw-badge uw-body">UW body</span>{% endif %}
+        </div>
+      {% endif %}
+      {% if im.has_depth %}
+        <div class="depth-badges">
+          {% if im.depth_is_specimen %}
+          <span class="depth-badge depth-warn has-tooltip" data-tooltip="Specimen photo - depth estimate is camera distance, not underwater depth. Sea-thru correction not recommended.">Not underwater</span>
+          {% else %}
+          <span class="depth-badge has-tooltip" data-tooltip="Est. depth: {{ im.depth_mean }}m | Range: {{ im.depth_range }}m{% if im.body_depth_mean %} | Body: {{ im.body_depth_mean }}m{% endif %}">&#x1F4CF; {{ im.depth_mean }}m</span>
+          {% endif %}
         </div>
       {% endif %}
       {% if im.cross_db_equivalents %}
@@ -2305,19 +2632,52 @@ REVIEW_HTML = """<!DOCTYPE html>
           Reorient
         </label>
         <div class="filter-section">
-          <div class="filter-header has-tooltip" data-tooltip="Apply color/style filters to normalize images">Filters</div>
-          <button class="filter-btn {{ 'active' if im.filters.get('randall') else '' }}"
-                  data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
-                  data-filter="randall"
-                  onclick="toggleFilter(this)">
-            <span class="filter-icon">🎨</span> Randalize
-            <span class="filter-tooltip">Normalize colors toward Randall reference style (specimen photo lighting)</span>
-          </button>
+          <div class="filter-header has-tooltip" data-tooltip="Sea-thru color correction for underwater images">Sea-thru</div>
+          <div class="seathru-buttons">
+            {% if im.has_depth and not im.depth_is_specimen %}
+            <button class="seathru-btn-inline depth-btn {{ 'active' if im.filters.get('seathru') and im.filters.get('seathru_method') == 'depth_seathru' else '' }} {{ 'recommended' if (im.uw_whole or im.uw_body) else '' }}"
+                    data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
+                    data-method="depth_seathru"
+                    title="Depth Sea-thru: Full physics model using estimated depth map. Corrects backscatter and attenuation per-pixel. Best for true underwater photos."
+                    onclick="clickSeathruBtn(this)">Depth</button>
+            {% endif %}
+            <button class="seathru-btn-inline {{ 'active' if im.filters.get('seathru') and im.filters.get('seathru_method') == 'gray_world' else '' }} {{ 'recommended' if (im.uw_whole or im.uw_body) and (not im.has_depth or im.depth_is_specimen) else '' }}"
+                    data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
+                    data-method="gray_world"
+                    title="Gray World: Assumes the average scene color should be neutral gray. Good general-purpose white balance for mild-moderate color casts."
+                    onclick="clickSeathruBtn(this)">GrayW</button>
+            <button class="seathru-btn-inline {{ 'active' if im.filters.get('seathru') and im.filters.get('seathru_method') == 'gray_world_10p' else '' }}"
+                    data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
+                    data-method="gray_world_10p"
+                    title="Gray World 10%: Uses only the brightest 10% of pixels for estimation. Better when the fish fills most of the frame and the scene is unevenly lit."
+                    onclick="clickSeathruBtn(this)">GW10%</button>
+            <button class="seathru-btn-inline {{ 'active' if im.filters.get('seathru') and im.filters.get('seathru_method') == 'red_boost' else '' }}"
+                    data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
+                    data-method="red_boost"
+                    title="Red Boost: Boosts the red channel toward the green channel mean. Specifically targets the red absorption typical of deeper underwater photos."
+                    onclick="clickSeathruBtn(this)">RedB</button>
+            <button class="seathru-btn-inline {{ 'active' if im.filters.get('seathru') and im.filters.get('seathru_method') == 'max_channel' else '' }}"
+                    data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}"
+                    data-method="max_channel"
+                    title="Max Channel: Normalizes each channel by its 90th percentile (original Sea-thru approach). Most aggressive correction, can oversaturate."
+                    onclick="clickSeathruBtn(this)">MaxCh</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 {% endfor %}
+</div>
+
+<!-- Source image popup (shared, one for all cards) -->
+<div class="source-popup-overlay" id="sourcePopup" onclick="closeSourcePopup(event)">
+  <div class="source-popup">
+    <div class="popup-header">
+      <span class="popup-title" id="sourcePopupTitle"></span>
+      <button class="popup-close" onclick="closeSourcePopup()">&times;</button>
+    </div>
+    <img id="sourcePopupImg" alt="source">
+  </div>
 </div>
 
 <div class="footer">
@@ -2890,124 +3250,94 @@ document.addEventListener('DOMContentLoaded', function() {
   const savedMode = localStorage.getItem('chaetview-mode') || 'both';
   setViewMode(savedMode);
 
-  // Apply Randalize filter to images that have it enabled
-  document.querySelectorAll('.img-processed img[data-has-randall="true"]').forEach(img => {
+  // Apply Sea-thru filter to processed images that have it enabled
+  document.querySelectorAll('.img-processed img[data-has-seathru="true"]').forEach(img => {
+    const method = img.dataset.seathruMethod || 'gray_world';
+    const apply = () => applySeathruFilter(img, method);
     if (img.complete && img.naturalWidth > 0) {
-      applyRandalizeFilter(img);
+      apply();
     } else {
-      img.addEventListener('load', () => applyRandalizeFilter(img), { once: true });
+      img.addEventListener('load', apply, { once: true });
     }
   });
 });
 
 // ══════════════════════════════════════════════════════════════
-// Filter Buttons (Randall, etc.)
+// Sea-thru Inline Buttons
 // ══════════════════════════════════════════════════════════════
 
-function toggleFilter(btn) {
-  const fname = btn.dataset.fname;
-  const pngName = btn.dataset.png;
-  const filter = btn.dataset.filter;
-  const isActive = btn.classList.contains('active');
-  const card = btn.closest('.card');
-
-  // Toggle the button state
-  btn.classList.toggle('active');
-  const nowActive = btn.classList.contains('active');
-
-  // Apply visual filter effect to the processed image (preserving transparency)
-  const processedImg = card.querySelector('.img-processed img');
-  if (processedImg) {
-    if (filter === 'randall') {
-      if (nowActive) {
-        applyRandalizeFilter(processedImg);
-      } else {
-        removeRandalizeFilter(processedImg);
-      }
-    }
-  }
-
-  // Save filter state to server
-  fetch('/api/save_filter', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      filename: fname,
-      species: SPECIES,
-      filter: filter,
-      enabled: nowActive
-    })
-  }).then(r => r.json()).then(data => {
-    if (data.ok) {
-      console.log(`Filter ${filter} ${nowActive ? 'enabled' : 'disabled'} for ${fname}`);
-    }
-  }).catch(err => {
-    console.error('Filter save error:', err);
-  });
-}
-
-// Apply Randalize filter using canvas (preserves transparency)
-function applyRandalizeFilter(img) {
-  // Store original src if not already stored
+function applySeathruFilter(img, method) {
   if (!img.dataset.originalSrc) {
     img.dataset.originalSrc = img.src;
   }
-
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-
-  const processImage = () => {
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    ctx.drawImage(img, 0, 0);
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    // Apply Randalize: warm tones, saturation boost - only on non-transparent pixels
-    for (let i = 0; i < data.length; i += 4) {
-      const alpha = data[i + 3];
-      if (alpha > 0) {
-        let r = data[i], g = data[i + 1], b = data[i + 2];
-
-        // Saturation boost
-        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        r = gray + (r - gray) * 1.15;
-        g = gray + (g - gray) * 1.15;
-        b = gray + (b - gray) * 1.15;
-
-        // Warm sepia tone
-        const sep = 0.12;
-        const newR = r * (1 - sep) + (r * 0.393 + g * 0.769 + b * 0.189) * sep;
-        const newG = g * (1 - sep) + (r * 0.349 + g * 0.686 + b * 0.168) * sep;
-        const newB = b * (1 - sep) + (r * 0.272 + g * 0.534 + b * 0.131) * sep;
-
-        // Brightness boost
-        data[i] = Math.min(255, Math.max(0, newR * 1.05));
-        data[i + 1] = Math.min(255, Math.max(0, newG * 1.05));
-        data[i + 2] = Math.min(255, Math.max(0, newB * 1.05));
-      }
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-    img.src = canvas.toDataURL('image/png');
-    img.classList.add('filter-randall');
-  };
-
-  if (img.complete && img.naturalWidth > 0) {
-    processImage();
-  } else {
-    img.onload = processImage;
-  }
+  const baseSrc = img.dataset.originalSrc;
+  const sep = baseSrc.includes('?') ? '&' : '?';
+  img.src = baseSrc + sep + 'seathru=' + method;
+  img.classList.add('filter-seathru');
+  img.dataset.seathruMethod = method;
 }
 
-// Remove Randalize filter (restore original)
-function removeRandalizeFilter(img) {
+function removeSeathruFilter(img) {
   if (img.dataset.originalSrc) {
     img.src = img.dataset.originalSrc;
-    img.classList.remove('filter-randall');
+    img.classList.remove('filter-seathru');
+    delete img.dataset.seathruMethod;
   }
 }
+
+function clickSeathruBtn(btn) {
+  const card = btn.closest('.card');
+  const fname = btn.dataset.fname;
+  const method = btn.dataset.method;
+  const wasActive = btn.classList.contains('active');
+  const processedImg = card.querySelector('.img-processed img');
+
+  // Deactivate all sibling seathru buttons in this card
+  card.querySelectorAll('.seathru-btn-inline').forEach(b => b.classList.remove('active'));
+
+  if (wasActive) {
+    // Toggle off
+    if (processedImg) removeSeathruFilter(processedImg);
+    fetch('/api/save_filter', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({filename: fname, filter: 'seathru', enabled: false})
+    });
+  } else {
+    // Activate this method
+    btn.classList.add('active');
+    if (processedImg) applySeathruFilter(processedImg, method);
+    fetch('/api/save_filter', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({filename: fname, filter: 'seathru', enabled: true, method: method})
+    });
+  }
+}
+
+// Source image popup
+function showSourcePopup(fname, displayName) {
+  const popup = document.getElementById('sourcePopup');
+  const img = document.getElementById('sourcePopupImg');
+  const title = document.getElementById('sourcePopupTitle');
+  title.textContent = 'Source: ' + displayName;
+  img.src = '/image/source/' + fname;
+  popup.classList.add('visible');
+}
+
+function closeSourcePopup(event) {
+  // Close if clicking the overlay background or the close button
+  if (!event || event.target.id === 'sourcePopup' || event.target.classList.contains('popup-close')) {
+    document.getElementById('sourcePopup').classList.remove('visible');
+  }
+}
+
+// Close popup on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('sourcePopup').classList.remove('visible');
+  }
+});
 
 let gestaltTimer = null;
 function saveGestaltK() {
@@ -3661,6 +3991,7 @@ def init_app():
     global _review_state, _gestalt_k, _exemplars, _orient_warnings, _orient_landmarks
     global _duplicate_mapping, _fishbase_duplicates
     global _photographer_data, _image_metadata, _miyazawa_images
+    global _underwater_flags, _orig_image_index
 
     print("Loading inventory...")
     _inventory = load_inventory()
@@ -3721,6 +4052,40 @@ def init_app():
     _miyazawa_images = _load_miyazawa_images()
     print(f"  {len(_miyazawa_images)} images from Miyazawa (2020) study")
     print(f"  {len(_fishbase_duplicates)} duplicate images to hide")
+
+    print("Loading underwater detection flags...")
+    _underwater_flags = _load_underwater_flags()
+    if _underwater_flags:
+        n_whole_uw = sum(1 for v in _underwater_flags.values()
+                         if v.get("whole_is_uw") == "True")
+        n_body_uw = sum(1 for v in _underwater_flags.values()
+                        if v.get("body_is_uw") == "True")
+        print(f"  {len(_underwater_flags)} images analyzed, "
+              f"{n_whole_uw} UW (whole), {n_body_uw} UW (body)")
+    else:
+        print("  No underwater detection report found (run detect_underwater.py)")
+
+    print("Loading depth estimates...")
+    global _depth_estimates
+    _depth_estimates = load_depth_estimates()
+    if _depth_estimates:
+        print(f"  {len(_depth_estimates)} images with depth estimates")
+    else:
+        print("  No depth estimates found (run estimate_depths.py)")
+
+    print("Loading saved filter states...")
+    _image_filters.update(_load_image_filters())
+    n_filters = sum(1 for f in _image_filters.values()
+                    if any(f.values()))
+    print(f"  {n_filters} images with active filters")
+
+    print("Building original image index...")
+    _orig_image_index = {}
+    for row in _inventory:
+        base = os.path.splitext(row["filename"])[0]
+        orig_path = os.path.join(REPO_DIR, row["directory"], row["filename"])
+        _orig_image_index[base] = orig_path
+    print(f"  {len(_orig_image_index)} images indexed")
 
 
 def main():
