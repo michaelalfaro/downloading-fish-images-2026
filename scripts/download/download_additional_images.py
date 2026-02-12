@@ -53,6 +53,8 @@ BISHOP_DIR = os.path.join(SCRIPT_DIR, "images_bishop")
 FISHBASE_EXTRA_DIR = os.path.join(SCRIPT_DIR, "images_fishbase_extra")
 FISHBASE_USERCONTRIB_DIR = os.path.join(SCRIPT_DIR, "images_fishbase_usercontrib")
 INATURALIST_DIR = os.path.join(SCRIPT_DIR, "images_inaturalist")
+FISHWISE_DIR = os.path.join(SCRIPT_DIR, "images_fishwise")
+FISHPIX_DIR = os.path.join(SCRIPT_DIR, "images_fishpix")
 
 # Output files
 INVENTORY_CSV = os.path.join(SCRIPT_DIR, "all_images_inventory.csv")
@@ -422,6 +424,8 @@ def build_full_inventory():
         (FISHBASE_EXTRA_DIR, "images_fishbase_extra"),
         (FISHBASE_USERCONTRIB_DIR, "images_fishbase_usercontrib"),
         (INATURALIST_DIR, "images_inaturalist"),
+        (FISHWISE_DIR, "images_fishwise"),
+        (FISHPIX_DIR, "images_fishpix"),
     ]
 
     for dirpath, dirname in dirs_and_sources:
@@ -429,6 +433,9 @@ def build_full_inventory():
             continue
         for fname in sorted(os.listdir(dirpath)):
             if not fname.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
+                continue
+            # Skip unresolvable files (genus-only IDs, non-target taxa)
+            if fname.startswith("Unknown_"):
                 continue
             filepath = os.path.join(dirpath, fname)
             if not os.path.isfile(filepath):
@@ -446,6 +453,8 @@ def build_full_inventory():
             # Determine source from filename
             if "_FishPix_" in fname:
                 source = "FishPix"
+            elif "_FishWise_" in fname:
+                source = "FishWise"
             elif "_FishBaseUser_" in fname:
                 source = "FishBaseUser"
             elif "_FishBase_" in fname:
@@ -479,7 +488,10 @@ def deduplicate(inventory):
         "images": 0,
         "images_bishop": 1,
         "images_fishbase_extra": 2,
-        "images_inaturalist": 3,
+        "images_fishwise": 3,
+        "images_fishpix": 4,
+        "images_fishbase_usercontrib": 5,
+        "images_inaturalist": 6,
     }
 
     by_hash = {}
@@ -527,7 +539,8 @@ def build_species_summary(inventory, tree_species):
         if sp not in sp_data:
             sp_data[sp] = {
                 "fishpix": 0, "fishbase": 0, "bishop": 0,
-                "fishbase_extra": 0, "fishbase_usercontrib": 0, "inaturalist": 0,
+                "fishbase_extra": 0, "fishbase_usercontrib": 0,
+                "inaturalist": 0, "fishwise": 0,
             }
         if src == "FishPix":
             sp_data[sp]["fishpix"] += 1
@@ -541,6 +554,8 @@ def build_species_summary(inventory, tree_species):
             sp_data[sp]["bishop"] += 1
         elif src == "iNaturalist":
             sp_data[sp]["inaturalist"] += 1
+        elif src == "FishWise":
+            sp_data[sp]["fishwise"] += 1
 
     tree_sp_lower = {s.lower() for s in tree_species}
 
@@ -565,6 +580,8 @@ def build_species_summary(inventory, tree_species):
             sources.append("FishBase_user")
         if counts["inaturalist"] > 0:
             sources.append("iNaturalist")
+        if counts["fishwise"] > 0:
+            sources.append("FishWise")
 
         rows.append({
             "species": sp,
@@ -575,6 +592,7 @@ def build_species_summary(inventory, tree_species):
             "n_fishbase_extra": counts["fishbase_extra"],
             "n_fishbase_usercontrib": counts["fishbase_usercontrib"],
             "n_inaturalist": counts["inaturalist"],
+            "n_fishwise": counts["fishwise"],
             "n_total": total,
             "sources": " + ".join(sources),
         })
@@ -718,7 +736,8 @@ def main():
     with open(SUMMARY_CSV, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=[
             "species", "in_tree", "n_fishpix", "n_fishbase", "n_bishop",
-            "n_fishbase_extra", "n_inaturalist", "n_total", "sources",
+            "n_fishbase_extra", "n_fishbase_usercontrib", "n_inaturalist",
+            "n_fishwise", "n_total", "sources",
         ])
         writer.writeheader()
         writer.writerows(summary_rows)

@@ -149,25 +149,25 @@ def parse_fishpix_search_results(html_content):
         re.IGNORECASE
     )
 
+    # Species name pattern: extract from <SPAN class="result">Genus species Author</SPAN>
+    # The species text SPAN comes after the image SPAN for each entry.
+    # Handles both "Genus species Author, Year" and "Genus species (Author, Year)"
+    species_span_pattern = re.compile(
+        r'<SPAN\s+class="result">\s*([A-Z][a-z]+)\s+([a-z]+)\s',
+        re.IGNORECASE
+    )
+
     # Find all thumbnails and extract associated species
     for match in thumb_pattern.finditer(html_content):
         nr_prefix = match.group(1)  # e.g., NR0010
         pic_id = match.group(2)      # e.g., 10004
 
-        # Look for species name AFTER this thumbnail (within ~500 chars)
-        # Species appears as plain text like "Chaetodon vagabundus Linnaeus, 1758"
-        # or "Heniochus chrysostomus Cuvier, 1831"
+        # Look for species name in a <SPAN class="result"> AFTER this thumbnail
         after_pos = match.end()
         end_pos = min(len(html_content), after_pos + 600)
         context_after = html_content[after_pos:end_pos]
 
-        # Species pattern: Genus species Author, Year
-        # Capture just Genus species (first two words)
-        species_pattern = re.compile(
-            r'([A-Z][a-z]+)\s+([a-z]+)\s+[A-Z][a-z]+',
-            re.MULTILINE
-        )
-        species_match = species_pattern.search(context_after)
+        species_match = species_span_pattern.search(context_after)
 
         if species_match:
             genus = species_match.group(1)

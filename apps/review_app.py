@@ -574,28 +574,41 @@ def _load_underwater_flags():
 
 
 def _load_image_filters():
-    """Load persisted filter state from CSV."""
+    """Load persisted filter state from CSV.
+
+    Handles both boolean filters (seathru=True/False) and string
+    metadata (seathru_method=gray_world).
+    """
     filters = {}
     if os.path.exists(FILTERS_CSV):
         with open(FILTERS_CSV, newline="") as f:
             for row in csv.DictReader(f):
                 fname = row["filename"]
                 filter_name = row["filter"]
-                enabled = row["enabled"] == "True"
+                value = row["enabled"]
                 if fname not in filters:
                     filters[fname] = {}
-                filters[fname][filter_name] = enabled
+                # String metadata keys store method names, not booleans
+                if filter_name.endswith("_method"):
+                    filters[fname][filter_name] = value  # e.g. "gray_world"
+                else:
+                    filters[fname][filter_name] = value == "True"
     return filters
 
 
 def _save_image_filters():
-    """Persist filter state to CSV."""
+    """Persist filter state to CSV.
+
+    Saves both boolean filters and string metadata (e.g. seathru_method).
+    """
     rows = []
     for fname, fdict in _image_filters.items():
-        for filter_name, enabled in fdict.items():
-            if enabled:  # only persist enabled filters
+        for filter_name, value in fdict.items():
+            # For boolean filters, only persist if enabled
+            # For string metadata (e.g. seathru_method), always persist if truthy
+            if value:
                 rows.append({"filename": fname, "filter": filter_name,
-                             "enabled": str(enabled)})
+                             "enabled": str(value)})
     with open(FILTERS_CSV, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["filename", "filter", "enabled"])
         writer.writeheader()
@@ -1325,6 +1338,20 @@ def serve_source_image(filename):
 
 # ── API routes ─────────────────────────────────────────────
 
+@app.route("/api/reload", methods=["POST"])
+def api_reload():
+    """Hot-reload all data without restarting the app.
+
+    Useful after running new processing scripts (depth estimation,
+    underwater detection, etc.) so the review app picks up new data.
+    """
+    try:
+        init_app()
+        return jsonify({"ok": True, "message": "All data reloaded successfully"})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
 @app.route("/api/save_image_action", methods=["POST"])
 def api_save_image_action():
     data = request.get_json()
@@ -1427,9 +1454,13 @@ def api_save_filter():
 
     _image_filters[filename][filter_name] = enabled
 
-    # Store Sea-thru method if provided
-    if filter_name == "seathru" and method:
-        _image_filters[filename]["seathru_method"] = method
+    # Store or clear Sea-thru method
+    if filter_name == "seathru":
+        if enabled and method:
+            _image_filters[filename]["seathru_method"] = method
+        elif not enabled:
+            # Clear method when filter is disabled
+            _image_filters[filename].pop("seathru_method", None)
 
     _save_image_filters()
 
@@ -2266,6 +2297,16 @@ REVIEW_HTML = """<!DOCTYPE html>
     margin-top: 3px; }
   .show-source-btn:hover { background: #fff3e0; border-color: #ff9800; color: #e65100; }
 
+  /* Original scene toggle (shown when Sea-thru is active) */
+  .original-scene-btn { display: none; position: absolute; top: 2px; right: 2px;
+    background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    padding: 2px 6px; border-radius: 4px; font-size: 9px; cursor: pointer;
+    z-index: 10; transition: background 0.2s; }
+  .original-scene-btn:hover { background: rgba(0,0,0,0.85); border-color: #ff9800; }
+  .original-scene-btn.active { background: rgba(230,81,0,0.8); border-color: #ff9800; }
+  .img-panel { position: relative; }
+  .card.has-seathru-active .original-scene-btn { display: block; }
+
   /* Original source image popup overlay */
   .source-popup-overlay { display: none; position: fixed; top: 0; left: 0;
     width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000;
@@ -2499,13 +2540,20 @@ REVIEW_HTML = """<!DOCTYPE html>
       {% if im.has_segmented %}
         <div class="img-panel img-original">
           <div class="label">Original</div>
+          <button class="original-scene-btn" data-fname="{{ im.orig_fname }}" onclick="toggleOriginalScene(this)" title="Toggle unsegmented source image (shows fish + background)">&#x1F30A; Scene</button>
           <img src="/image/segmented/{{ species_dirname }}/{{ im.png_name }}"
-               alt="original" loading="lazy">
+               alt="original" loading="lazy"
+               {% if not im.has_oriented and not im.has_normalized %}
+               data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}"
+               data-has-seathru="{{ 'true' if im.filters.get('seathru') else 'false' }}"
+               data-seathru-method="{{ im.filters.get('seathru_method', 'gray_world') }}"
+               {% endif %}>
         </div>
       {% endif %}
       {% if im.has_oriented %}
         <div class="img-panel img-processed">
           <div class="label oriented-label">Processed &#10003;</div>
+          <button class="original-scene-btn" data-fname="{{ im.orig_fname }}" onclick="toggleOriginalScene(this)" title="Toggle unsegmented source image (shows fish + background)">&#x1F30A; Scene</button>
           <img src="/image/oriented/{{ species_dirname }}/{{ im.png_name }}"
                alt="processed" loading="lazy"
                data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}"
@@ -2515,6 +2563,7 @@ REVIEW_HTML = """<!DOCTYPE html>
       {% elif im.has_normalized %}
         <div class="img-panel img-processed">
           <div class="label">Processed</div>
+          <button class="original-scene-btn" data-fname="{{ im.orig_fname }}" onclick="toggleOriginalScene(this)" title="Toggle unsegmented source image (shows fish + background)">&#x1F30A; Scene</button>
           <img src="/image/normalized/{{ species_dirname }}/{{ im.png_name }}"
                alt="processed" loading="lazy"
                data-has-randall="{{ 'true' if im.filters.get('randall') else 'false' }}"
@@ -3112,6 +3161,22 @@ function toggleAction(cb) {
     if (action === "alt_morph") { fixCb.checked = false; resegCb.checked = false; colorCb.checked = false; excludeCb.checked = true; }
     if (action === "resegment") { fixCb.checked = false; altCb.checked = false; colorCb.checked = false; excludeCb.checked = true; }
     if (action === "color_correct") { fixCb.checked = false; altCb.checked = false; resegCb.checked = false; excludeCb.checked = true; }
+
+    // If excluding, clear Sea-thru filter state (user said: "if I exclude then forget all assigned states")
+    if (["exclude", "alt_morph", "resegment", "color_correct"].includes(action)) {
+      card.querySelectorAll('.seathru-btn-inline.active').forEach(b => b.classList.remove('active'));
+      const targetImg = card.querySelector('.img-processed img') || card.querySelector('.img-original img');
+      if (targetImg) removeSeathruFilter(targetImg);
+      card.classList.remove('has-seathru-active');
+      // Revert any original-scene view
+      card.querySelectorAll('.original-scene-btn.active').forEach(b => revertOriginalScene(b));
+      // Clear saved filter state
+      fetch('/api/save_filter', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({filename: fname, filter: 'seathru', enabled: false})
+      });
+    }
   }
 
   // Update card styling
@@ -3250,10 +3315,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const savedMode = localStorage.getItem('chaetview-mode') || 'both';
   setViewMode(savedMode);
 
-  // Apply Sea-thru filter to processed images that have it enabled
-  document.querySelectorAll('.img-processed img[data-has-seathru="true"]').forEach(img => {
+  // Apply Sea-thru filter to images that have it enabled (processed panel or original if no processed)
+  document.querySelectorAll('img[data-has-seathru="true"]').forEach(img => {
     const method = img.dataset.seathruMethod || 'gray_world';
-    const apply = () => applySeathruFilter(img, method);
+    const apply = () => {
+      applySeathruFilter(img, method);
+      // Mark card so the Scene toggle button is visible
+      const card = img.closest('.card');
+      if (card) card.classList.add('has-seathru-active');
+    };
     if (img.complete && img.naturalWidth > 0) {
       apply();
     } else {
@@ -3290,14 +3360,17 @@ function clickSeathruBtn(btn) {
   const fname = btn.dataset.fname;
   const method = btn.dataset.method;
   const wasActive = btn.classList.contains('active');
-  const processedImg = card.querySelector('.img-processed img');
+  // Try processed panel first, fall back to original segmented panel
+  const targetImg = card.querySelector('.img-processed img') || card.querySelector('.img-original img');
 
   // Deactivate all sibling seathru buttons in this card
   card.querySelectorAll('.seathru-btn-inline').forEach(b => b.classList.remove('active'));
 
   if (wasActive) {
-    // Toggle off
-    if (processedImg) removeSeathruFilter(processedImg);
+    // Toggle off - revert any original-scene view first
+    card.querySelectorAll('.original-scene-btn.active').forEach(b => revertOriginalScene(b));
+    if (targetImg) removeSeathruFilter(targetImg);
+    card.classList.remove('has-seathru-active');
     fetch('/api/save_filter', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -3306,13 +3379,46 @@ function clickSeathruBtn(btn) {
   } else {
     // Activate this method
     btn.classList.add('active');
-    if (processedImg) applySeathruFilter(processedImg, method);
+    if (targetImg) applySeathruFilter(targetImg, method);
+    card.classList.add('has-seathru-active');
     fetch('/api/save_filter', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({filename: fname, filter: 'seathru', enabled: true, method: method})
     });
   }
+}
+
+// Original Scene toggle (show unsegmented source image in-place)
+function toggleOriginalScene(btn) {
+  const panel = btn.closest('.img-panel');
+  const img = panel.querySelector('img');
+  const fname = btn.dataset.fname;
+  if (btn.classList.contains('active')) {
+    // Revert to corrected/segmented view
+    revertOriginalScene(btn);
+  } else {
+    // Show original unsegmented source
+    if (!img.dataset.segmentedSrc) {
+      img.dataset.segmentedSrc = img.src;  // Save current (possibly Sea-thru corrected) src
+    }
+    img.src = '/image/source/' + fname;
+    btn.classList.add('active');
+    btn.textContent = '\\u21A9 Back';
+    btn.title = 'Return to segmented/corrected view';
+  }
+}
+
+function revertOriginalScene(btn) {
+  const panel = btn.closest('.img-panel');
+  const img = panel.querySelector('img');
+  if (img.dataset.segmentedSrc) {
+    img.src = img.dataset.segmentedSrc;
+    delete img.dataset.segmentedSrc;
+  }
+  btn.classList.remove('active');
+  btn.innerHTML = '\\u{1F30A} Scene';
+  btn.title = 'Toggle unsegmented source image (shows fish + background)';
 }
 
 // Source image popup

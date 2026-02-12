@@ -22,6 +22,7 @@ IMAGE_DIRS = {
     "images_fishbase_usercontrib": os.path.join(REPO_DIR, "images_fishbase_usercontrib"),
     "images_inaturalist": os.path.join(REPO_DIR, "images_inaturalist"),
     "images_fishwise": os.path.join(REPO_DIR, "images_fishwise"),
+    "images_fishpix": os.path.join(REPO_DIR, "images_fishpix"),
 }
 
 ANALYSIS_DIR = os.path.join(REPO_DIR, "analysis")

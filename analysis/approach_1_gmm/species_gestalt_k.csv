@@ -1,8 +1,8 @@
 species,gestalt_k,review_status,notes,reviewed_at
-Amphichaetodon howensis,3,reviewed,,2026-02-08T17:21:27.293021
-Amphichaetodon melbae,4,reviewed,,2026-02-08T18:04:32.367369
-Chaetodon adiergastos,4,reviewed,,2026-02-08T18:07:56.160150
-Chaetodon andamanensis,3,reviewed,Constrained from k=2 to k=3 for valid Jt metric,2026-02-08T18:10:05.763932
+Amphichaetodon howensis,3,reviewed,,2026-02-12T13:28:39.325192
+Amphichaetodon melbae,4,reviewed,,2026-02-11T06:21:28.769164
+Chaetodon adiergastos,4,reviewed,,2026-02-10T22:49:01.830783
+Chaetodon andamanensis,3,reviewed,Constrained from k=2 to k=3 for valid Jt metric,2026-02-10T22:50:47.010929
 Chaetodon argentatus,3,reviewed,Constrained from k=2 to k=3 for valid Jt metric,2026-02-08T18:13:31.920082
 Chaetodon assarius,3,reviewed,,2026-02-08T18:14:34.968743
 Chaetodon aureofasciatus,3,reviewed,,2026-02-08T18:27:41.893804
@@ -21,7 +21,7 @@ Chaetodon declivis,4,reviewed,,2026-02-04T22:43:59.437718
 Chaetodon decussatus,4,reviewed,,2026-02-04T22:49:17.807751
 Chaetodon dialeucos,3,reviewed,,2026-02-04T22:50:03.370063
 Chaetodon dolosus,4,reviewed,,2026-02-05T10:38:50.114139
-Chaetodon ephippium,4,not_reviewed,Constrained from k=5 to k=4 for consistency,2026-02-05T12:44:20.768486
+Chaetodon ephippium,4,in_progress,Constrained from k=5 to k=4 for consistency,2026-02-12T13:29:43.935398
 Chaetodon falcula,4,not_reviewed,,2026-02-05T12:45:15.718302
 Chaetodon fasciatus,3,not_reviewed,,2026-02-05T12:47:05.716780
 Chaetodon flavirostris,3,in_progress,,2026-02-08T21:28:17.480300
@@ -55,6 +55,7 @@ Chaetodon speculum,3,in_progress,,2026-02-08T21:42:44.902866
 Chaetodon striatus,3,in_progress,Constrained from k=2 to k=3 for valid Jt metric,2026-02-08T21:42:53.571340
 Chaetodon tinkeri,3,in_progress,,2026-02-08T21:48:14.627065
 Chaetodon triangulum,4,in_progress,,2026-02-08T21:48:37.495519
+Chaetodon trichrous,4,in_progress,,2026-02-11T13:58:43.109181
 Chaetodon tricinctus,3,in_progress,,2026-02-08T21:49:02.813462
 Chaetodon unimaculatus,3,in_progress,,2026-02-08T21:49:33.411582
 Chaetodon zanzibarensis,3,in_progress,,2026-02-08T21:50:01.015214

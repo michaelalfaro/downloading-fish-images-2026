@@ -31,8 +31,10 @@ IMAGE_DIRS = {
     "images": os.path.join(SCRIPT_DIR, "images"),
     "images_bishop": os.path.join(SCRIPT_DIR, "images_bishop"),
     "images_fishbase_extra": os.path.join(SCRIPT_DIR, "images_fishbase_extra"),
-    "images_inaturalist": os.path.join(SCRIPT_DIR, "images_inaturalist"),
     "images_fishbase_usercontrib": os.path.join(SCRIPT_DIR, "images_fishbase_usercontrib"),
+    "images_inaturalist": os.path.join(SCRIPT_DIR, "images_inaturalist"),
+    "images_fishwise": os.path.join(SCRIPT_DIR, "images_fishwise"),
+    "images_fishpix": os.path.join(SCRIPT_DIR, "images_fishpix"),
 }
 QUARANTINE_DIR = os.path.join(SCRIPT_DIR, "images_quarantine")
 
@@ -114,6 +116,9 @@ def scan_all_images():
                 continue
             if not fname.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                 continue
+            # Skip unresolvable files (genus-only IDs, non-target taxa)
+            if fname.startswith("Unknown_"):
+                continue
 
             fsize = os.path.getsize(filepath)
             md5 = compute_md5(filepath)
@@ -126,6 +131,8 @@ def scan_all_images():
             # Determine source
             if "_FishPix_" in fname:
                 source = "FishPix"
+            elif "_FishWise_" in fname:
+                source = "FishWise"
             elif "_FishBaseUser_" in fname:
                 source = "FishBaseUser"
             elif "_FishBase_" in fname:
@@ -180,7 +187,7 @@ def apply_filters(images):
         if len(species_set) > 1:
             # This is a cross-species duplicate - flag all but keep the one
             # in the highest-priority directory
-            dir_priority = {"images": 0, "images_bishop": 1, "images_fishbase_extra": 2, "images_fishbase_usercontrib": 3, "images_inaturalist": 4}
+            dir_priority = {"images": 0, "images_bishop": 1, "images_fishbase_extra": 2, "images_fishwise": 3, "images_fishpix": 4, "images_fishbase_usercontrib": 5, "images_inaturalist": 6}
             group.sort(key=lambda x: dir_priority.get(x["directory"], 99))
             kept = group[0]
             for dup in group[1:]:
@@ -196,7 +203,7 @@ def apply_filters(images):
             continue
         species_set = set(g["species"] for g in group)
         if len(species_set) == 1:
-            dir_priority = {"images": 0, "images_bishop": 1, "images_fishbase_extra": 2, "images_fishbase_usercontrib": 3, "images_inaturalist": 4}
+            dir_priority = {"images": 0, "images_bishop": 1, "images_fishbase_extra": 2, "images_fishwise": 3, "images_fishpix": 4, "images_fishbase_usercontrib": 5, "images_inaturalist": 6}
             group.sort(key=lambda x: dir_priority.get(x["directory"], 99))
             kept = group[0]
             for dup in group[1:]:

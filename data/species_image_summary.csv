@@ -1,131 +1,131 @@
-species,in_tree,n_fishpix,n_fishbase,n_bishop,n_fishbase_extra,n_fishbase_usercontrib,n_inaturalist,n_total,sources
-Amphichaetodon howensis,yes,0,1,4,3,0,10,18,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Amphichaetodon melbae,yes,0,1,1,0,0,4,6,FishBase + BishopMuseum + iNaturalist
-Chaetodon adiergastos,yes,1,0,1,5,7,10,24,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon andamanensis,no,1,0,1,3,3,10,18,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon argentatus,yes,1,0,2,5,0,10,18,FishPix + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon assarius,yes,0,1,0,0,0,10,11,FishBase + iNaturalist
-Chaetodon aureofasciatus,yes,0,1,1,2,2,10,16,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon auriga,no,1,0,6,16,19,10,52,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon auripes,yes,1,0,2,8,3,10,24,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon austriacus,yes,0,1,1,3,8,10,23,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon baronessa,yes,1,0,4,9,9,10,33,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon bennetti,yes,1,0,2,6,9,10,28,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon blackburnii,yes,0,1,3,5,2,10,21,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon burgessi,yes,1,0,0,5,2,9,17,FishPix + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon capistratus,yes,0,1,0,4,14,10,29,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon citrinellus,yes,1,0,5,7,9,10,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon collare,yes,1,0,2,9,15,10,37,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon daedalma,no,1,0,1,2,1,5,10,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon declivis,yes,0,1,3,5,0,1,10,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon decussatus,yes,0,1,1,5,11,10,28,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon dialeucos,yes,0,1,1,2,0,3,7,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon dolosus,no,0,1,1,2,1,10,15,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon ephippium,yes,1,0,2,8,15,10,36,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon excelsa,no,0,0,1,0,0,0,1,BishopMuseum
-Chaetodon falcula,yes,1,0,1,6,4,10,22,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon fasciatus,yes,1,0,2,5,7,10,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon flavirostris,no,1,0,1,3,1,10,16,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon flavocoronatus,no,0,1,2,1,0,4,8,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon fremblii,yes,1,0,1,5,1,10,18,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon gardineri,yes,0,1,1,3,6,5,16,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon guentheri,yes,1,0,1,3,0,10,15,FishPix + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon guttatissimus,yes,0,1,2,3,7,10,23,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon hoefleri,no,0,1,0,2,3,10,16,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon humeralis,yes,0,1,0,4,5,10,20,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon interruptus,yes,0,1,0,4,3,10,18,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon kleinii,yes,1,0,3,10,20,10,44,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon larvatus,yes,1,0,1,4,7,10,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon leucopleura,yes,0,1,1,2,1,10,15,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon lineolatus,yes,1,0,3,8,14,10,36,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon litus,yes,0,1,2,1,0,10,14,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon lunula,yes,1,0,4,9,11,10,35,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon lunulatus,yes,1,0,2,10,15,10,38,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon madagaskariensis,yes,0,1,1,3,1,10,16,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon marleyi,no,0,1,1,1,1,9,13,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon melannotus,yes,1,0,4,9,15,10,39,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon melapterus,yes,0,1,2,4,2,10,19,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon mertensii,yes,1,0,4,5,3,10,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon mesoleucos,yes,1,0,1,5,1,10,18,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon meyeri,yes,1,0,1,4,8,10,24,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon miliaris,yes,0,1,2,4,2,10,19,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon mitratus,yes,1,0,1,5,2,6,15,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon modestus,no,1,0,1,0,0,0,2,FishPix + BishopMuseum
-Chaetodon multicinctus,yes,1,0,2,3,1,10,17,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon nigropunctatus,yes,0,1,2,3,5,10,21,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon nippon,yes,1,0,1,2,2,10,16,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon ocellatus,yes,1,0,0,3,14,10,28,FishPix + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon ocellicaudus,yes,1,0,1,3,6,10,21,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon octofasciatus,yes,1,0,1,13,21,10,46,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon ornatissimus,yes,1,0,2,9,7,10,29,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon oxycephalus,yes,1,0,0,2,4,10,17,FishPix + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon paucifasciatus,yes,0,1,1,4,8,10,24,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon pelewensis,yes,1,0,1,4,6,10,22,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon pictus,yes,0,0,0,0,5,11,16,FishBase_user + iNaturalist
-Chaetodon plebeius,yes,1,0,3,5,6,10,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon punctatofasciatus,yes,1,0,1,4,13,9,28,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon quadrimaculatus,yes,1,0,0,6,4,10,21,FishPix + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon rafflesii,yes,1,0,2,5,9,8,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon rainfordi,yes,1,0,1,5,2,10,19,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon reticulatus,yes,1,0,1,4,1,10,17,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon robustus,yes,0,1,0,2,2,10,15,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon sanctaehelenae,yes,0,1,0,3,0,7,11,FishBase + FishBase_extra + iNaturalist
-Chaetodon sedentarius,yes,0,1,0,2,7,10,20,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon selene,yes,1,0,1,4,6,10,22,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon semeion,yes,1,0,2,6,4,10,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon semilarvatus,yes,1,0,1,6,9,10,27,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon smithi,no,0,1,3,4,0,1,9,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon speculum,yes,1,0,1,12,10,10,34,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon striatus,yes,0,1,0,3,13,10,27,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon tinkeri,yes,1,0,3,6,1,10,21,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon triangulum,yes,0,1,0,1,3,10,15,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon trichrous,yes,0,1,1,1,0,10,13,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon tricinctus,yes,1,0,1,2,0,10,14,FishPix + BishopMuseum + FishBase_extra + iNaturalist
-Chaetodon trifascialis,yes,1,0,2,7,11,10,31,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon trifasciatus,yes,1,0,1,7,6,10,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon ulietensis,yes,1,0,2,7,7,10,27,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon unimaculatus,yes,1,0,2,4,7,10,24,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon vagabundus,yes,1,0,3,9,14,10,37,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon wiebeli,no,1,0,1,9,8,10,29,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon xanthocephalus,yes,1,0,1,5,12,10,29,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon xanthurus,yes,1,0,1,6,5,10,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chaetodon zanzibarensis,yes,0,1,0,4,0,10,15,FishBase + FishBase_extra + iNaturalist
-Chaetodon zanzibariensis,no,0,0,1,0,0,0,1,BishopMuseum
-Chelmon marginalis,no,0,2,3,2,0,10,17,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chelmon muelleri,yes,0,2,2,2,0,10,16,FishBase + BishopMuseum + FishBase_extra + iNaturalist
-Chelmon rostratus,yes,1,0,2,7,18,10,38,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Chelmonops curiosus,yes,0,1,0,0,2,10,13,FishBase + FishBase_user + iNaturalist
-Chelmonops truncatus,no,0,1,1,0,0,10,12,FishBase + BishopMuseum + iNaturalist
-Coradion altivelis,yes,1,0,2,6,2,10,21,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Coradion chrysozonus,yes,1,0,4,7,12,10,34,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Coradion melanopus,yes,1,0,4,8,4,10,27,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Forcipiger flavissimus,yes,1,0,2,10,20,10,43,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Forcipiger longirostris,yes,0,1,3,7,19,10,40,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Forcipiger wanai,yes,0,1,0,0,2,10,13,FishBase + FishBase_user + iNaturalist
-Hemitaurichthys multispinosus,no,0,1,1,0,0,0,2,FishBase + BishopMuseum
-Hemitaurichthys polylepis,yes,1,0,1,8,7,10,27,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Hemitaurichthys thompsoni,yes,1,0,0,1,0,10,12,FishPix + FishBase_extra + iNaturalist
-Hemitaurichthys zoster,yes,1,0,1,4,7,10,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus acuminatus,yes,1,0,3,12,38,10,64,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus chrysostomus,yes,1,0,1,8,12,10,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus diphreutes,yes,2,0,1,5,7,10,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus intermedius,yes,1,0,1,5,9,10,26,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus monoceros,yes,1,0,3,7,5,10,26,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus pleurotaenia,yes,0,1,1,2,2,10,16,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus singularius,yes,0,1,2,6,5,10,24,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Heniochus varius,yes,1,0,1,8,13,10,33,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Johnrandallia nigrirostris,yes,0,1,0,3,4,10,18,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Parachaetodon ocellatus,yes,0,1,3,4,2,10,20,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
-Prognathodes aculeatus,yes,0,1,0,4,1,10,16,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Prognathodes aya,yes,0,1,0,2,3,3,9,FishBase + FishBase_extra + FishBase_user + iNaturalist
-Prognathodes brasiliensis,yes,0,1,0,2,0,0,3,FishBase + FishBase_extra
-Prognathodes carlhubbsi,no,0,1,0,0,4,10,15,FishBase + FishBase_user + iNaturalist
-Prognathodes dichrous,yes,1,0,0,2,0,1,4,FishPix + FishBase_extra + iNaturalist
-Prognathodes falcifer,no,0,1,0,0,1,10,12,FishBase + FishBase_user + iNaturalist
-Prognathodes guyanensis,no,1,0,0,4,0,1,6,FishPix + FishBase_extra + iNaturalist
-Prognathodes marcellae,no,0,1,0,0,0,9,10,FishBase + iNaturalist
-Prognathodes obliquus,yes,0,1,0,0,0,0,1,FishBase
-Roa australis,no,0,1,0,0,0,0,1,FishBase
-Roa excelsa,yes,0,1,0,0,0,0,1,FishBase
-Roa jayakari,yes,0,1,0,4,11,0,16,FishBase + FishBase_extra + FishBase_user
-Roa modesta,no,0,1,0,6,3,10,20,FishBase + FishBase_extra + FishBase_user + iNaturalist
+species,in_tree,n_fishpix,n_fishbase,n_bishop,n_fishbase_extra,n_fishbase_usercontrib,n_inaturalist,n_fishwise,n_total,sources
+Amphichaetodon howensis,yes,0,1,4,3,0,10,6,24,FishBase + BishopMuseum + FishBase_extra + iNaturalist + FishWise
+Amphichaetodon melbae,yes,0,1,1,0,0,4,1,7,FishBase + BishopMuseum + iNaturalist + FishWise
+Chaetodon adiergastos,yes,1,0,1,5,7,10,15,39,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon andamanensis,no,1,0,1,3,3,10,0,18,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon argentatus,yes,1,0,2,5,0,10,5,23,FishPix + BishopMuseum + FishBase_extra + iNaturalist + FishWise
+Chaetodon assarius,yes,0,1,0,0,0,10,0,11,FishBase + iNaturalist
+Chaetodon aureofasciatus,yes,0,1,1,2,2,10,1,17,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon auriga,no,1,0,6,16,19,10,42,94,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon auripes,yes,1,0,2,8,3,10,1,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon austriacus,yes,0,1,1,3,8,10,8,31,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon baronessa,yes,1,0,4,9,9,10,11,44,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon bennetti,yes,1,0,2,6,9,10,15,43,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon blackburnii,yes,0,1,3,5,2,10,9,30,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon burgessi,yes,1,0,0,5,2,9,0,17,FishPix + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon capistratus,yes,0,1,0,4,14,10,3,32,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon citrinellus,yes,1,0,5,7,9,10,7,39,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon collare,yes,1,0,2,9,15,10,2,39,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon daedalma,no,1,0,1,2,1,5,0,10,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon declivis,yes,0,1,3,5,0,1,0,10,FishBase + BishopMuseum + FishBase_extra + iNaturalist
+Chaetodon decussatus,yes,0,1,1,5,11,10,1,29,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon dialeucos,yes,0,1,1,2,0,3,0,7,FishBase + BishopMuseum + FishBase_extra + iNaturalist
+Chaetodon dolosus,no,0,1,1,2,1,10,9,24,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon ephippium,yes,1,0,2,8,15,10,16,52,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon excelsa,no,0,0,1,0,0,0,0,1,BishopMuseum
+Chaetodon falcula,yes,1,0,1,6,4,10,4,26,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon fasciatus,yes,1,0,2,5,7,10,7,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon flavirostris,no,1,0,1,3,1,10,2,18,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon flavocoronatus,no,0,1,2,1,0,4,1,9,FishBase + BishopMuseum + FishBase_extra + iNaturalist + FishWise
+Chaetodon fremblii,yes,1,0,1,5,1,10,1,19,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon gardineri,yes,0,1,1,3,6,5,2,18,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon guentheri,yes,1,0,1,3,0,10,2,17,FishPix + BishopMuseum + FishBase_extra + iNaturalist + FishWise
+Chaetodon guttatissimus,yes,0,1,2,3,7,10,17,40,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon hoefleri,no,0,1,0,2,3,10,0,16,FishBase + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon humeralis,yes,0,1,0,4,5,10,1,21,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon interruptus,yes,0,1,0,4,3,10,38,56,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon kleinii,yes,1,0,3,10,20,10,19,63,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon larvatus,yes,1,0,1,4,7,10,3,26,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon leucopleura,yes,0,1,1,2,1,10,0,15,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon lineolatus,yes,1,0,3,8,14,10,11,47,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon litus,yes,0,1,2,1,0,10,2,16,FishBase + BishopMuseum + FishBase_extra + iNaturalist + FishWise
+Chaetodon lunula,yes,1,0,4,9,11,10,20,55,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon lunulatus,yes,1,0,2,10,15,10,8,46,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon madagaskariensis,yes,0,1,1,3,1,10,12,28,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon marleyi,no,0,1,1,1,1,9,5,18,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon melannotus,yes,1,0,4,9,15,10,16,55,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon melapterus,yes,0,1,2,4,2,10,1,20,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon mertensii,yes,1,0,4,5,3,10,2,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon mesoleucos,yes,1,0,1,5,1,10,3,21,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon meyeri,yes,1,0,1,4,8,10,25,49,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon miliaris,yes,0,1,2,4,2,10,3,22,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon mitratus,yes,1,0,1,5,2,6,8,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon modestus,no,1,0,1,0,0,0,1,3,FishPix + BishopMuseum + FishWise
+Chaetodon multicinctus,yes,1,0,2,3,1,10,2,19,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon nigropunctatus,yes,0,1,2,3,5,10,3,24,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon nippon,yes,1,0,1,2,2,10,0,16,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon ocellatus,yes,1,0,0,3,14,10,5,33,FishPix + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon ocellicaudus,yes,1,0,1,3,6,10,7,28,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon octofasciatus,yes,1,0,1,13,21,10,6,52,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon ornatissimus,yes,1,0,2,9,7,10,15,44,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon oxycephalus,yes,1,0,0,2,4,10,1,18,FishPix + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon paucifasciatus,yes,0,1,1,4,8,10,7,31,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon pelewensis,yes,1,0,1,4,6,10,3,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon pictus,yes,0,0,0,0,5,11,2,18,FishBase_user + iNaturalist + FishWise
+Chaetodon plebeius,yes,1,0,3,5,6,10,2,27,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon punctatofasciatus,yes,1,0,1,4,13,9,11,39,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon quadrimaculatus,yes,1,0,0,6,4,10,4,25,FishPix + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon rafflesii,yes,1,0,2,5,9,8,7,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon rainfordi,yes,1,0,1,5,2,10,1,20,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon reticulatus,yes,1,0,1,4,1,10,5,22,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon robustus,yes,0,1,0,2,2,10,0,15,FishBase + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon sanctaehelenae,yes,0,1,0,3,0,7,0,11,FishBase + FishBase_extra + iNaturalist
+Chaetodon sedentarius,yes,0,1,0,2,7,10,3,23,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon selene,yes,1,0,1,4,6,10,0,22,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon semeion,yes,1,0,2,6,4,10,2,25,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon semilarvatus,yes,1,0,1,6,9,10,21,48,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon smithi,no,0,1,3,4,0,1,0,9,FishBase + BishopMuseum + FishBase_extra + iNaturalist
+Chaetodon speculum,yes,1,0,1,12,10,10,5,39,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon striatus,yes,0,1,0,3,13,10,3,30,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon tinkeri,yes,1,0,3,6,1,10,3,24,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon triangulum,yes,0,1,0,1,3,10,2,17,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon trichrous,yes,0,1,1,1,0,10,0,13,FishBase + BishopMuseum + FishBase_extra + iNaturalist
+Chaetodon tricinctus,yes,1,0,1,2,0,10,0,14,FishPix + BishopMuseum + FishBase_extra + iNaturalist
+Chaetodon trifascialis,yes,1,0,2,7,11,10,23,54,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon trifasciatus,yes,1,0,1,7,6,10,8,33,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon ulietensis,yes,1,0,2,7,7,10,5,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon unimaculatus,yes,1,0,2,4,7,10,9,33,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon vagabundus,yes,1,0,3,9,14,10,10,47,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon wiebeli,no,1,0,1,9,8,10,0,29,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Chaetodon xanthocephalus,yes,1,0,1,5,12,10,16,45,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon xanthurus,yes,1,0,1,6,5,10,6,29,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chaetodon zanzibarensis,yes,0,1,0,4,0,10,2,17,FishBase + FishBase_extra + iNaturalist + FishWise
+Chaetodon zanzibariensis,no,0,0,1,0,0,0,0,1,BishopMuseum
+Chelmon marginalis,no,0,2,3,2,0,10,1,18,FishBase + BishopMuseum + FishBase_extra + iNaturalist + FishWise
+Chelmon muelleri,yes,0,2,2,2,0,10,0,16,FishBase + BishopMuseum + FishBase_extra + iNaturalist
+Chelmon rostratus,yes,1,0,2,7,18,10,2,40,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Chelmonops curiosus,yes,0,1,0,0,2,10,2,15,FishBase + FishBase_user + iNaturalist + FishWise
+Chelmonops truncatus,no,0,1,1,0,0,10,1,13,FishBase + BishopMuseum + iNaturalist + FishWise
+Coradion altivelis,yes,1,0,2,6,2,10,2,23,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Coradion chrysozonus,yes,1,0,4,7,12,10,1,35,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Coradion melanopus,yes,1,0,4,8,4,10,5,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Forcipiger flavissimus,yes,1,0,2,10,20,10,16,59,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Forcipiger longirostris,yes,0,1,3,7,19,10,14,54,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Forcipiger wanai,yes,0,1,0,0,2,10,0,13,FishBase + FishBase_user + iNaturalist
+Hemitaurichthys multispinosus,no,0,1,1,0,0,0,0,2,FishBase + BishopMuseum
+Hemitaurichthys polylepis,yes,1,0,1,8,7,10,3,30,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Hemitaurichthys thompsoni,yes,1,0,0,1,0,10,0,12,FishPix + FishBase_extra + iNaturalist
+Hemitaurichthys zoster,yes,1,0,1,4,7,10,9,32,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus acuminatus,yes,1,0,3,12,38,10,15,79,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus chrysostomus,yes,1,0,1,8,12,10,11,43,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus diphreutes,yes,2,0,1,5,7,10,9,34,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus intermedius,yes,1,0,1,5,9,10,7,33,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus monoceros,yes,1,0,3,7,5,10,14,40,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus pleurotaenia,yes,0,1,1,2,2,10,5,21,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus singularius,yes,0,1,2,6,5,10,4,28,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Heniochus varius,yes,1,0,1,8,13,10,11,44,FishPix + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Johnrandallia nigrirostris,yes,0,1,0,3,4,10,1,19,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Parachaetodon ocellatus,yes,0,1,3,4,2,10,0,20,FishBase + BishopMuseum + FishBase_extra + FishBase_user + iNaturalist
+Prognathodes aculeatus,yes,0,1,0,4,1,10,3,19,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise
+Prognathodes aya,yes,0,1,0,2,3,3,0,9,FishBase + FishBase_extra + FishBase_user + iNaturalist
+Prognathodes brasiliensis,yes,0,1,0,2,0,0,0,3,FishBase + FishBase_extra
+Prognathodes carlhubbsi,no,0,1,0,0,4,10,0,15,FishBase + FishBase_user + iNaturalist
+Prognathodes dichrous,yes,1,0,0,2,0,1,0,4,FishPix + FishBase_extra + iNaturalist
+Prognathodes falcifer,no,0,1,0,0,1,10,1,13,FishBase + FishBase_user + iNaturalist + FishWise
+Prognathodes guyanensis,no,1,0,0,4,0,1,1,7,FishPix + FishBase_extra + iNaturalist + FishWise
+Prognathodes marcellae,no,0,1,0,0,0,9,0,10,FishBase + iNaturalist
+Prognathodes obliquus,yes,0,1,0,0,0,0,0,1,FishBase
+Roa australis,no,0,1,0,0,0,0,1,2,FishBase + FishWise
+Roa excelsa,yes,0,1,0,0,0,0,1,2,FishBase + FishWise
+Roa jayakari,yes,0,1,0,4,11,0,2,18,FishBase + FishBase_extra + FishBase_user + FishWise
+Roa modesta,no,0,1,0,6,3,10,2,22,FishBase + FishBase_extra + FishBase_user + iNaturalist + FishWise

@@ -1,15 +1,17 @@
 filename,species,mouth_x,mouth_y,tail_x,tail_y,original_angle,angle,flip_h,flip_v,dv_tilt,ht_tilt,status,saved_at
+Amphichaetodon_howensis_FishWise_030360F008947W000008.png,Amphichaetodon howensis,181,292,483,236,-10.51,-10.51,no,no,0,0,applied,2026-02-10T13:14:58.376987
 Amphichaetodon_howensis_iNaturalist_11105384.png,Amphichaetodon howensis,313,508,779,256,-28.4,-21.9,,,,,applied,2026-02-07T08:57:22.148706
-Amphichaetodon_howensis_iNaturalist_405964908.png,Amphichaetodon howensis,688,455,326,372,-167.09,-167.09,no,yes,0,0,applied,2026-02-08T17:21:15.270939
+Amphichaetodon_howensis_iNaturalist_405964908.png,Amphichaetodon howensis,711,641,411,453,-147.93,-147.93,no,yes,0,0,applied,2026-02-12T13:28:11.244746
 Amphichaetodon_melbae_iNaturalist_510100646.png,Amphichaetodon melbae,287,387,758,280,-12.8,-4.3,,,,,applied,2026-02-08T08:20:50.057336
 Amphichaetodon_melbae_iNaturalist_510100653.png,Amphichaetodon melbae,835,358,242,398,176.14,170.64,,,,,applied,2026-02-08T08:20:18.735455
 Chaetodon_adiergastos_FishBaseUser_1577140639_172.68.102.128.png,Chaetodon adiergastos,1326,889,630,724,-166.66,-170.16,,,,,applied,2026-02-08T08:33:38.371047
 Chaetodon_adiergastos_FishBaseUser_1577140803_172.68.102.30.png,Chaetodon adiergastos,1678,1585,3210,1037,-19.68,-19.68,no,no,0,0,applied,2026-02-08T18:05:59.239353
 Chaetodon_adiergastos_FishBaseUser_1610273317_172.68.243.13.png,Chaetodon adiergastos,2436,1779,800,895,-151.62,-151.62,no,yes,0,0,applied,2026-02-08T18:06:52.142533
 Chaetodon_adiergastos_FishBaseUser_1753598392_219.73.75.40.png,Chaetodon adiergastos,861,1354,1961,1140,-11.01,-11.01,no,no,0,0,applied,2026-02-08T18:07:50.447643
-Chaetodon_adiergastos_FishBase_Chadi_u3.png,Chaetodon adiergastos,194,248,322,129,-42.91,-42.91,,,,,applied,2026-02-08T08:21:22.178810
+Chaetodon_adiergastos_FishBase_Chadi_u3.png,Chaetodon adiergastos,210,275,330,148,-46.62,-46.62,no,no,0,0,applied,2026-02-11T06:22:04.180085
 Chaetodon_adiergastos_FishBase_Chadi_u4.png,Chaetodon adiergastos,516,300,107,222,-169.2,-172.7,,,,,applied,2026-02-08T08:21:51.275867
 Chaetodon_adiergastos_FishPix_28455AF.png,Chaetodon adiergastos,107,424,462,289,-20.82,-13.82,,,,,applied,2026-02-08T08:22:26.149805
+Chaetodon_adiergastos_FishWise_000669F000031W000004.png,Chaetodon adiergastos,122,322,393,233,-18.18,-18.18,no,no,0,0,applied,2026-02-10T22:47:32.239099
 Chaetodon_adiergastos_iNaturalist_264257791.png,Chaetodon adiergastos,318,485,631,400,-15.19,-8.69,,,,,applied,2026-02-08T08:27:00.789916
 Chaetodon_adiergastos_iNaturalist_275485797.png,Chaetodon adiergastos,299,426,702,353,-10.27,-4.27,,,,,applied,2026-02-08T08:29:55.961339
 Chaetodon_adiergastos_iNaturalist_312479934.png,Chaetodon adiergastos,264,387,786,397,1.1,1.1,,,,,applied,2026-02-08T08:31:16.964780
@@ -17,14 +19,19 @@ Chaetodon_adiergastos_iNaturalist_341061286.png,Chaetodon adiergastos,905,460,25
 Chaetodon_adiergastos_iNaturalist_432980114.png,Chaetodon adiergastos,345,542,735,325,-29.09,-29.09,,,,,applied,2026-02-08T08:32:15.793520
 Chaetodon_adiergastos_iNaturalist_556364227.png,Chaetodon adiergastos,729,505,320,296,-152.93,-152.93,,,,,applied,2026-02-08T08:32:59.087856
 Chaetodon_andamanensis_FishPix_88987AF.png,Chaetodon andamanensis,595,484,166,228,-149.17,-152.67,no,yes,0,0,applied,2026-02-08T18:09:56.313344
+Chaetodon_andamanensis_iNaturalist_436938868.png,Chaetodon andamanensis,173,569,899,318,-19.07,-19.07,no,no,0,0,applied,2026-02-10T22:50:24.966994
+Chaetodon_argentatus_Bishop_1074668308.png,Chaetodon argentatus,73,390,575,332,-6.59,-6.59,no,no,0,0,applied,2026-02-10T22:51:10.074812
 Chaetodon_argentatus_FishBase_Charg_u0.png,Chaetodon argentatus,91,246,477,215,-4.59,-4.59,no,no,0,0,applied,2026-02-08T18:10:48.815430
+Chaetodon_argentatus_FishBase_Charg_ua.png,Chaetodon argentatus,105,228,493,335,15.42,15.42,no,no,0,0,applied,2026-02-10T22:51:50.971956
 Chaetodon_argentatus_FishPix_2068AF.png,Chaetodon argentatus,54,380,483,336,-5.86,-4.86,no,no,0,0,applied,2026-02-08T18:11:32.171107
-Chaetodon_argentatus_iNaturalist_83513716.png,Chaetodon argentatus,948,398,193,451,175.98,173.48,no,yes,0,0,applied,2026-02-08T18:13:09.696429
+Chaetodon_argentatus_FishWise_004409F000039W000001.png,Chaetodon argentatus,137,309,518,226,-12.29,-12.29,no,no,0,0,applied,2026-02-10T22:53:06.697453
+Chaetodon_argentatus_iNaturalist_83513716.png,Chaetodon argentatus,950,394,190,443,176.31,168.81,no,yes,0,0,applied,2026-02-10T22:54:15.114067
 Chaetodon_assarius_iNaturalist_176862632.png,Chaetodon assarius,399,261,653,371,23.42,26.92,no,no,0,0,applied,2026-02-08T18:14:19.903417
 Chaetodon_assarius_iNaturalist_477274770.png,Chaetodon assarius,115,505,609,307,-21.84,-15.34,,,,,applied,2026-02-07T09:24:04.137496
 Chaetodon_assarius_iNaturalist_6085742.png,Chaetodon assarius,821,471,320,412,-173.28,-177.28,,,,,applied,2026-02-07T09:23:15.290489
 Chaetodon_aureofasciatus_FishBaseUser_1607952616_172.69.135.150.png,Chaetodon aureofasciatus,182,374,850,539,13.87,13.87,no,no,0,0,applied,2026-02-08T18:16:04.971150
 Chaetodon_aureofasciatus_iNaturalist_341061346.png,Chaetodon aureofasciatus,927,511,277,496,-178.68,-182.18,no,yes,0,0,applied,2026-02-08T18:15:34.454396
+Chaetodon_auriga_Bishop_1449897185.png,Chaetodon auriga,122,507,601,323,-21.01,-21.01,no,no,0,0,applied,2026-02-12T15:26:55.890213
 Chaetodon_auriga_FishBaseUser_1361358853_86.28.236.182.png,Chaetodon auriga,890,457,186,262,-164.52,-164.52,no,yes,0,0,applied,2026-02-08T18:21:55.064800
 Chaetodon_auriga_FishBaseUser_1508794173_172.68.102.54.png,Chaetodon auriga,2004,380,986,1421,134.36,129.86,no,yes,0,0,applied,2026-02-08T18:18:44.523700
 Chaetodon_auriga_FishBaseUser_1575022767_162.158.167.52.png,Chaetodon auriga,1329,1425,403,562,-137.02,-137.02,no,yes,0,0,applied,2026-02-08T18:21:17.955809
@@ -37,6 +44,8 @@ Chaetodon_auripes_FishBase_Chauru12.png,Chaetodon auripes,97,210,482,265,8.13,8.
 Chaetodon_auripes_FishPix_140765AF.png,Chaetodon auripes,39,415,498,298,-14.3,-14.3,no,no,0,0,applied,2026-02-08T18:26:13.588558
 Chaetodon_austriacus_FishBaseUser_1705856644_108.162.212.67.png,Chaetodon austriacus,793,559,225,302,-155.65,-155.65,,,,,applied,2026-02-07T09:06:04.050095
 Chaetodon_baronessa_FishBase_Chbar_u8.png,Chaetodon baronessa,445,345,186,177,-147.03,-147.03,no,yes,0,0,applied,2026-02-08T18:30:37.018920
+Chaetodon_baronessa_FishWise_007419F000009W000010.png,Chaetodon baronessa,227,353,472,265,-19.76,-19.76,no,no,0,0,applied,2026-02-11T14:38:30.951384
+Chaetodon_baronessa_FishWise_007419F000009W000015.png,Chaetodon baronessa,215,464,524,263,-33.04,-33.04,no,no,0,0,applied,2026-02-11T14:29:58.004479
 Chaetodon_bennetti_FishBaseUser_1508795146_172.68.102.54.png,Chaetodon bennetti,1487,1471,578,718,-140.36,-140.36,no,yes,0,0,applied,2026-02-08T18:32:56.703113
 Chaetodon_bennetti_FishBaseUser_1747225818_95.95.129.49.png,Chaetodon bennetti,1131,1171,2765,1692,17.68,17.68,no,no,0,0,applied,2026-02-08T18:34:21.366992
 Chaetodon_bennetti_FishBase_Chben_u4.png,Chaetodon bennetti,471,284,178,178,-160.11,-160.11,no,yes,0,0,applied,2026-02-08T18:31:47.422190
@@ -59,6 +68,7 @@ Chaetodon_capistratus_FishBase_Chcap_uh.png,Chaetodon capistratus,414,420,169,12
 Chaetodon_capistratus_FishBase_Chcap_ui.png,Chaetodon capistratus,89,196,457,262,10.17,10.17,no,no,0,0,applied,2026-02-08T18:40:32.766551
 Chaetodon_citrinellus_FishPix_33011AF.png,Chaetodon citrinellus,90,421,441,215,-30.41,-30.41,no,no,0,0,applied,2026-02-08T18:45:40.817566
 Chaetodon_decussatus_Bishop_527122207.png,Chaetodon decussatus,50,364,584,255,-11.54,-11.54,no,no,0,0,applied,2026-02-08T20:15:46.169105
+Chaetodon_ephippium_FishBase_Cheph_u0.png,Chaetodon ephippium,77,335,514,194,-17.88,-17.88,no,no,0,0,applied,2026-02-12T13:29:54.682666
 Chaetodon_guttatissimus_FishBase_Chgut_u3.png,Chaetodon guttatissimus,87,209,486,288,11.2,11.2,,,,,applied,2026-02-07T08:55:36.281542
 Chaetodon_ocellatus_FishBase_Choce_ub.png,Chaetodon ocellatus,578,337,137,200,-162.74,-162.74,no,yes,0,0,applied,2026-02-08T21:37:33.572055
 Chaetodon_robustus_FishBase_Chrob_u6.png,Chaetodon robustus,423,245,187,192,-167.34,-167.34,no,yes,0,0,applied,2026-02-08T21:41:04.105291

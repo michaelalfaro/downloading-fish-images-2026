@@ -1,22 +1,18 @@
 filename,species,directory,annotation_type,annotation_detail,n_fish_noted,annotated_by,date_annotated
-Amphichaetodon_howensis_Bishop_-1464681654.jpg,Amphichaetodon howensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
+Amphichaetodon_howensis_Bishop_-1464681654.jpg,Amphichaetodon howensis,images_bishop,manual_exclude,Flagged during manual review,,user_review,2026-02-11
 Amphichaetodon_howensis_Bishop_-369771762.jpg,Amphichaetodon howensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
 Amphichaetodon_howensis_Bishop_472868867.jpg,Amphichaetodon howensis,images_bishop,outlier,large_mask,,pipeline,2026-02-04
-Amphichaetodon_howensis_FishBase_Amhow_u0.jpg,Amphichaetodon howensis,images_fishbase_extra,needs_resegment,Flagged during manual review,,user_review,2026-02-07
+Amphichaetodon_howensis_FishBase_Amhow_u0.jpg,Amphichaetodon howensis,images_fishbase_extra,needs_resegment,Flagged during manual review,,user_review,2026-02-10
 Amphichaetodon_howensis_iNaturalist_267486174.jpg,Amphichaetodon howensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
 Amphichaetodon_howensis_iNaturalist_33167253.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
-Amphichaetodon_howensis_iNaturalist_33719286.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
-Amphichaetodon_howensis_iNaturalist_33719401.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Amphichaetodon_howensis_iNaturalist_33719403.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
-Amphichaetodon_howensis_iNaturalist_384666682.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-05
 Amphichaetodon_howensis_iNaturalist_392179799.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-05
 Amphichaetodon_howensis_iNaturalist_593017609.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-05
 Amphichaetodon_melbae_Bishop_-1115161976.jpg,Amphichaetodon melbae,images_bishop,duplicate_of_fishbase,Bishop/Randall duplicate of FishBase image,,duplicate_detection,2026-02-05
 Amphichaetodon_melbae_iNaturalist_462963831.jpg,Amphichaetodon melbae,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-05
 Amphichaetodon_melbae_iNaturalist_577502906.jpg,Amphichaetodon melbae,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_adiergastos_Bishop_1979529705.jpg,Chaetodon adiergastos,images_bishop,duplicate_of_fishbase,Bishop/Randall duplicate of FishBase image,,duplicate_detection,2026-02-05
-Chaetodon_adiergastos_FishBase_Chadi_u0.jpg,Chaetodon adiergastos,images_fishbase_extra,manual_exclude,Flagged during manual review,,user_review,2026-02-04
-Chaetodon_adiergastos_FishBase_Chadi_u2.jpg,Chaetodon adiergastos,images_fishbase_extra,manual_exclude,Flagged during manual review,,user_review,2026-02-05
+Chaetodon_adiergastos_FishBase_Chadi_u0.jpg,Chaetodon adiergastos,images_fishbase_extra,needs_resegment,Flagged during manual review,,user_review,2026-02-10
 Chaetodon_adiergastos_iNaturalist_18099243.jpg,Chaetodon adiergastos,images_inaturalist,needs_resegment,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_adiergastos_iNaturalist_19737434.jpg,Chaetodon adiergastos,images_inaturalist,needs_resegment,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_adiergastos_iNaturalist_294596355.jpg,Chaetodon adiergastos,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
@@ -30,15 +26,12 @@ Chaetodon_andamanensis_iNaturalist_177672904.jpg,Chaetodon andamanensis,images_i
 Chaetodon_andamanensis_iNaturalist_205344829.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
 Chaetodon_andamanensis_iNaturalist_2532907.jpg,Chaetodon andamanensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_andamanensis_iNaturalist_309575002.jpg,Chaetodon andamanensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
-Chaetodon_andamanensis_iNaturalist_436938868.jpg,Chaetodon andamanensis,images_inaturalist,fix_orientation,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_andamanensis_iNaturalist_486380130.jpg,Chaetodon andamanensis,images_inaturalist,outlier,small_mask,,pipeline,2026-02-04
 Chaetodon_andamanensis_iNaturalist_545241141.jpg,Chaetodon andamanensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_andamanensis_iNaturalist_68351989.jpg,Chaetodon andamanensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_argentatus_Bishop_1074668308.jpg,Chaetodon argentatus,images_bishop,duplicate_of_fishbase,Bishop/Randall duplicate of FishBase image,,duplicate_detection,2026-02-05
 Chaetodon_argentatus_Bishop_1101542975.jpg,Chaetodon argentatus,images_bishop,larva,Larval stage identified by visual inspection,,user,2026-02-04
 Chaetodon_argentatus_FishBase_Charg_u1.jpg,Chaetodon argentatus,images_fishbase_extra,larva,Larval stage identified by visual inspection,,user,2026-02-04
-Chaetodon_argentatus_FishBase_Charg_u3.jpg,Chaetodon argentatus,images_fishbase_extra,manual_exclude,Flagged during manual review,,user_review,2026-02-04
-Chaetodon_argentatus_FishBase_Charg_ua.jpg,Chaetodon argentatus,images_fishbase_extra,fix_orientation,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_argentatus_iNaturalist_263052559.jpg,Chaetodon argentatus,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_argentatus_iNaturalist_263052573.jpg,Chaetodon argentatus,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_argentatus_iNaturalist_302749246.jpg,Chaetodon argentatus,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
@@ -67,7 +60,6 @@ Chaetodon_aureofasciatus_iNaturalist_592372199.jpg,Chaetodon aureofasciatus,imag
 Chaetodon_aureofasciatus_iNaturalist_595413339.jpg,Chaetodon aureofasciatus,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_aureofasciatus_iNaturalist_598689315.jpg,Chaetodon aureofasciatus,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_auriga_Bishop_-2122348146.jpg,Chaetodon auriga,images_bishop,duplicate_of_fishbase,Bishop/Randall duplicate of FishBase image,,duplicate_detection,2026-02-05
-Chaetodon_auriga_Bishop_1449897185.jpg,Chaetodon auriga,images_bishop,fix_orientation,Flagged during manual review,,user_review,2026-02-04
 Chaetodon_auriga_Bishop_1547714619.jpg,Chaetodon auriga,images_bishop,duplicate_of_fishbase,Bishop/Randall duplicate of FishBase image,,duplicate_detection,2026-02-05
 Chaetodon_auriga_Bishop_1988149751.jpg,Chaetodon auriga,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
 Chaetodon_auriga_Bishop_415255648.jpg,Chaetodon auriga,images_bishop,duplicate_of_fishbase,Bishop/Randall duplicate of FishBase image,,duplicate_detection,2026-02-05
@@ -272,7 +264,6 @@ Chaetodon_dolosus_iNaturalist_349460578.jpg,Chaetodon dolosus,images_inaturalist
 Chaetodon_dolosus_iNaturalist_56573333.jpg,Chaetodon dolosus,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-05
 Chaetodon_ephippium_Bishop_-1179871461.jpg,Chaetodon ephippium,images_bishop,outlier,large_mask,,pipeline,2026-02-04
 Chaetodon_ephippium_Bishop_-1248760382.jpg,Chaetodon ephippium,images_bishop,outlier,luminance_anomaly,,pipeline,2026-02-04
-Chaetodon_ephippium_FishBase_Cheph_u0.jpg,Chaetodon ephippium,images_fishbase_extra,fix_orientation,Flagged during manual review,,user_review,2026-02-05
 Chaetodon_ephippium_FishBase_Cheph_u5.jpg,Chaetodon ephippium,images_fishbase_extra,outlier,luminance_anomaly,,pipeline,2026-02-04
 Chaetodon_ephippium_FishBase_Cheph_u8.jpg,Chaetodon ephippium,images_fishbase_extra,fix_orientation,Flagged during manual review,,user_review,2026-02-05
 Chaetodon_ephippium_FishBase_Cheph_uc.jpg,Chaetodon ephippium,images_fishbase_extra,manual_exclude,Flagged during manual review,,user_review,2026-02-05
@@ -985,7 +976,6 @@ Chaetodon_guttatissimus_FishBase_Chgut_u3.jpg,Chaetodon guttatissimus,images_fis
 Chaetodon_adiergastos_iNaturalist_264257791.jpg,Chaetodon adiergastos,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_adiergastos_FishBaseUser_1354818522_86.28.236.182.jpg,Chaetodon adiergastos,images_fishbase_usercontrib,needs_resegment,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_adiergastos_FishBaseUser_1508793657_172.68.102.54.jpg,Chaetodon adiergastos,images_fishbase_usercontrib,needs_resegment,Flagged during manual review,,user_review,2026-02-08
-Amphichaetodon_melbae_iNaturalist_510100653.jpg,Amphichaetodon melbae,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_adiergastos_FishBaseUser_1747224353_95.95.129.49.jpg,Chaetodon adiergastos,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_andamanensis_FishBaseUser_1452839533_94.198.18.55.jpg,Chaetodon andamanensis,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-08
 Chaetodon_andamanensis_FishBaseUser_1747224556_95.95.129.49.jpg,Chaetodon andamanensis,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-08
@@ -1041,3 +1031,26 @@ Roa_jayakari_FishBase_Chjay_u1.jpg,Roa jayakari,images,manual_exclude,Flagged du
 Prognathodes_falcifer_FishBase_Chfal_u2.jpg,Prognathodes falcifer,images,needs_resegment,Flagged during manual review,,user_review,2026-02-08
 Prognathodes_aculeatus_FishBaseUser_1706562173_172.70.54.190.jpg,Prognathodes aculeatus,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-08
 Parachaetodon_ocellatus_FishBase_Paoce_u0.jpg,Parachaetodon ocellatus,images,needs_resegment,Flagged during manual review,,user_review,2026-02-08
+Chaetodon_adiergastos_FishWise_000669F000009W000007.jpg,Chaetodon adiergastos,images_fishwise,needs_resegment,Flagged during manual review,,user_review,2026-02-10
+Amphichaetodon_howensis_FishWise_030360F000048W000001.gif,Amphichaetodon howensis,images_fishwise,manual_exclude,Flagged during manual review,,user_review,2026-02-10
+Chaetodon_adiergastos_FishWise_000669F000024W000001.jpg,Chaetodon adiergastos,images_fishwise,manual_exclude,Flagged during manual review,,user_review,2026-02-10
+Chaetodon_adiergastos_FishWise_000669F000492W000015.jpg,Chaetodon adiergastos,images_fishwise,needs_resegment,Flagged during manual review,,user_review,2026-02-10
+Chaetodon_adiergastos_iNaturalist_312479934.jpg,Chaetodon adiergastos,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-10
+Chaetodon_andamanensis_FishBase_Chand_u0.jpg,Chaetodon andamanensis,images_fishbase_extra,manual_exclude,Flagged during manual review,,user_review,2026-02-10
+Chaetodon_argentatus_FishWise_004409F006601W000006.jpg,Chaetodon argentatus,images_fishwise,manual_exclude,Flagged during manual review,,user_review,2026-02-10
+Amphichaetodon_howensis_iNaturalist_33719401.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Amphichaetodon_howensis_iNaturalist_33719286.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishWise_007419F000033W000001.jpg,Chaetodon baronessa,images_fishwise,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishBaseUser_1527590351_162.158.22.210.jpg,Chaetodon baronessa,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishBaseUser_1747225527_95.95.129.49.jpg,Chaetodon baronessa,images_fishbase_usercontrib,needs_resegment,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishWise_007419F000009W000010.jpg,Chaetodon baronessa,images_fishwise,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishWise_007419F000009W000015.jpg,Chaetodon baronessa,images_fishwise,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishWise_007419F000387W000016.jpg,Chaetodon baronessa,images_fishwise,alternate_morph,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishBaseUser_1444522709_24.215.186.224.jpg,Chaetodon baronessa,images_fishbase_usercontrib,alternate_morph,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishBaseUser_1703892135_172.70.55.134.jpg,Chaetodon baronessa,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishBaseUser_1706125656_172.70.55.133.jpg,Chaetodon baronessa,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_baronessa_FishBaseUser_1707093697_172.70.82.152.jpg,Chaetodon baronessa,images_fishbase_usercontrib,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Amphichaetodon_howensis_iNaturalist_384666682.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Amphichaetodon_howensis_iNaturalist_11105384.jpg,Amphichaetodon howensis,images_inaturalist,manual_exclude,Flagged during manual review,,user_review,2026-02-11
+Chaetodon_auriga_FishPix_140582.jpg,Chaetodon auriga,,fix_orientation,Flagged during manual review,,user_review,2026-02-12
+Chaetodon_auriga_FishPix_141073.jpg,Chaetodon auriga,images_fishpix,manual_exclude,Flagged during manual review,,user_review,2026-02-12

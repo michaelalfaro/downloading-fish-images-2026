@@ -605,11 +605,22 @@ def process_image_dinosam(image_path, output_path, apple_seg_path=None):
             "status": "sam_failed",
         }
 
+    # Step 3b: Resize SAM mask to original image dims if needed
+    # (SAM may produce masks at img_for_dino resolution, which differs
+    #  from the original JPEG when using hybrid Apple composites)
+    if mask.shape[:2] != (h, w):
+        mask_pil = Image.fromarray(mask).resize((w, h), Image.NEAREST)
+        mask = np.array(mask_pil)
+
     # Step 4: If hybrid, intersect SAM fish mask with Apple Vision mask
     # This ensures we can only REMOVE background objects from the Apple
     # output, never ADD pixels that Apple excluded (background).
     method = "dinosam"
     if apple_mask is not None:
+        # Ensure apple_mask also matches original dims
+        if apple_mask.shape[:2] != (h, w):
+            am_pil = Image.fromarray(apple_mask).resize((w, h), Image.NEAREST)
+            apple_mask = np.array(am_pil)
         final_mask = np.minimum(mask, apple_mask)
         method = "hybrid_apple_dinosam"
     else:

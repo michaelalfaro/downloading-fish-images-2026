@@ -1,6 +1,6 @@
 species,filename,png_name,source,selected_at,is_randall
 Amphichaetodon howensis,Amphichaetodon_howensis_Bishop_472868867 Background Removed.png,Amphichaetodon_howensis_Bishop_472868867 Background Removed.png,Bishop,2026-02-07T08:29:22.101636,True
-Amphichaetodon melbae,Amphichaetodon_melbae_iNaturalist_510100646.jpg,Amphichaetodon_melbae_iNaturalist_510100646.png,iNat,2026-02-08T18:04:41.625868,False
+Amphichaetodon melbae,Amphichaetodon_melbae_Bishop_-1115161976.jpg,Amphichaetodon_melbae_Bishop_-1115161976.png,Bishop,2026-02-10T12:44:05.965678,True
 Chaetodon adiergastos,Chaetodon_adiergastos_Bishop_1979529705.jpg,Chaetodon_adiergastos_Bishop_1979529705.png,Bishop,2026-02-08T18:04:51.856319,True
 Chaetodon andamanensis,Chaetodon_andamanensis_Bishop_-322272266.jpg,Chaetodon_andamanensis_Bishop_-322272266.png,Bishop,2026-02-08T18:08:09.115913,True
 Chaetodon argentatus,Chaetodon_argentatus_Bishop_1074668308.jpg,Chaetodon_argentatus_Bishop_1074668308.png,Bishop,2026-02-08T18:10:24.749007,True
@@ -22,6 +22,7 @@ Chaetodon decussatus,Chaetodon_decussatus_Bishop_527122207.jpg,Chaetodon_decussa
 Chaetodon dialeucos,Chaetodon_dialeucos_Bishop_1297085044.jpg,Chaetodon_dialeucos_Bishop_1297085044.png,Bishop,2026-02-08T21:26:33.578642,True
 Chaetodon dolosus,Chaetodon_dolosus_Bishop_-1008609691.jpg,Chaetodon_dolosus_Bishop_-1008609691.png,Bishop,2026-02-08T21:26:58.487446,True
 Chaetodon ephippium,Chaetodon_ephippium_Bishop_-1179871461.jpg,Chaetodon_ephippium_Bishop_-1179871461.png,Bishop,2026-02-08T21:27:19.796382,True
+Chaetodon excelsa,Chaetodon_excelsa_Bishop_853070272.jpg,Chaetodon_excelsa_Bishop_853070272.png,segmented,2026-02-10T14:17:55.798804,True
 Chaetodon falcula,Chaetodon_falcula_Bishop_1821335233.jpg,Chaetodon_falcula_Bishop_1821335233.png,Bishop,2026-02-08T21:27:35.054379,True
 Chaetodon fasciatus,Chaetodon_fasciatus_Bishop_-1886056978.jpg,Chaetodon_fasciatus_Bishop_-1886056978.png,Bishop,2026-02-08T21:27:56.896454,True
 Chaetodon flavirostris,Chaetodon_flavirostris_Bishop_1864146380.jpg,Chaetodon_flavirostris_Bishop_1864146380.png,Bishop,2026-02-08T21:28:14.942934,True
