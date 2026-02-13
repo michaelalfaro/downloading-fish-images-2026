@@ -893,12 +893,12 @@ def _apply_auto_exclude_defaults(species, images):
     if species_has_reviews:
         return False
 
-    # Apply defaults: exclude all iNat and FishBaseUser images
+    # Apply defaults: exclude all iNat, FBUser, and FishPix images
     # These are typically lower-quality or underwater shots with color casts
     applied = False
     now = datetime.now().isoformat()
     for im in images:
-        if im["source"] in ("iNat", "FBUser") and im["orig_fname"] not in _review_state:
+        if im["source"] in ("iNat", "FBUser", "FishPix") and im["orig_fname"] not in _review_state:
             _review_state[im["orig_fname"]] = {
                 "filename": im["orig_fname"],
                 "species": species,
@@ -1073,27 +1073,9 @@ def _get_species_images(species, apply_defaults=True):
             "filters": _image_filters.get(orig_fname, {}),
         })
 
-    # Sort by: included first, then exemplar first, then source priority, then filename
-    # Excluded actions: exclude, alt_morph, resegment, color_correct
+    # Apply auto-exclude defaults BEFORE sorting (so defaults affect tab placement)
     excluded_actions = {"exclude", "alt_morph", "resegment", "color_correct"}
 
-    def sort_key(x):
-        is_excluded = 1 if x["action"] in excluded_actions else 0
-        is_exemplar = 0 if x["is_exemplar"] else 1  # Exemplar first (0 before 1)
-        return (is_excluded, is_exemplar, x["source_order"], x["png_name"])
-
-    images.sort(key=sort_key)
-
-    # Add divider marker between included and excluded images
-    found_first_excluded = False
-    for im in images:
-        if im["action"] in excluded_actions and not found_first_excluded:
-            im["is_first_excluded"] = True
-            found_first_excluded = True
-        else:
-            im["is_first_excluded"] = False
-
-    # Apply auto-exclude defaults if this is first visit
     if apply_defaults:
         if _apply_auto_exclude_defaults(species, images):
             # Re-read actions after defaults applied
@@ -1101,7 +1083,27 @@ def _get_species_images(species, apply_defaults=True):
                 review = _review_state.get(im["orig_fname"], {})
                 im["action"] = review.get("action", "keep")
 
-    return images
+    # Sort by: exemplar first, then source priority, then filename
+    def sort_key(x):
+        is_exemplar = 0 if x["is_exemplar"] else 1  # Exemplar first (0 before 1)
+        return (is_exemplar, x["source_order"], x["png_name"])
+
+    images.sort(key=sort_key)
+
+    # Split into included and excluded lists
+    included_images = [im for im in images if im["action"] not in excluded_actions]
+    excluded_images = [im for im in images if im["action"] in excluded_actions]
+
+    # Group by source for per-source tabs
+    source_groups = {}
+    for im in images:
+        src = im["source"]
+        source_groups.setdefault(src, []).append(im)
+    # Only include sources that actually have images, in canonical order
+    all_sources = ["Bishop", "FishBase", "FishWise", "FishPix", "iNat", "FBUser", "Other"]
+    active_sources = [s for s in all_sources if s in source_groups]
+
+    return included_images, excluded_images, source_groups, active_sources
 
 
 def _get_species_summary():
@@ -1181,19 +1183,21 @@ def review(species_dirname):
     prev_sp = species_to_dirname(_species_list[idx - 1]) if idx > 0 else None
     next_sp = species_to_dirname(_species_list[idx + 1]) if idx < len(_species_list) - 1 else None
 
-    # Get images with auto-defaults for iNat
-    images = _get_species_images(species, apply_defaults=True)
+    # Get images split into included/excluded + grouped by source
+    included_images, excluded_images, source_groups, active_sources = \
+        _get_species_images(species, apply_defaults=True)
+    all_images = included_images + excluded_images
 
     gk = _gestalt_k.get(species, {})
     gestalt_k = gk.get("gestalt_k", "4")
     notes = gk.get("notes", "")
     status = gk.get("review_status", "not_reviewed")
 
-    n_excluded = sum(1 for im in images if im["action"] == "exclude")
-    n_fix = sum(1 for im in images if im["action"] == "fix_orientation")
-    n_alt_morph = sum(1 for im in images if im["action"] == "alt_morph")
-    n_resegment = sum(1 for im in images if im["action"] == "resegment")
-    n_color_correct = sum(1 for im in images if im["action"] == "color_correct")
+    n_excluded = sum(1 for im in all_images if im["action"] == "exclude")
+    n_fix = sum(1 for im in all_images if im["action"] == "fix_orientation")
+    n_alt_morph = sum(1 for im in all_images if im["action"] == "alt_morph")
+    n_resegment = sum(1 for im in all_images if im["action"] == "resegment")
+    n_color_correct = sum(1 for im in all_images if im["action"] == "color_correct")
     has_exemplar = species in _exemplars
 
     return render_template_string(REVIEW_HTML,
@@ -1203,7 +1207,11 @@ def review(species_dirname):
                                   n_total=len(_species_list),
                                   prev_sp=prev_sp,
                                   next_sp=next_sp,
-                                  images=images,
+                                  included_images=included_images,
+                                  excluded_images=excluded_images,
+                                  all_images=all_images,
+                                  n_included=len(included_images),
+                                  n_excluded_tab=len(excluded_images),
                                   gestalt_k=gestalt_k,
                                   notes=notes,
                                   status=status,
@@ -1212,7 +1220,10 @@ def review(species_dirname):
                                   n_alt_morph=n_alt_morph,
                                   n_resegment=n_resegment,
                                   n_color_correct=n_color_correct,
-                                  has_exemplar=has_exemplar)
+                                  has_exemplar=has_exemplar,
+                                  source_groups=source_groups,
+                                  active_sources=active_sources,
+                                  n_main_cards=len(included_images) + len(excluded_images))
 
 
 @app.route("/image/<img_type>/<species_dirname>/<filename>")
@@ -2247,10 +2258,25 @@ REVIEW_HTML = """<!DOCTYPE html>
   .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
   .card.excluded { opacity: 0.5; }
   .card.fix-orient { border: 3px solid #ff9800; }
-  .excluded-divider { grid-column: 1 / -1; text-align: center; padding: 15px 0;
-                      border-top: 2px dashed #999; margin-top: 10px; }
-  .excluded-divider span { background: #f5f5f5; padding: 5px 20px; color: #666;
-                           font-weight: 500; font-size: 14px; border-radius: 4px; }
+  .tab-bar { display:flex; gap:4px; margin:0 12px 12px 12px; border-bottom:2px solid #e0e0e0; padding-bottom:0; }
+  .tab-btn { padding:8px 20px; border:none; background:transparent; cursor:pointer;
+             font-size:14px; font-weight:600; color:#666; border-bottom:3px solid transparent;
+             margin-bottom:-2px; transition: all 0.2s; }
+  .tab-btn:hover { color:#333; background:#f5f5f5; }
+  .tab-btn.active { color:#1976d2; border-bottom-color:#1976d2; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+  .tab-count { background:#e0e0e0; color:#555; padding:1px 7px; border-radius:10px;
+               font-size:11px; margin-left:6px; font-weight:normal; }
+  .tab-btn.active .tab-count { background:#bbdefb; color:#1565c0; }
+  .tab-separator { color:#ccc; margin:0 8px; font-size:18px; align-self:center; user-select:none; }
+  .tab-btn-source { font-size:12px; padding:6px 12px; }
+  .tab-bar { flex-wrap: wrap; }
+  /* Excluded cards in source-tab panels: greyed out but stay in place */
+  [id^="panel-source-"] .card.excluded,
+  [id^="panel-source-"] .card.alt-morph,
+  [id^="panel-source-"] .card.resegment,
+  [id^="panel-source-"] .card.color-correct { opacity:0.45; }
   .card.has-oriented { border: 3px solid #2196f3; background: #e3f2fd; }
   .card.alt-morph { border: 3px solid #9c27b0; }
   .card.resegment { border: 3px solid #f44336; }
@@ -2519,13 +2545,7 @@ REVIEW_HTML = """<!DOCTYPE html>
   </div>
 </div>
 
-<div class="grid">
-{% for im in images %}
-  {% if im.is_first_excluded %}
-  <div class="excluded-divider">
-    <span>Excluded Images</span>
-  </div>
-  {% endif %}
+{% macro render_card(im, card_id) %}
   <div class="card {{ 'excluded' if im.action == 'exclude' else '' }}
               {{ 'fix-orient' if im.action == 'fix_orientation' else '' }}
               {{ 'alt-morph' if im.action == 'alt_morph' else '' }}
@@ -2533,7 +2553,7 @@ REVIEW_HTML = """<!DOCTYPE html>
               {{ 'color-correct' if im.action == 'color_correct' else '' }}
               {{ 'has-oriented' if im.has_oriented else '' }}
               {{ 'is-exemplar' if im.is_exemplar else '' }}"
-       id="card-{{ loop.index0 }}"
+       id="card-{{ card_id }}"
        data-source="{{ im.source }}"
        data-fname="{{ im.orig_fname }}">
     <div class="imgs">
@@ -2715,8 +2735,56 @@ REVIEW_HTML = """<!DOCTYPE html>
       </div>
     </div>
   </div>
-{% endfor %}
+{% endmacro %}
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('included')">
+    Included <span class="tab-count" id="tab-count-included">{{ n_included }}</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('excluded')">
+    Excluded <span class="tab-count" id="tab-count-excluded">{{ n_excluded_tab }}</span>
+  </button>
+  {% if active_sources|length > 1 %}
+  <span class="tab-separator">|</span>
+  {% for src in active_sources %}
+  <button class="tab-btn tab-btn-source" onclick="switchTab('source-{{ src }}')">
+    {{ src }} <span class="tab-count" id="tab-count-source-{{ src }}">{{ source_groups[src]|length }}</span>
+  </button>
+  {% endfor %}
+  {% endif %}
 </div>
+
+<!-- Included panel -->
+<div class="tab-panel active" id="panel-included">
+  <div class="grid" id="grid-included">
+    {% for im in included_images %}
+      {{ render_card(im, loop.index0) }}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Excluded panel -->
+<div class="tab-panel" id="panel-excluded">
+  <div class="grid" id="grid-excluded">
+    {% for im in excluded_images %}
+      {{ render_card(im, n_included + loop.index0) }}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Per-source tab panels (separate card copies — synced via JS) -->
+{% set ns = namespace(offset=n_main_cards) %}
+{% for src in active_sources %}
+<div class="tab-panel" id="panel-source-{{ src }}">
+  <div class="grid" id="grid-source-{{ src }}">
+    {% for im in source_groups[src] %}
+      {{ render_card(im, ns.offset + loop.index0) }}
+    {% endfor %}
+    {% set ns.offset = ns.offset + source_groups[src]|length %}
+  </div>
+</div>
+{% endfor %}
 
 <!-- Source image popup (shared, one for all cards) -->
 <div class="source-popup-overlay" id="sourcePopup" onclick="closeSourcePopup(event)">
@@ -2731,7 +2799,7 @@ REVIEW_HTML = """<!DOCTYPE html>
 
 <div class="footer">
   <div class="stats">
-    {{ images|length }} images &middot;
+    {{ all_images|length }} images &middot;
     <span id="nExcluded">{{ n_excluded }}</span> excl &middot;
     <span id="nFix">{{ n_fix }}</span> fix &middot;
     <span id="nAltMorph">{{ n_alt_morph }}</span> alt &middot;
@@ -2783,7 +2851,7 @@ REVIEW_HTML = """<!DOCTYPE html>
         <p class="hint">Click on a fish image below to set it as the exemplar for this species.
            You can scroll through and browse before deciding.</p>
         <div class="exemplar-gallery" id="exemplarGallery">
-          {% for im in images %}
+          {% for im in all_images %}
           {% if im.has_segmented or im.has_oriented %}
           <div class="exemplar-thumb {{ 'selected' if im.is_exemplar else '' }}"
                data-fname="{{ im.orig_fname }}"
@@ -3186,6 +3254,9 @@ function toggleAction(cb) {
   card.classList.toggle('resegment', resegCb.checked);
   card.classList.toggle('color-correct', colorCb.checked);
 
+  // Sync to copies in other tabs BEFORE reorder (so main grid copies update first)
+  syncCardState(fname, card);
+
   // Save
   fetch('/api/save_image_action', {
     method: 'POST',
@@ -3198,7 +3269,8 @@ function toggleAction(cb) {
 }
 
 function updateCounts() {
-  const cards = document.querySelectorAll('.card');
+  // Only count cards in the main Included/Excluded grids (not source-tab copies)
+  const cards = document.querySelectorAll('#grid-included .card, #grid-excluded .card');
   let nExcl = 0, nFix = 0, nAlt = 0, nReseg = 0, nColor = 0;
   cards.forEach(c => {
     if (c.querySelector('[data-action="exclude"]').checked) nExcl++;
@@ -3212,29 +3284,27 @@ function updateCounts() {
   document.getElementById('nAltMorph').textContent = nAlt;
   document.getElementById('nResegment').textContent = nReseg;
   document.getElementById('nColorCorrect').textContent = nColor;
+  updateTabCounts();
 }
 
 function reorderCards() {
-  const grid = document.querySelector('.grid');
-  const cards = Array.from(grid.querySelectorAll('.card'));
-  const divider = grid.querySelector('.excluded-divider');
+  const gridIncluded = document.getElementById('grid-included');
+  const gridExcluded = document.getElementById('grid-excluded');
+  if (!gridIncluded || !gridExcluded) return;
+
+  // Collect ALL cards from both grids
+  const allCards = Array.from(document.querySelectorAll('#grid-included .card, #grid-excluded .card'));
 
   // Source priority order
   const sourceOrder = {Bishop: 0, FishBase: 1, FishWise: 2, FishPix: 3, iNat: 4, FBUser: 5, Other: 6};
 
-  // Sort cards
-  cards.sort((a, b) => {
-    const aExcluded = a.classList.contains('excluded') || a.classList.contains('alt-morph') ||
-                      a.classList.contains('resegment') || a.classList.contains('color-correct');
-    const bExcluded = b.classList.contains('excluded') || b.classList.contains('alt-morph') ||
-                      b.classList.contains('resegment') || b.classList.contains('color-correct');
+  // Sort cards by: exemplar first, then source priority, then filename
+  allCards.sort((a, b) => {
     const aExemplar = a.classList.contains('is-exemplar');
     const bExemplar = b.classList.contains('is-exemplar');
     const aSource = a.dataset.source || 'Other';
     const bSource = b.dataset.source || 'Other';
 
-    // Excluded status (included first)
-    if (aExcluded !== bExcluded) return aExcluded ? 1 : -1;
     // Exemplar first
     if (aExemplar !== bExemplar) return aExemplar ? -1 : 1;
     // Source priority
@@ -3245,22 +3315,79 @@ function reorderCards() {
     return (a.dataset.fname || '').localeCompare(b.dataset.fname || '');
   });
 
-  // Remove divider if exists
-  if (divider) divider.remove();
-
-  // Re-append cards in sorted order, adding divider before first excluded
-  let addedDivider = false;
-  cards.forEach(card => {
+  // Move each card to the correct grid (appendChild moves without recreating)
+  allCards.forEach(card => {
     const isExcluded = card.classList.contains('excluded') || card.classList.contains('alt-morph') ||
                        card.classList.contains('resegment') || card.classList.contains('color-correct');
-    if (isExcluded && !addedDivider) {
-      const newDivider = document.createElement('div');
-      newDivider.className = 'excluded-divider';
-      newDivider.innerHTML = '<span>Excluded Images</span>';
-      grid.appendChild(newDivider);
-      addedDivider = true;
+    if (isExcluded) {
+      gridExcluded.appendChild(card);
+    } else {
+      gridIncluded.appendChild(card);
     }
-    grid.appendChild(card);
+  });
+
+  updateTabCounts();
+}
+
+// ══════════════════════════════════════════════════════════════
+// Cross-Tab Card State Sync
+// ══════════════════════════════════════════════════════════════
+// Source-tab cards are separate DOM copies from Included/Excluded cards.
+// When state changes on one copy, sync to all other copies with same data-fname.
+
+function syncCardState(fname, sourceCard) {
+  document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(card => {
+    if (card === sourceCard) return;
+
+    // Sync CSS classes
+    ['excluded','alt-morph','resegment','color-correct','fix-orient','has-seathru-active','is-exemplar','has-oriented'].forEach(cls => {
+      card.classList.toggle(cls, sourceCard.classList.contains(cls));
+    });
+
+    // Sync checkbox states
+    ['exclude','fix_orientation','alt_morph','resegment','color_correct'].forEach(action => {
+      const srcCb = sourceCard.querySelector('[data-action="' + action + '"]');
+      const dstCb = card.querySelector('[data-action="' + action + '"]');
+      if (srcCb && dstCb) dstCb.checked = srcCb.checked;
+    });
+
+    // Sync Sea-thru button active states
+    sourceCard.querySelectorAll('.seathru-btn-inline').forEach(srcBtn => {
+      const method = srcBtn.dataset.method;
+      const dstBtn = card.querySelector('.seathru-btn-inline[data-method="' + method + '"]');
+      if (dstBtn) dstBtn.classList.toggle('active', srcBtn.classList.contains('active'));
+    });
+
+    // Sync Sea-thru image filter (processed image src)
+    const srcImg = sourceCard.querySelector('.img-processed img') || sourceCard.querySelector('.img-original img');
+    const dstImg = card.querySelector('.img-processed img') || card.querySelector('.img-original img');
+    if (srcImg && dstImg) {
+      // Copy originalSrc data attribute
+      if (srcImg.dataset.originalSrc) {
+        dstImg.dataset.originalSrc = dstImg.dataset.originalSrc || srcImg.dataset.originalSrc;
+      }
+      // If source has Sea-thru active, apply to dest
+      if (srcImg.classList.contains('filter-seathru')) {
+        dstImg.src = srcImg.src;
+        dstImg.classList.add('filter-seathru');
+        dstImg.dataset.seathruMethod = srcImg.dataset.seathruMethod;
+      } else {
+        if (dstImg.dataset.originalSrc) {
+          dstImg.src = dstImg.dataset.originalSrc;
+          dstImg.classList.remove('filter-seathru');
+          delete dstImg.dataset.seathruMethod;
+        }
+      }
+    }
+
+    // Sync original-scene button state
+    const srcSceneBtn = sourceCard.querySelector('.original-scene-btn');
+    const dstSceneBtn = card.querySelector('.original-scene-btn');
+    if (srcSceneBtn && dstSceneBtn) {
+      dstSceneBtn.classList.toggle('active', srcSceneBtn.classList.contains('active'));
+      dstSceneBtn.textContent = srcSceneBtn.textContent;
+      dstSceneBtn.title = srcSceneBtn.title;
+    }
   });
 }
 
@@ -3273,8 +3400,10 @@ function setExemplar(radio) {
   // Remove is-exemplar from all cards
   document.querySelectorAll('.card').forEach(c => c.classList.remove('is-exemplar'));
 
-  // Add to this card
-  card.classList.add('is-exemplar');
+  // Add to this card AND all copies of the same filename
+  document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(c => {
+    c.classList.add('is-exemplar');
+  });
 
   // Save to server
   fetch('/api/set_exemplar', {
@@ -3288,7 +3417,32 @@ function setExemplar(radio) {
     })
   }).then(r => r.json()).then(() => {
     document.getElementById('exemplarStatus').innerHTML = '&#9733; Exemplar set';
+    reorderCards();
   });
+}
+
+// ══════════════════════════════════════════════════════════════
+// Tab Switching (Included / Excluded)
+// ══════════════════════════════════════════════════════════════
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector('.tab-btn[onclick*="' + tab + '"]');
+  if (btn) btn.classList.add('active');
+  const panel = document.getElementById('panel-' + tab);
+  if (panel) panel.classList.add('active');
+}
+
+function updateTabCounts() {
+  const nIncluded = document.querySelectorAll('#grid-included .card').length;
+  const nExcluded = document.querySelectorAll('#grid-excluded .card').length;
+  const elInc = document.getElementById('tab-count-included');
+  const elExc = document.getElementById('tab-count-excluded');
+  if (elInc) elInc.textContent = nIncluded;
+  if (elExc) elExc.textContent = nExcluded;
+  // Source tab counts are static (images don't move between sources)
+  // but we don't need to update them — the total per source never changes
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -3387,6 +3541,7 @@ function clickSeathruBtn(btn) {
       body: JSON.stringify({filename: fname, filter: 'seathru', enabled: true, method: method})
     });
   }
+  syncCardState(fname, card);
 }
 
 // Original Scene toggle (show unsegmented source image in-place)
