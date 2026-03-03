@@ -21,6 +21,8 @@ Features:
 import os
 import csv
 import io
+import json
+import hashlib
 import argparse
 from datetime import datetime
 from collections import defaultdict
@@ -54,6 +56,9 @@ ORIENT_LANDMARKS_CSV = os.path.join(GMM_DIR, "orientation_landmarks.csv")
 FILTERS_CSV = os.path.join(GMM_DIR, "image_filters.csv")
 ORIENTED_DIR = os.path.join(GMM_DIR, "oriented")
 PERSPECTIVE_DIR = os.path.join(GMM_DIR, "perspective_corrected")  # For images with perspective correction
+STAGING_DIR = os.path.join(GMM_DIR, "staging")
+STAGING_MANIFEST = os.path.join(GMM_DIR, "staging", "staging_manifest.json")
+MANIFEST_CSV = os.path.join(GMM_DIR, "image_manifest.csv")
 THUMB_HEIGHT = 200
 
 # ── In-memory state (loaded on startup) ───────────────────────
@@ -95,10 +100,10 @@ def _load_review_state():
 
 def _save_review_state():
     """Write full review state to CSV."""
-    fields = ["filename", "species", "action", "reviewed_at"]
+    fields = ["filename", "species", "action", "exclude_reason", "reviewed_at"]
     ensure_dir(os.path.dirname(REVIEW_CSV))
     with open(REVIEW_CSV, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fields)
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         w.writeheader()
         for row in sorted(_review_state.values(), key=lambda r: r["filename"]):
             w.writerow(row)
@@ -878,7 +883,11 @@ def _is_randall_image(filename, species=None):
 
 
 def _apply_auto_exclude_defaults(species, images):
-    """Auto-exclude iNat and FBUser images if this species hasn't been visited before.
+    """Auto-exclude problematic images if this species hasn't been visited before.
+
+    Excludes based on:
+    - Source: iNat, FBUser, FishPix (typically lower-quality or underwater)
+    - Metadata: non-lateral view, multi-fish, grayscale, low segmentation quality
 
     Returns True if any defaults were applied.
     """
@@ -893,16 +902,50 @@ def _apply_auto_exclude_defaults(species, images):
     if species_has_reviews:
         return False
 
-    # Apply defaults: exclude all iNat, FBUser, and FishPix images
-    # These are typically lower-quality or underwater shots with color casts
     applied = False
     now = datetime.now().isoformat()
     for im in images:
-        if im["source"] in ("iNat", "FBUser", "FishPix") and im["orig_fname"] not in _review_state:
+        if im["orig_fname"] in _review_state:
+            continue
+
+        # Determine if this image should be auto-excluded and why
+        reason = None
+
+        # Source-based exclusion
+        if im["source"] in ("iNat", "FBUser", "FishPix"):
+            reason = "auto_excluded"
+
+        # Metadata-based exclusion (only if metadata exists)
+        # Non-lateral view — useless for lateral color pattern analysis
+        elif not im.get("is_lateral") and im.get("is_lateral") is not None:
+            # is_lateral is False (metadata says "no") — not just missing
+            meta = _image_metadata.get(im["orig_fname"], {})
+            if meta.get("is_lateral") == "no":
+                reason = "wrong_view"
+
+        # Multi-fish image — can't isolate single specimen
+        if reason is None:
+            meta = _image_metadata.get(im["orig_fname"], {})
+            if meta.get("is_single_fish") == "no":
+                reason = "poor_quality"
+
+        # Grayscale — no color information for PAVO
+        if reason is None:
+            if im.get("is_grayscale"):
+                reason = "poor_quality"
+
+        # Low segmentation quality (< 0.5 threshold)
+        if reason is None:
+            sq = im.get("seg_quality", "")
+            if sq and float(sq) < 0.5:
+                reason = "poor_quality"
+
+        if reason:
             _review_state[im["orig_fname"]] = {
                 "filename": im["orig_fname"],
                 "species": species,
                 "action": "exclude",
+                "exclude_reason": reason,
                 "reviewed_at": now,
             }
             _sync_annotations_for_image(im["orig_fname"], species, "exclude")
@@ -1050,6 +1093,8 @@ def _get_species_images(species, apply_defaults=True):
             "has_segmented": has_segmented,
             "has_oriented": has_oriented,
             "action": action,
+            "reviewed": orig_fname in _review_state,
+            "exclude_reason": _review_state.get(orig_fname, {}).get("exclude_reason", ""),
             "ann_badge": ann_badge,
             "orient_warning": orient_warning,
             "is_exemplar": is_exemplar,
@@ -1369,6 +1414,7 @@ def api_save_image_action():
     filename = data.get("filename", "")
     species = data.get("species", "")
     action = data.get("action", "keep")
+    exclude_reason = data.get("exclude_reason", "")
 
     if not filename or not species:
         return jsonify({"error": "missing filename or species"}), 400
@@ -1390,6 +1436,7 @@ def api_save_image_action():
             "filename": filename,
             "species": species,
             "action": action,
+            "exclude_reason": exclude_reason,
             "reviewed_at": now,
         }
         _sync_annotations_for_image(filename, species, action)
@@ -1411,6 +1458,78 @@ def api_save_image_action():
     _save_gestalt_k()
 
     return jsonify({"ok": True})
+
+
+@app.route("/api/save_exclude_reason", methods=["POST"])
+def api_save_exclude_reason():
+    """Update only the exclude_reason for an already-excluded image."""
+    data = request.get_json()
+    filename = data.get("filename", "")
+    reason = data.get("exclude_reason", "")
+    if not filename:
+        return jsonify({"error": "missing filename"}), 400
+    if filename in _review_state:
+        _review_state[filename]["exclude_reason"] = reason
+        _save_review_state()
+    return jsonify({"ok": True})
+
+
+@app.route("/api/batch_action", methods=["POST"])
+def api_batch_action():
+    """Apply an action to multiple images at once."""
+    data = request.get_json()
+    filenames = data.get("filenames", [])
+    species = data.get("species", "")
+    action = data.get("action", "keep")
+    exclude_reason = data.get("exclude_reason", "")
+
+    if not filenames or not species:
+        return jsonify({"error": "missing filenames or species"}), 400
+
+    valid_actions = ("keep", "exclude", "fix_orientation", "alt_morph", "resegment", "color_correct")
+    if action not in valid_actions:
+        return jsonify({"error": "invalid action"}), 400
+
+    now = datetime.now().isoformat()
+    changed = 0
+
+    for filename in filenames:
+        if action == "keep":
+            if filename in _review_state:
+                old_action = _review_state[filename].get("action", "keep")
+                del _review_state[filename]
+                if old_action != "keep":
+                    _sync_annotations_for_image(filename, species, "keep")
+                changed += 1
+        else:
+            _review_state[filename] = {
+                "filename": filename,
+                "species": species,
+                "action": action,
+                "exclude_reason": exclude_reason,
+                "reviewed_at": now,
+            }
+            _sync_annotations_for_image(filename, species, action)
+            changed += 1
+
+    if changed:
+        _save_review_state()
+
+        # Mark species as in_progress
+        if species not in _gestalt_k:
+            _gestalt_k[species] = {
+                "species": species,
+                "gestalt_k": "4",
+                "review_status": "in_progress",
+                "notes": "",
+                "reviewed_at": now,
+            }
+        elif _gestalt_k[species].get("review_status") == "not_reviewed":
+            _gestalt_k[species]["review_status"] = "in_progress"
+            _gestalt_k[species]["reviewed_at"] = now
+        _save_gestalt_k()
+
+    return jsonify({"ok": True, "changed": changed})
 
 
 @app.route("/api/save_gestalt_k", methods=["POST"])
@@ -1580,6 +1699,257 @@ def api_mark_reviewed():
 
     _save_gestalt_k()
     return jsonify({"ok": True})
+
+
+# ── Pipeline Status (Phase 6) ──────────────────────────────
+@app.route("/api/pipeline_status")
+def api_pipeline_status():
+    """Health check: find species with missing exemplars, unset k, zero included, etc."""
+    missing_exemplar = []
+    unset_k = []
+    zero_included = []
+    no_oriented = []
+
+    excluded_actions = {"exclude", "alt_morph", "resegment", "color_correct"}
+
+    for species in _species_list:
+        sp_dir = species_to_dirname(species)
+
+        # Check exemplar
+        if species not in _exemplars:
+            missing_exemplar.append(species)
+
+        # Check gestalt_k
+        gk = _gestalt_k.get(species, {})
+        if not gk.get("gestalt_k"):
+            unset_k.append(species)
+
+        # Count included images
+        n_included = 0
+        for fname, rs in _review_state.items():
+            if rs.get("species") == species and rs.get("action") in excluded_actions:
+                n_included -= 1  # will subtract from total
+        seg_dir = os.path.join(SEGMENTED_DIR, sp_dir)
+        n_total = 0
+        if os.path.isdir(seg_dir):
+            all_pngs = {f for f in os.listdir(seg_dir) if f.endswith(".png")}
+            all_pngs -= _fishbase_duplicates
+            n_total = len(all_pngs)
+        n_excl = sum(1 for fname, rs in _review_state.items()
+                     if rs.get("species") == species and rs.get("action") in excluded_actions)
+        if n_total > 0 and n_total - n_excl <= 0:
+            zero_included.append(species)
+
+        # Check oriented directory
+        orient_dir = os.path.join(ORIENTED_DIR, sp_dir)
+        if not os.path.isdir(orient_dir) or not any(
+            f.endswith(".png") for f in os.listdir(orient_dir)
+        ):
+            no_oriented.append(species)
+
+    return jsonify({
+        "missing_exemplar": missing_exemplar,
+        "unset_k": unset_k,
+        "zero_included": zero_included,
+        "no_oriented": no_oriented,
+        "counts": {
+            "missing_exemplar": len(missing_exemplar),
+            "unset_k": len(unset_k),
+            "zero_included": len(zero_included),
+            "no_oriented": len(no_oriented),
+        }
+    })
+
+
+# ── Manifest / Checksum (Phase 7) ──────────────────────────
+@app.route("/api/export_manifest")
+def api_export_manifest():
+    """Generate manifest CSV with SHA-256 hashes of all included images."""
+    excluded_actions = {"exclude", "alt_morph", "resegment", "color_correct"}
+    rows = []
+    fieldnames = ["species", "filename", "png_name", "source", "sha256",
+                  "action", "exclude_reason", "exemplar", "gestalt_k"]
+
+    for species in _species_list:
+        sp_dir = species_to_dirname(species)
+        seg_dir = os.path.join(SEGMENTED_DIR, sp_dir)
+        if not os.path.isdir(seg_dir):
+            continue
+
+        gk_val = _gestalt_k.get(species, {}).get("gestalt_k", "")
+        exemplar_png = _exemplars.get(species, {}).get("png_name", "")
+
+        for png_name in sorted(os.listdir(seg_dir)):
+            if not png_name.endswith(".png"):
+                continue
+            if png_name in _fishbase_duplicates:
+                continue
+
+            base = os.path.splitext(png_name)[0]
+            orig_fname = base + ".jpg"
+            for row in _inventory:
+                if row["species"] == species and os.path.splitext(row["filename"])[0] == base:
+                    orig_fname = row["filename"]
+                    break
+
+            review = _review_state.get(orig_fname, {})
+            action = review.get("action", "keep")
+            reason = review.get("exclude_reason", "")
+
+            # Hash the segmented PNG
+            filepath = os.path.join(seg_dir, png_name)
+            sha = hashlib.sha256()
+            with open(filepath, "rb") as fh:
+                for chunk in iter(lambda: fh.read(8192), b""):
+                    sha.update(chunk)
+
+            rows.append({
+                "species": species,
+                "filename": orig_fname,
+                "png_name": png_name,
+                "source": _classify_source(png_name),
+                "sha256": sha.hexdigest(),
+                "action": action,
+                "exclude_reason": reason,
+                "exemplar": "yes" if png_name == exemplar_png else "",
+                "gestalt_k": gk_val,
+            })
+
+    # Save to GMM_DIR
+    ensure_dir(os.path.dirname(MANIFEST_CSV))
+    with open(MANIFEST_CSV, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
+        w.writerows(rows)
+
+    # Return as download
+    buf = io.BytesIO()
+    text_buf = io.StringIO()
+    w2 = csv.DictWriter(text_buf, fieldnames=fieldnames)
+    w2.writeheader()
+    w2.writerows(rows)
+    buf.write(text_buf.getvalue().encode("utf-8"))
+    buf.seek(0)
+
+    return send_file(buf, mimetype="text/csv", as_attachment=True,
+                     download_name="image_manifest.csv")
+
+
+@app.route("/api/validate_manifest")
+def api_validate_manifest():
+    """Validate on-disk files against saved manifest."""
+    if not os.path.exists(MANIFEST_CSV):
+        return jsonify({"error": "No manifest found. Export one first."}), 404
+
+    valid = 0
+    missing = 0
+    mismatch = 0
+    mismatch_files = []
+
+    with open(MANIFEST_CSV, newline="") as f:
+        for row in csv.DictReader(f):
+            species = row["species"]
+            png_name = row["png_name"]
+            expected_hash = row["sha256"]
+            sp_dir = species_to_dirname(species)
+            filepath = os.path.join(SEGMENTED_DIR, sp_dir, png_name)
+
+            if not os.path.exists(filepath):
+                missing += 1
+                continue
+
+            sha = hashlib.sha256()
+            with open(filepath, "rb") as fh:
+                for chunk in iter(lambda: fh.read(8192), b""):
+                    sha.update(chunk)
+
+            if sha.hexdigest() == expected_hash:
+                valid += 1
+            else:
+                mismatch += 1
+                mismatch_files.append(png_name)
+
+    return jsonify({
+        "valid": valid,
+        "missing": missing,
+        "mismatch": mismatch,
+        "mismatch_files": mismatch_files[:20],
+    })
+
+
+# ── Staging Area (Phase 8) ──────────────────────────────────
+@app.route("/staging")
+def staging_page():
+    """Show staged images awaiting import."""
+    staged = []
+    if os.path.isdir(STAGING_DIR):
+        for fname in sorted(os.listdir(STAGING_DIR)):
+            if fname.lower().endswith((".jpg", ".jpeg", ".png")) and not fname.startswith("."):
+                fpath = os.path.join(STAGING_DIR, fname)
+                size_kb = os.path.getsize(fpath) / 1024
+                staged.append({"filename": fname, "size_kb": round(size_kb, 1)})
+
+    return render_template_string(STAGING_HTML, staged=staged)
+
+
+@app.route("/staging/image/<filename>")
+def serve_staging_image(filename):
+    """Serve a staged image."""
+    path = os.path.join(STAGING_DIR, filename)
+    if not os.path.exists(path):
+        return "Not found", 404
+    return send_file(path)
+
+
+@app.route("/api/staging/remove", methods=["POST"])
+def api_staging_remove():
+    """Remove an image from staging."""
+    data = request.get_json()
+    filename = data.get("filename", "")
+    if not filename:
+        return jsonify({"error": "missing filename"}), 400
+    path = os.path.join(STAGING_DIR, filename)
+    if os.path.exists(path):
+        os.remove(path)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/staging/check_duplicates", methods=["POST"])
+def api_staging_check_duplicates():
+    """Check staged images for perceptual hash similarity against existing images."""
+    data = request.get_json()
+    filename = data.get("filename", "")
+    if not filename:
+        return jsonify({"error": "missing filename"}), 400
+
+    path = os.path.join(STAGING_DIR, filename)
+    if not os.path.exists(path):
+        return jsonify({"error": "file not found"}), 404
+
+    try:
+        img = Image.open(path).convert("L").resize((8, 8), Image.LANCZOS)
+        pixels = list(img.getdata())
+        avg = sum(pixels) / len(pixels)
+        staged_hash = 0
+        for i, px in enumerate(pixels):
+            if px > avg:
+                staged_hash |= 1 << i
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    # Compare against cached hashes
+    similar = []
+    for cached_path, cached_bytes in _phash_cache.items():
+        cached_hash = int.from_bytes(cached_bytes, "big") if isinstance(cached_bytes, bytes) else cached_bytes
+        distance = bin(staged_hash ^ cached_hash).count("1")
+        if distance <= 8:  # threshold for similarity
+            similar.append({
+                "path": os.path.basename(cached_path),
+                "distance": distance,
+            })
+
+    similar.sort(key=lambda x: x["distance"])
+    return jsonify({"duplicates": similar[:10]})
 
 
 @app.route("/api/set_exemplar", methods=["POST"])
@@ -2115,6 +2485,19 @@ INDEX_HTML = """<!DOCTYPE html>
   .export-menu a { display: block; padding: 8px 12px; color: #333;
                    text-decoration: none; font-size: 13px; }
   .export-menu a:hover { background: #f5f5f5; }
+  .pipeline-health { margin: 12px 0; background: white; border-radius: 8px;
+                     box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+  .pipeline-health summary { padding: 12px 16px; cursor: pointer; font-weight: 600;
+                              font-size: 14px; }
+  .pipeline-health summary:hover { background: #f5f5f5; }
+  .pipeline-content { padding: 0 16px 16px; }
+  .pipeline-card { display: inline-block; padding: 8px 14px; border-radius: 6px;
+                   margin: 4px 6px 4px 0; font-size: 12px; }
+  .pipeline-ok { background: #e8f5e9; color: #2e7d32; }
+  .pipeline-warn { background: #fff3e0; color: #e65100; }
+  .pipeline-error { background: #ffebee; color: #c62828; }
+  .pipeline-species-list { font-size: 11px; color: #666; margin-top: 4px; max-height: 100px;
+                           overflow-y: auto; }
 </style>
 </head>
 <body>
@@ -2146,9 +2529,19 @@ INDEX_HTML = """<!DOCTYPE html>
     <div class="export-menu">
       <a href="/api/export_metadata?scope=included">Export Included</a>
       <a href="/api/export_metadata?scope=all">Export All</a>
+      <a href="/api/export_manifest">Export Manifest (SHA-256)</a>
+      <a href="#" onclick="event.preventDefault();validateManifest()">Validate Manifest</a>
     </div>
   </div>
 </div>
+
+<details class="pipeline-health" id="pipelineHealth">
+  <summary>Pipeline Health Check</summary>
+  <div class="pipeline-content" id="pipelineContent">
+    <p style="color:#888;font-size:13px;">Click to load...</p>
+  </div>
+</details>
+<div id="manifestResult" style="display:none;margin:12px 0;padding:10px 16px;border-radius:6px;font-size:13px;"></div>
 
 <table id="speciesTable">
 <thead>
@@ -2215,6 +2608,157 @@ document.addEventListener('click', function(e) {
     document.querySelectorAll('.export-menu').forEach(m => m.classList.remove('open'));
   }
 });
+
+// Pipeline Health Check (Phase 6)
+document.getElementById('pipelineHealth').addEventListener('toggle', function() {
+  if (!this.open) return;
+  const content = document.getElementById('pipelineContent');
+  content.innerHTML = '<p style="color:#888;font-size:13px;">Loading...</p>';
+  fetch('/api/pipeline_status').then(r => r.json()).then(data => {
+    let html = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">';
+    const items = [
+      {label: 'Missing Exemplar', key: 'missing_exemplar', cls: data.counts.missing_exemplar > 0 ? 'pipeline-warn' : 'pipeline-ok'},
+      {label: 'Unset k', key: 'unset_k', cls: data.counts.unset_k > 0 ? 'pipeline-warn' : 'pipeline-ok'},
+      {label: 'Zero Included', key: 'zero_included', cls: data.counts.zero_included > 0 ? 'pipeline-error' : 'pipeline-ok'},
+      {label: 'No Oriented', key: 'no_oriented', cls: data.counts.no_oriented > 0 ? 'pipeline-warn' : 'pipeline-ok'},
+    ];
+    items.forEach(item => {
+      const count = data.counts[item.key];
+      html += '<div class="pipeline-card ' + item.cls + '">' + item.label + ': <strong>' + count + '</strong>';
+      if (count > 0 && data[item.key].length <= 10) {
+        html += '<div class="pipeline-species-list">' + data[item.key].map(s => '<em>' + s + '</em>').join(', ') + '</div>';
+      } else if (count > 10) {
+        html += '<div class="pipeline-species-list">' + data[item.key].slice(0,10).map(s => '<em>' + s + '</em>').join(', ') + ' ... +' + (count - 10) + ' more</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    content.innerHTML = html;
+  }).catch(err => {
+    content.innerHTML = '<p style="color:#c62828;">Error: ' + err + '</p>';
+  });
+});
+
+// Manifest Validation (Phase 7)
+function validateManifest() {
+  const el = document.getElementById('manifestResult');
+  el.style.display = 'block';
+  el.style.background = '#e3f2fd';
+  el.style.color = '#1565c0';
+  el.textContent = 'Validating manifest...';
+  fetch('/api/validate_manifest').then(r => {
+    if (!r.ok) return r.json().then(d => { throw d.error || 'Not found'; });
+    return r.json();
+  }).then(data => {
+    if (data.mismatch === 0 && data.missing === 0) {
+      el.style.background = '#e8f5e9'; el.style.color = '#2e7d32';
+      el.textContent = 'Manifest valid: ' + data.valid + ' files verified.';
+    } else {
+      el.style.background = '#fff3e0'; el.style.color = '#e65100';
+      el.textContent = 'Manifest issues: ' + data.valid + ' valid, ' + data.missing + ' missing, ' + data.mismatch + ' changed.';
+    }
+  }).catch(err => {
+    el.style.background = '#ffebee'; el.style.color = '#c62828';
+    el.textContent = 'Error: ' + err;
+  });
+}
+</script>
+</body>
+</html>"""
+
+
+STAGING_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Image Staging Area</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: #f0f0f0; color: #222; padding: 20px; }
+  h1 { margin-bottom: 8px; }
+  .back-link { font-size: 14px; margin-bottom: 16px; display: inline-block; }
+  .summary { font-size: 14px; color: #555; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 16px; }
+  .staged-card { background: white; border-radius: 8px; overflow: hidden;
+                 box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+  .staged-card img { width: 100%; display: block; }
+  .staged-card .info { padding: 8px 10px; }
+  .staged-card .fname { font-size: 12px; font-weight: 500; word-break: break-all; }
+  .staged-card .meta { font-size: 11px; color: #888; margin-top: 2px; }
+  .staged-card .actions { padding: 6px 10px 10px; display: flex; gap: 6px; }
+  .btn-sm { padding: 4px 10px; font-size: 11px; border: 1px solid #ccc; border-radius: 4px;
+            cursor: pointer; background: #f5f5f5; }
+  .btn-sm:hover { background: #e0e0e0; }
+  .btn-danger { border-color: #ef9a9a; color: #c62828; background: #ffebee; }
+  .btn-danger:hover { background: #ffcdd2; }
+  .btn-check { border-color: #90caf9; color: #1565c0; background: #e3f2fd; }
+  .btn-check:hover { background: #bbdefb; }
+  .dup-result { font-size: 10px; color: #e65100; margin-top: 4px; }
+  .empty { text-align: center; padding: 40px; color: #888; font-size: 16px; }
+</style>
+</head>
+<body>
+<h1>Image Staging Area</h1>
+<a href="/" class="back-link">&larr; Back to index</a>
+<div class="summary">{{ staged|length }} image(s) staged for review</div>
+
+{% if staged %}
+<div class="grid">
+  {% for img in staged %}
+  <div class="staged-card" id="staged-{{ loop.index0 }}">
+    <img src="/staging/image/{{ img.filename }}" alt="{{ img.filename }}" loading="lazy">
+    <div class="info">
+      <div class="fname">{{ img.filename }}</div>
+      <div class="meta">{{ img.size_kb }} KB</div>
+      <div class="dup-result" id="dup-{{ loop.index0 }}"></div>
+    </div>
+    <div class="actions">
+      <button class="btn-sm btn-check" onclick="checkDuplicates('{{ img.filename }}', {{ loop.index0 }})">Check Dups</button>
+      <button class="btn-sm btn-danger" onclick="removeStaged('{{ img.filename }}', {{ loop.index0 }})">Remove</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  No images staged. Place images in the staging directory to see them here.
+</div>
+{% endif %}
+
+<script>
+function removeStaged(filename, idx) {
+  if (!confirm('Remove ' + filename + ' from staging?')) return;
+  fetch('/api/staging/remove', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({filename: filename})
+  }).then(r => r.json()).then(data => {
+    if (data.ok) {
+      document.getElementById('staged-' + idx).style.display = 'none';
+    }
+  });
+}
+
+function checkDuplicates(filename, idx) {
+  const el = document.getElementById('dup-' + idx);
+  el.textContent = 'Checking...';
+  fetch('/api/staging/check_duplicates', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({filename: filename})
+  }).then(r => r.json()).then(data => {
+    if (data.duplicates && data.duplicates.length > 0) {
+      el.textContent = 'Possible matches: ' + data.duplicates.map(d => d.path + ' (d=' + d.distance + ')').join(', ');
+    } else {
+      el.textContent = 'No duplicates found.';
+      el.style.color = '#2e7d32';
+    }
+  }).catch(err => {
+    el.textContent = 'Error: ' + err;
+  });
+}
 </script>
 </body>
 </html>"""
@@ -2493,6 +3037,66 @@ REVIEW_HTML = """<!DOCTYPE html>
   .kbd-hint { font-size: 11px; color: #888; margin-top: 8px; }
   kbd { background: #eee; padding: 2px 6px; border-radius: 3px; font-size: 11px;
         border: 1px solid #ccc; }
+
+  /* Phase 1: Source filter bar */
+  .source-filter-bar { display: flex; gap: 6px; padding: 8px 20px; border-bottom: 1px solid #ddd;
+                       background: #fafafa; align-items: center; flex-wrap: wrap; }
+  .source-filter-btn { padding: 4px 10px; border: 1px solid #ccc; background: #f5f5f5;
+                       border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 500; }
+  .source-filter-btn:hover { background: #e0e0e0; }
+  .source-filter-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+  /* Phase 2: Exclusion reason */
+  .reason-select { font-size: 10px; padding: 1px 4px; border: 1px solid #ccc; border-radius: 3px;
+                   margin-top: 2px; width: 100%; }
+  .reason-badge { display: inline-block; padding: 1px 5px; border-radius: 8px; font-size: 9px;
+                  font-weight: 600; background: #ffcdd2; color: #b71c1c; margin-top: 2px; }
+
+  /* Phase 3: Batch operations */
+  .batch-separator { color: #ccc; margin: 0 4px; font-size: 16px; }
+  .batch-btn { padding: 4px 10px; border: 1px solid #ef9a9a; background: #ffebee;
+               border-radius: 4px; font-size: 11px; cursor: pointer; color: #c62828; }
+  .batch-btn:hover { background: #ffcdd2; }
+  .batch-info { font-size: 11px; color: #666; margin-left: 8px; }
+  .card.selected { box-shadow: 0 0 0 3px #1a73e8 !important; }
+
+  /* Phase 4: Keyboard navigation */
+  .card.focused { box-shadow: 0 0 0 3px #ff9800 !important; position: relative; z-index: 5; }
+  .shortcut-help { position: fixed; bottom: 60px; right: 20px; background: white;
+                   border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+                   z-index: 500; padding: 12px 16px; min-width: 300px; }
+  .shortcut-help-header { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #333; }
+  .shortcut-table { width: 100%; }
+  .shortcut-table td { padding: 3px 8px; font-size: 12px; border: none; }
+  .shortcut-table td:first-child { text-align: right; width: 80px; }
+
+  /* Phase 5: Pin sidebar */
+  .pin-btn { background: none; border: 1px dashed #999; color: #999; padding: 1px 6px;
+             border-radius: 3px; font-size: 9px; cursor: pointer; margin-top: 2px;
+             display: inline-block; }
+  .pin-btn:hover { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+  .pin-btn.pinned { background: #ff9800; color: white; border-color: #e65100; border-style: solid; }
+  .card.is-pinned { box-shadow: 0 0 0 2px #ff9800; }
+  .pin-sidebar { position: fixed; right: -200px; top: 60px; bottom: 60px; width: 180px;
+                 background: white; border-left: 2px solid #ff9800; box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+                 z-index: 90; transition: right 0.3s; overflow-y: auto; }
+  .pin-sidebar.visible { right: 0; }
+  body.has-pins .pin-sidebar { right: 0; }
+  .pin-sidebar-header { padding: 8px 12px; font-size: 13px; font-weight: 600; color: #e65100;
+                        border-bottom: 1px solid #ffe0b2; display: flex; justify-content: space-between;
+                        align-items: center; }
+  .pin-sidebar-clear { background: none; border: none; font-size: 16px; color: #999; cursor: pointer; }
+  .pin-sidebar-clear:hover { color: #c62828; }
+  .pin-sidebar-thumbs { padding: 8px; }
+  .pin-thumb { margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;
+               cursor: pointer; position: relative; }
+  .pin-thumb img { width: 100%; display: block; }
+  .pin-thumb .pin-thumb-label { font-size: 9px; padding: 2px 4px; background: #f5f5f5;
+                                 color: #666; white-space: nowrap; overflow: hidden;
+                                 text-overflow: ellipsis; }
+  .pin-thumb .pin-remove { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.5);
+                            color: white; border: none; border-radius: 50%; width: 16px; height: 16px;
+                            font-size: 10px; cursor: pointer; line-height: 16px; text-align: center; }
 </style>
 </head>
 <body>
@@ -2555,7 +3159,10 @@ REVIEW_HTML = """<!DOCTYPE html>
               {{ 'is-exemplar' if im.is_exemplar else '' }}"
        id="card-{{ card_id }}"
        data-source="{{ im.source }}"
-       data-fname="{{ im.orig_fname }}">
+       data-fname="{{ im.orig_fname }}"
+       data-reviewed="{{ 'true' if im.reviewed else 'false' }}"
+       data-exclude-reason="{{ im.exclude_reason }}"
+       onclick="handleCardClick(event, this)">
     <div class="imgs">
       {% if im.has_segmented %}
         <div class="img-panel img-original">
@@ -2595,6 +3202,7 @@ REVIEW_HTML = """<!DOCTYPE html>
         <div class="not-norm">Not processed (iNat excluded)</div>
       {% endif %}
       <button class="show-source-btn" onclick="showSourcePopup('{{ im.orig_fname }}', '{{ im.display_name }}')">Show source image</button>
+      <button class="pin-btn" data-fname="{{ im.orig_fname }}" data-png="{{ im.png_name }}" onclick="togglePin(this)" title="Pin for comparison">&#x1F4CC;</button>
     </div>
     <div class="info">
       <div class="fname">{{ im.display_name }}</div>
@@ -2617,6 +3225,9 @@ REVIEW_HTML = """<!DOCTYPE html>
         {% endif %}
         {% if im.ann_badge %}
           <span class="ann-badge">{{ im.ann_badge }}</span>
+        {% endif %}
+        {% if im.exclude_reason and im.action == 'exclude' %}
+          <span class="reason-badge">{{ im.exclude_reason | replace('_', ' ') }}</span>
         {% endif %}
       </div>
       {% if im.is_lateral or im.is_single_fish or im.is_grayscale %}
@@ -2664,6 +3275,19 @@ REVIEW_HTML = """<!DOCTYPE html>
                  onchange="toggleAction(this)">
           Exclude
         </label>
+        <select class="reason-select" data-fname="{{ im.orig_fname }}"
+                onchange="setExcludeReason(this)"
+                style="{{ '' if im.action == 'exclude' else 'display:none' }}">
+          <option value="">— reason —</option>
+          <option value="wrong_species" {{ 'selected' if im.exclude_reason == 'wrong_species' else '' }}>Wrong species</option>
+          <option value="poor_quality" {{ 'selected' if im.exclude_reason == 'poor_quality' else '' }}>Poor quality</option>
+          <option value="color_cast" {{ 'selected' if im.exclude_reason == 'color_cast' else '' }}>Color cast</option>
+          <option value="wrong_view" {{ 'selected' if im.exclude_reason == 'wrong_view' else '' }}>Wrong view</option>
+          <option value="duplicate" {{ 'selected' if im.exclude_reason == 'duplicate' else '' }}>Duplicate</option>
+          <option value="juvenile" {{ 'selected' if im.exclude_reason == 'juvenile' else '' }}>Juvenile</option>
+          <option value="auto_excluded" {{ 'selected' if im.exclude_reason == 'auto_excluded' else '' }}>Auto-excluded</option>
+          <option value="other" {{ 'selected' if im.exclude_reason == 'other' else '' }}>Other</option>
+        </select>
         <label class="has-tooltip" data-tooltip="Exclude: different color morph (juvenile, male/female, regional variant)">
           <input type="checkbox" data-fname="{{ im.orig_fname }}" data-action="alt_morph"
                  {{ 'checked' if im.action == 'alt_morph' else '' }}
@@ -2749,7 +3373,7 @@ REVIEW_HTML = """<!DOCTYPE html>
   <span class="tab-separator">|</span>
   {% for src in active_sources %}
   <button class="tab-btn tab-btn-source" onclick="switchTab('source-{{ src }}')">
-    {{ src }} <span class="tab-count" id="tab-count-source-{{ src }}">{{ source_groups[src]|length }}</span>
+    {{ src }} <span class="tab-count" id="tab-count-source-{{ src }}"><span class="src-incl">{{ source_groups[src]|selectattr('action','equalto','keep')|list|length }}</span>/<span class="src-total">{{ source_groups[src]|length }}</span></span>
   </button>
   {% endfor %}
   {% endif %}
@@ -2777,6 +3401,16 @@ REVIEW_HTML = """<!DOCTYPE html>
 {% set ns = namespace(offset=n_main_cards) %}
 {% for src in active_sources %}
 <div class="tab-panel" id="panel-source-{{ src }}">
+  <div class="source-filter-bar">
+    <button class="source-filter-btn active" onclick="filterSourceTab('{{ src }}', 'all', this)">All</button>
+    <button class="source-filter-btn" onclick="filterSourceTab('{{ src }}', 'included', this)">Included</button>
+    <button class="source-filter-btn" onclick="filterSourceTab('{{ src }}', 'excluded', this)">Excluded</button>
+    <button class="source-filter-btn" onclick="filterSourceTab('{{ src }}', 'unreviewed', this)">Unreviewed</button>
+    <span class="batch-separator">|</span>
+    <button class="batch-btn" onclick="batchExcludeAll('{{ src }}')" title="Exclude all visible images in this source">Exclude All</button>
+    <button class="batch-btn" onclick="batchIncludeAll('{{ src }}')" title="Include all visible images in this source">Include All</button>
+    <span class="batch-info" id="batch-info-{{ src }}"></span>
+  </div>
   <div class="grid" id="grid-source-{{ src }}">
     {% for im in source_groups[src] %}
       {{ render_card(im, ns.offset + loop.index0) }}
@@ -2815,9 +3449,41 @@ REVIEW_HTML = """<!DOCTYPE html>
     <a href="/review/{{ next_sp }}" class="btn btn-next">Next &rarr;</a>
   {% endif %}
   <div class="kbd-hint">
-    <kbd>&larr;</kbd> / <kbd>&rarr;</kbd> navigate &nbsp;
-    <kbd>Enter</kbd> mark reviewed + next
+    <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> nav &nbsp;
+    <kbd>E</kbd> exclude &nbsp;
+    <kbd>X</kbd> exemplar &nbsp;
+    <kbd>Space</kbd> source &nbsp;
+    <kbd>?</kbd> help
   </div>
+</div>
+
+<!-- Pin Sidebar (Phase 5) -->
+<div class="pin-sidebar" id="pinSidebar">
+  <div class="pin-sidebar-header">
+    Pinned <button class="pin-sidebar-clear" onclick="clearAllPins()" title="Unpin all">&times;</button>
+  </div>
+  <div class="pin-sidebar-thumbs" id="pinThumbs"></div>
+</div>
+
+<!-- Shortcut Help Panel (Phase 4) -->
+<div class="shortcut-help" id="shortcutHelp" style="display:none;">
+  <div class="shortcut-help-header">
+    Keyboard Shortcuts
+    <button onclick="toggleShortcutHelp()" style="float:right;background:none;border:none;color:#666;font-size:18px;cursor:pointer;">&times;</button>
+  </div>
+  <table class="shortcut-table">
+    <tr><td><kbd>E</kbd></td><td>Toggle exclude on focused card</td></tr>
+    <tr><td><kbd>X</kbd></td><td>Set focused card as exemplar</td></tr>
+    <tr><td><kbd>Space</kbd></td><td>Show source image popup</td></tr>
+    <tr><td><kbd>P</kbd></td><td>Pin/unpin focused card</td></tr>
+    <tr><td><kbd>Up</kbd>/<kbd>Down</kbd></td><td>Navigate cards in grid</td></tr>
+    <tr><td><kbd>Left</kbd>/<kbd>Right</kbd></td><td>Navigate to prev/next species</td></tr>
+    <tr><td><kbd>Tab</kbd></td><td>Cycle to next tab</td></tr>
+    <tr><td><kbd>1</kbd>-<kbd>7</kbd></td><td>Jump to tab by number</td></tr>
+    <tr><td><kbd>Enter</kbd></td><td>Mark reviewed &amp; next</td></tr>
+    <tr><td><kbd>Escape</kbd></td><td>Close popup / clear focus</td></tr>
+    <tr><td><kbd>?</kbd></td><td>Toggle this help</td></tr>
+  </table>
 </div>
 
 <!-- First Visit Welcome Modal -->
@@ -3247,6 +3913,13 @@ function toggleAction(cb) {
     }
   }
 
+  // Show/hide reason dropdown
+  const reasonSelect = card.querySelector('.reason-select');
+  if (reasonSelect) {
+    reasonSelect.style.display = excludeCb.checked ? '' : 'none';
+    if (!excludeCb.checked) reasonSelect.value = '';
+  }
+
   // Update card styling
   card.classList.toggle('excluded', excludeCb.checked);
   card.classList.toggle('fix-orient', fixCb.checked);
@@ -3257,11 +3930,15 @@ function toggleAction(cb) {
   // Sync to copies in other tabs BEFORE reorder (so main grid copies update first)
   syncCardState(fname, card);
 
+  // Build payload with exclude_reason if applicable
+  const payload = {filename: fname, species: SPECIES, action: sendAction};
+  if (reasonSelect && excludeCb.checked) payload.exclude_reason = reasonSelect.value;
+
   // Save
   fetch('/api/save_image_action', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({filename: fname, species: SPECIES, action: sendAction})
+    body: JSON.stringify(payload)
   }).then(r => r.json()).then(() => {
     updateCounts();
     reorderCards();
@@ -3350,6 +4027,14 @@ function syncCardState(fname, sourceCard) {
       const dstCb = card.querySelector('[data-action="' + action + '"]');
       if (srcCb && dstCb) dstCb.checked = srcCb.checked;
     });
+
+    // Sync reason dropdown
+    const srcReason = sourceCard.querySelector('.reason-select');
+    const dstReason = card.querySelector('.reason-select');
+    if (srcReason && dstReason) {
+      dstReason.value = srcReason.value;
+      dstReason.style.display = srcReason.style.display;
+    }
 
     // Sync Sea-thru button active states
     sourceCard.querySelectorAll('.seathru-btn-inline').forEach(srcBtn => {
@@ -3441,8 +4126,318 @@ function updateTabCounts() {
   const elExc = document.getElementById('tab-count-excluded');
   if (elInc) elInc.textContent = nIncluded;
   if (elExc) elExc.textContent = nExcluded;
-  // Source tab counts are static (images don't move between sources)
-  // but we don't need to update them — the total per source never changes
+
+  // Update source tab included/total counts
+  document.querySelectorAll('[id^="grid-source-"]').forEach(grid => {
+    const src = grid.id.replace('grid-source-', '');
+    const cards = grid.querySelectorAll('.card');
+    const total = cards.length;
+    const included = Array.from(cards).filter(c =>
+      !c.classList.contains('excluded') && !c.classList.contains('alt-morph') &&
+      !c.classList.contains('resegment') && !c.classList.contains('color-correct')
+    ).length;
+    const countEl = document.getElementById('tab-count-source-' + src);
+    if (countEl) {
+      const inclSpan = countEl.querySelector('.src-incl');
+      if (inclSpan) inclSpan.textContent = included;
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// Phase 1: Source Tab Filtering
+// ══════════════════════════════════════════════════════════════
+
+function filterSourceTab(source, filter, btn) {
+  // Update active button
+  const bar = btn.closest('.source-filter-bar');
+  bar.querySelectorAll('.source-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const grid = document.getElementById('grid-source-' + source);
+  if (!grid) return;
+  const excludedClasses = ['excluded', 'alt-morph', 'resegment', 'color-correct'];
+
+  grid.querySelectorAll('.card').forEach(card => {
+    const isExcl = excludedClasses.some(cls => card.classList.contains(cls));
+    const isReviewed = card.dataset.reviewed === 'true';
+    let show = true;
+
+    if (filter === 'included') show = !isExcl;
+    else if (filter === 'excluded') show = isExcl;
+    else if (filter === 'unreviewed') show = !isReviewed;
+
+    card.style.display = show ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// Phase 2: Exclusion Reason
+// ══════════════════════════════════════════════════════════════
+
+function setExcludeReason(select) {
+  const fname = select.dataset.fname;
+  const reason = select.value;
+
+  fetch('/api/save_exclude_reason', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({filename: fname, exclude_reason: reason})
+  });
+
+  // Sync across card copies
+  document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(card => {
+    card.dataset.excludeReason = reason;
+    const sel = card.querySelector('.reason-select');
+    if (sel) sel.value = reason;
+    // Update reason badge
+    let badge = card.querySelector('.reason-badge');
+    if (reason && card.classList.contains('excluded')) {
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'reason-badge';
+        card.querySelector('.source').appendChild(badge);
+      }
+      badge.textContent = reason.replace(/_/g, ' ');
+    } else if (badge) {
+      badge.remove();
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// Phase 3: Batch Operations
+// ══════════════════════════════════════════════════════════════
+
+const _selectedCards = new Set();
+
+function handleCardClick(event, card) {
+  // Don't interfere with interactive elements
+  if (event.target.closest('input, button, select, label, a, .seathru-btn-inline, .show-source-btn, .pin-btn')) return;
+
+  if (event.shiftKey) {
+    event.preventDefault();
+    const fname = card.dataset.fname;
+    if (_selectedCards.has(fname)) {
+      _selectedCards.delete(fname);
+      document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(c => c.classList.remove('selected'));
+    } else {
+      _selectedCards.add(fname);
+      document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(c => c.classList.add('selected'));
+    }
+    updateBatchInfo();
+  } else {
+    // Single click = focus card (Phase 4)
+    focusCard(card);
+  }
+}
+
+function batchExcludeAll(source) {
+  const grid = document.getElementById('grid-source-' + source);
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
+  batchSetAction(cards, 'exclude');
+}
+
+function batchIncludeAll(source) {
+  const grid = document.getElementById('grid-source-' + source);
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
+  batchSetAction(cards, 'keep');
+}
+
+function batchSetAction(cards, action) {
+  const filenames = cards.map(c => c.dataset.fname).filter(Boolean);
+  if (!filenames.length) return;
+
+  fetch('/api/batch_action', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({filenames: filenames, species: SPECIES, action: action})
+  }).then(r => r.json()).then(data => {
+    if (!data.ok) return;
+    // Update all card copies
+    filenames.forEach(fname => {
+      document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(card => {
+        const excludeCb = card.querySelector('[data-action="exclude"]');
+        const altCb = card.querySelector('[data-action="alt_morph"]');
+        const resegCb = card.querySelector('[data-action="resegment"]');
+        const colorCb = card.querySelector('[data-action="color_correct"]');
+        const fixCb = card.querySelector('[data-action="fix_orientation"]');
+
+        if (action === 'exclude') {
+          if (excludeCb) excludeCb.checked = true;
+          if (altCb) altCb.checked = false;
+          if (resegCb) resegCb.checked = false;
+          if (colorCb) colorCb.checked = false;
+          if (fixCb) fixCb.checked = false;
+          card.classList.add('excluded');
+          card.classList.remove('alt-morph', 'resegment', 'color-correct', 'fix-orient');
+          const sel = card.querySelector('.reason-select');
+          if (sel) sel.style.display = '';
+        } else if (action === 'keep') {
+          if (excludeCb) excludeCb.checked = false;
+          if (altCb) altCb.checked = false;
+          if (resegCb) resegCb.checked = false;
+          if (colorCb) colorCb.checked = false;
+          if (fixCb) fixCb.checked = false;
+          card.classList.remove('excluded', 'alt-morph', 'resegment', 'color-correct', 'fix-orient');
+          const sel = card.querySelector('.reason-select');
+          if (sel) sel.style.display = 'none';
+        }
+      });
+    });
+    _selectedCards.clear();
+    document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+    updateCounts();
+    reorderCards();
+  });
+}
+
+function updateBatchInfo() {
+  document.querySelectorAll('.batch-info').forEach(el => {
+    el.textContent = _selectedCards.size ? _selectedCards.size + ' selected' : '';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// Phase 4: Card Focus & Keyboard Shortcuts
+// ══════════════════════════════════════════════════════════════
+
+let _focusedCard = null;
+
+function focusCard(card) {
+  clearCardFocus();
+  _focusedCard = card;
+  card.classList.add('focused');
+  card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function clearCardFocus() {
+  if (_focusedCard) {
+    _focusedCard.classList.remove('focused');
+    _focusedCard = null;
+  }
+}
+
+function navigateCards(direction) {
+  const activePanel = document.querySelector('.tab-panel.active');
+  if (!activePanel) return;
+  const visibleCards = Array.from(activePanel.querySelectorAll('.card')).filter(
+    c => c.style.display !== 'none'
+  );
+  if (!visibleCards.length) return;
+
+  if (!_focusedCard || !activePanel.contains(_focusedCard)) {
+    focusCard(visibleCards[0]);
+    return;
+  }
+
+  const idx = visibleCards.indexOf(_focusedCard);
+  // Estimate grid columns
+  const grid = activePanel.querySelector('.grid');
+  if (!grid) return;
+  const cols = Math.max(1, Math.round(grid.clientWidth / 236));
+
+  let newIdx = idx;
+  if (direction === 'up') newIdx = Math.max(0, idx - cols);
+  else if (direction === 'down') newIdx = Math.min(visibleCards.length - 1, idx + cols);
+  else if (direction === 'left') newIdx = Math.max(0, idx - 1);
+  else if (direction === 'right') newIdx = Math.min(visibleCards.length - 1, idx + 1);
+
+  if (newIdx !== idx) focusCard(visibleCards[newIdx]);
+}
+
+function cycleTab(direction) {
+  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+  const activeIdx = tabs.findIndex(t => t.classList.contains('active'));
+  let newIdx = activeIdx + direction;
+  if (newIdx >= tabs.length) newIdx = 0;
+  if (newIdx < 0) newIdx = tabs.length - 1;
+  tabs[newIdx].click();
+}
+
+function toggleShortcutHelp() {
+  const el = document.getElementById('shortcutHelp');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ══════════════════════════════════════════════════════════════
+// Phase 5: Pin / Compare Mode
+// ══════════════════════════════════════════════════════════════
+
+const _pinnedCards = [];  // [{fname, pngName}]
+
+function togglePin(btn) {
+  const fname = btn.dataset.fname;
+  const pngName = btn.dataset.png;
+  const idx = _pinnedCards.findIndex(p => p.fname === fname);
+
+  if (idx >= 0) {
+    _pinnedCards.splice(idx, 1);
+    document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(c => {
+      c.classList.remove('is-pinned');
+      c.querySelectorAll('.pin-btn').forEach(b => b.classList.remove('pinned'));
+    });
+  } else {
+    if (_pinnedCards.length >= 3) {
+      const removed = _pinnedCards.shift();
+      document.querySelectorAll('.card[data-fname="' + removed.fname + '"]').forEach(c => {
+        c.classList.remove('is-pinned');
+        c.querySelectorAll('.pin-btn').forEach(b => b.classList.remove('pinned'));
+      });
+    }
+    _pinnedCards.push({fname, pngName});
+    document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(c => {
+      c.classList.add('is-pinned');
+      c.querySelectorAll('.pin-btn').forEach(b => b.classList.add('pinned'));
+    });
+  }
+
+  renderPinSidebar();
+  document.body.classList.toggle('has-pins', _pinnedCards.length > 0);
+}
+
+function renderPinSidebar() {
+  const container = document.getElementById('pinThumbs');
+  container.innerHTML = '';
+  _pinnedCards.forEach(pin => {
+    const div = document.createElement('div');
+    div.className = 'pin-thumb';
+    // Find the card to get its image src
+    const card = document.querySelector('.card[data-fname="' + pin.fname + '"]');
+    const img = card ? (card.querySelector('.img-processed img') || card.querySelector('.img-original img')) : null;
+    const src = img ? img.src : '/image/segmented/' + SPECIES_DIR + '/' + pin.pngName;
+    div.innerHTML = '<img src="' + src + '" alt="' + pin.pngName + '">' +
+      '<div class="pin-thumb-label">' + pin.pngName.replace(SPECIES_DIR + '_', '') + '</div>' +
+      '<button class="pin-remove" onclick="unpinByFname(\\'' + pin.fname + '\\')">&times;</button>';
+    container.appendChild(div);
+  });
+}
+
+function clearAllPins() {
+  _pinnedCards.forEach(pin => {
+    document.querySelectorAll('.card[data-fname="' + pin.fname + '"]').forEach(c => {
+      c.classList.remove('is-pinned');
+      c.querySelectorAll('.pin-btn').forEach(b => b.classList.remove('pinned'));
+    });
+  });
+  _pinnedCards.length = 0;
+  renderPinSidebar();
+  document.body.classList.remove('has-pins');
+}
+
+function unpinByFname(fname) {
+  const idx = _pinnedCards.findIndex(p => p.fname === fname);
+  if (idx >= 0) {
+    _pinnedCards.splice(idx, 1);
+    document.querySelectorAll('.card[data-fname="' + fname + '"]').forEach(c => {
+      c.classList.remove('is-pinned');
+      c.querySelectorAll('.pin-btn').forEach(b => b.classList.remove('pinned'));
+    });
+  }
+  renderPinSidebar();
+  document.body.classList.toggle('has-pins', _pinnedCards.length > 0);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -3593,13 +4588,6 @@ function closeSourcePopup(event) {
   }
 }
 
-// Close popup on Escape
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.getElementById('sourcePopup').classList.remove('visible');
-  }
-});
-
 let gestaltTimer = null;
 function saveGestaltK() {
   clearTimeout(gestaltTimer);
@@ -3630,21 +4618,74 @@ function markReviewed() {
   });
 }
 
-// Keyboard navigation
+// Keyboard navigation (expanded Phase 4)
 document.addEventListener('keydown', function(e) {
-  // Don't trigger if typing in an input or modal is open
-  if (e.target.tagName === 'INPUT') return;
+  // Don't trigger if typing in an input/select or modal is open
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
   if (document.getElementById('orientModal').style.display !== 'none') {
     if (e.key === 'Escape') closeOrientModal();
     return;
   }
+  // Close popups
+  if (e.key === 'Escape') {
+    document.getElementById('sourcePopup').classList.remove('visible');
+    document.getElementById('shortcutHelp').style.display = 'none';
+    clearCardFocus();
+    return;
+  }
 
-  if (e.key === 'ArrowLeft' && PREV_SP) {
+  // Species navigation
+  if (e.key === 'ArrowLeft' && !_focusedCard && PREV_SP) {
     window.location.href = '/review/' + PREV_SP;
-  } else if (e.key === 'ArrowRight' && NEXT_SP) {
+    return;
+  }
+  if (e.key === 'ArrowRight' && !_focusedCard && NEXT_SP) {
     window.location.href = '/review/' + NEXT_SP;
-  } else if (e.key === 'Enter') {
-    markReviewed();
+    return;
+  }
+
+  // Card navigation
+  if (e.key === 'ArrowUp') { e.preventDefault(); navigateCards('up'); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); navigateCards('down'); return; }
+  if (_focusedCard && e.key === 'ArrowLeft') { navigateCards('left'); return; }
+  if (_focusedCard && e.key === 'ArrowRight') { navigateCards('right'); return; }
+
+  if (e.key === 'Enter') { markReviewed(); return; }
+  if (e.key === '?') { toggleShortcutHelp(); return; }
+  if (e.key === 'Tab') { e.preventDefault(); cycleTab(e.shiftKey ? -1 : 1); return; }
+
+  // Number keys 1-7 jump to tabs
+  if (e.key >= '1' && e.key <= '7') {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const idx = parseInt(e.key) - 1;
+    if (idx < tabs.length) tabs[idx].click();
+    return;
+  }
+
+  // Card-level shortcuts (require focused card)
+  if (!_focusedCard) return;
+
+  if (e.key === 'e' || e.key === 'E') {
+    const cb = _focusedCard.querySelector('[data-action="exclude"]');
+    if (cb) { cb.checked = !cb.checked; toggleAction(cb); }
+    return;
+  }
+  if (e.key === 'x' || e.key === 'X') {
+    const radio = _focusedCard.querySelector('input[name="exemplar"]');
+    if (radio) { radio.checked = true; setExemplar(radio); }
+    return;
+  }
+  if (e.key === ' ') {
+    e.preventDefault();
+    const fname = _focusedCard.dataset.fname;
+    const displayName = _focusedCard.querySelector('.fname')?.textContent || '';
+    showSourcePopup(fname, displayName);
+    return;
+  }
+  if (e.key === 'p' || e.key === 'P') {
+    const pinBtn = _focusedCard.querySelector('.pin-btn');
+    if (pinBtn) togglePin(pinBtn);
+    return;
   }
 });
 
