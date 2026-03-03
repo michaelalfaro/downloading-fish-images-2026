@@ -81,6 +81,7 @@ _image_filters = {}          # filename -> {filter_name: enabled} (e.g., {"randa
 _underwater_flags = {}       # filename -> {whole_is_uw, body_is_uw, whole_uw_score, ...}
 _depth_estimates = {}        # filename -> {mean_depth, median_depth, ...}
 _orig_image_index = {}       # png_basename (no ext) -> original image path
+_inv_by_species_base = {}    # (species, basename_no_ext) -> orig_fname
 
 
 # ══════════════════════════════════════════════════════════════
@@ -950,6 +951,23 @@ def _apply_auto_exclude_defaults(species, images):
             }
             _sync_annotations_for_image(im["orig_fname"], species, "exclude")
             applied = True
+            continue
+
+        # For non-excluded images: detect facing direction and auto-flag if wrong
+        sp_dir = species_to_dirname(species)
+        png_path = os.path.join(SEGMENTED_DIR, sp_dir, im["png_name"])
+        if os.path.exists(png_path):
+            facing = _detect_facing_direction(png_path)
+            if facing == "right":
+                _review_state[im["orig_fname"]] = {
+                    "filename": im["orig_fname"],
+                    "species": species,
+                    "action": "fix_orientation",
+                    "exclude_reason": "",
+                    "reviewed_at": now,
+                }
+                _sync_annotations_for_image(im["orig_fname"], species, "fix_orientation")
+                applied = True
 
     if applied:
         _save_review_state()
@@ -987,12 +1005,8 @@ def _get_species_images(species, apply_defaults=True):
 
     for png_name in sorted(all_files):
         base = os.path.splitext(png_name)[0]
-        # Find original filename in inventory
-        orig_fname = None
-        for row in _inventory:
-            if row["species"] == species and os.path.splitext(row["filename"])[0] == base:
-                orig_fname = row["filename"]
-                break
+        # Find original filename via pre-built index (O(1) instead of scanning inventory)
+        orig_fname = _inv_by_species_base.get((species, base))
         if orig_fname is None:
             orig_fname = base + ".jpg"
 
@@ -1271,8 +1285,15 @@ def review(species_dirname):
                                   n_main_cards=len(included_images) + len(excluded_images))
 
 
+def _safe_filename(name):
+    """Reject path traversal attempts in URL parameters."""
+    return ".." not in name and "/" not in name and "\\" not in name
+
+
 @app.route("/image/<img_type>/<species_dirname>/<filename>")
 def serve_image(img_type, species_dirname, filename):
+    if not (_safe_filename(species_dirname) and _safe_filename(filename)):
+        return "Invalid filename", 400
     if img_type == "normalized":
         base_dir = NORMALIZED_DIR
     elif img_type == "segmented":
@@ -1312,13 +1333,9 @@ def serve_image(img_type, species_dirname, filename):
             if wb_method == "depth_seathru":
                 # Depth-aware physics correction
                 base_no_ext = os.path.splitext(filename)[0]
-                # Find original filename to load depth map
-                orig_fname = None
-                for inv_row in _inventory:
-                    inv_base = os.path.splitext(inv_row["filename"])[0]
-                    if inv_base == base_no_ext:
-                        orig_fname = inv_row["filename"]
-                        break
+                # Find original filename via pre-built index
+                orig_path = _orig_image_index.get(base_no_ext)
+                orig_fname = os.path.basename(orig_path) if orig_path else None
                 depth_map = load_depth_map(orig_fname) if orig_fname else None
                 if depth_map is not None:
                     # Resize depth to match thumbnail
@@ -1373,6 +1390,8 @@ def serve_image(img_type, species_dirname, filename):
 @app.route("/image/source/<filename>")
 def serve_source_image(filename):
     """Serve the original unsegmented source image (JPEG) as a thumbnail."""
+    if not _safe_filename(filename):
+        return "Invalid filename", 400
     base = os.path.splitext(filename)[0]
     orig_path = _orig_image_index.get(base)
     if not orig_path or not os.path.exists(orig_path):
@@ -1530,6 +1549,269 @@ def api_batch_action():
         _save_gestalt_k()
 
     return jsonify({"ok": True, "changed": changed})
+
+
+@app.route("/api/backfill_exclusion_reasons", methods=["POST"])
+def api_backfill_exclusion_reasons():
+    """Retroactively assign exclude_reason to already-excluded images that lack one.
+
+    Uses metadata (is_lateral, is_single_fish, is_grayscale, segmentation_quality)
+    and source heuristics to infer the most likely reason.
+    """
+    updated = 0
+    source_auto = 0
+    wrong_view = 0
+    poor_quality = 0
+
+    for fname, state in _review_state.items():
+        if state.get("action") != "exclude":
+            continue
+        if state.get("exclude_reason"):
+            continue  # already has a reason
+
+        meta = _image_metadata.get(fname, {})
+        reason = None
+
+        # Check metadata signals
+        if meta.get("is_lateral") == "no":
+            reason = "wrong_view"
+            wrong_view += 1
+        elif meta.get("is_single_fish") == "no":
+            reason = "poor_quality"
+            poor_quality += 1
+        elif meta.get("is_grayscale") not in ("", None, "no"):
+            try:
+                if float(meta["is_grayscale"]) > 0.5:
+                    reason = "poor_quality"
+                    poor_quality += 1
+            except (ValueError, TypeError):
+                pass
+
+        if reason is None:
+            sq = meta.get("segmentation_quality", "")
+            if sq:
+                try:
+                    if float(sq) < 0.5:
+                        reason = "poor_quality"
+                        poor_quality += 1
+                except (ValueError, TypeError):
+                    pass
+
+        # Source-based heuristic as fallback
+        if reason is None:
+            png_base = os.path.splitext(fname)[0]
+            for suffix in ("iNaturalist", "FishPix", "FishBaseUser"):
+                if suffix in png_base:
+                    reason = "auto_excluded"
+                    source_auto += 1
+                    break
+
+        if reason:
+            state["exclude_reason"] = reason
+            updated += 1
+
+    if updated:
+        _save_review_state()
+
+    return jsonify({
+        "ok": True,
+        "updated": updated,
+        "breakdown": {
+            "wrong_view": wrong_view,
+            "poor_quality": poor_quality,
+            "auto_excluded": source_auto,
+        }
+    })
+
+
+def _detect_facing_direction(png_path):
+    """Detect whether a segmented fish image faces left or right.
+
+    Uses edge-height heuristic: compares the vertical extent of the fish
+    at the left 10% vs right 10% of the silhouette. Butterflyfish have a
+    narrow snout (head side) and taller caudal/body region.
+
+    For left lateral view, head should be on the LEFT (narrower edge on left,
+    taller edge on right).
+
+    Returns:
+        'left' if head is on left (correct for left lateral view)
+        'right' if head is on right (needs horizontal flip)
+        'ambiguous' if can't determine
+        None if image can't be analyzed
+    """
+    try:
+        img = Image.open(png_path).convert("RGBA")
+        arr = np.array(img)
+        alpha = arr[:, :, 3] > 10
+
+        if not alpha.any():
+            return None
+
+        col_any = np.where(alpha.any(axis=0))[0]
+        if len(col_any) < 10:
+            return None
+
+        left_col, right_col = col_any[0], col_any[-1]
+        span = right_col - left_col
+        if span < 20:
+            return None
+
+        slice_w = max(int(span * 0.10), 3)
+
+        left_slice = alpha[:, left_col:left_col + slice_w]
+        right_slice = alpha[:, right_col - slice_w:right_col]
+
+        left_rows = np.where(left_slice.any(axis=1))[0]
+        right_rows = np.where(right_slice.any(axis=1))[0]
+
+        left_height = (left_rows[-1] - left_rows[0]) if len(left_rows) > 1 else 0
+        right_height = (right_rows[-1] - right_rows[0]) if len(right_rows) > 1 else 0
+
+        if left_height == 0 and right_height == 0:
+            return None
+
+        # right_height > left_height means body widens on right, snout on left = correct
+        ratio = right_height / max(left_height, 1)
+
+        if ratio > 1.15:
+            return "left"      # head on left = correct left lateral
+        elif ratio < 0.85:
+            return "right"     # head on right = needs flip
+        else:
+            return "ambiguous"
+    except Exception:
+        return None
+
+
+@app.route("/api/prescreen", methods=["POST"])
+def api_prescreen():
+    """Run smart prescreening on all species.
+
+    Detects:
+    1. Facing direction (auto-flag for flip if head is on right)
+    2. Non-lateral images (auto-exclude with reason 'wrong_view')
+    3. Multi-fish images (auto-exclude with reason 'poor_quality')
+    4. Low segmentation quality (auto-exclude)
+
+    Only modifies unreviewed images (not in review_state).
+    """
+    species_arg = request.get_json(silent=True) or {}
+    target_species = species_arg.get("species")  # optional: prescreen single species
+
+    species_list = [target_species] if target_species else _species_list
+
+    stats = {"flipped": 0, "excluded_view": 0, "excluded_quality": 0,
+             "excluded_multi": 0, "already_reviewed": 0, "analyzed": 0, "errors": 0}
+    now = datetime.now().isoformat()
+
+    for species in species_list:
+        sp_dir = species_to_dirname(species)
+        seg_dir = os.path.join(SEGMENTED_DIR, sp_dir)
+        if not os.path.isdir(seg_dir):
+            continue
+
+        for png_name in os.listdir(seg_dir):
+            if not png_name.endswith(".png"):
+                continue
+
+            base = os.path.splitext(png_name)[0]
+            orig_fname = _inv_by_species_base.get((species, base), base + ".jpg")
+
+            # Skip already-reviewed images
+            if orig_fname in _review_state:
+                stats["already_reviewed"] += 1
+                continue
+
+            stats["analyzed"] += 1
+            meta = _image_metadata.get(orig_fname, {})
+
+            # Check metadata-based exclusions
+            reason = None
+            if meta.get("is_lateral") == "no":
+                reason = "wrong_view"
+                stats["excluded_view"] += 1
+            elif meta.get("is_single_fish") == "no":
+                reason = "poor_quality"
+                stats["excluded_multi"] += 1
+            else:
+                sq = meta.get("segmentation_quality", "")
+                if sq:
+                    try:
+                        if float(sq) < 0.5:
+                            reason = "poor_quality"
+                            stats["excluded_quality"] += 1
+                    except (ValueError, TypeError):
+                        pass
+
+            if reason:
+                _review_state[orig_fname] = {
+                    "filename": orig_fname,
+                    "species": species,
+                    "action": "exclude",
+                    "exclude_reason": reason,
+                    "reviewed_at": now,
+                }
+                _sync_annotations_for_image(orig_fname, species, "exclude")
+                continue
+
+            # Detect facing direction
+            png_path = os.path.join(seg_dir, png_name)
+            facing = _detect_facing_direction(png_path)
+
+            if facing == "right":
+                # Head on right = needs horizontal flip
+                _review_state[orig_fname] = {
+                    "filename": orig_fname,
+                    "species": species,
+                    "action": "fix_orientation",
+                    "exclude_reason": "",
+                    "reviewed_at": now,
+                }
+                _sync_annotations_for_image(orig_fname, species, "fix_orientation")
+                stats["flipped"] += 1
+            elif facing is None:
+                stats["errors"] += 1
+
+    _save_review_state()
+
+    return jsonify({"ok": True, "stats": stats})
+
+
+@app.route("/api/prescreen_status")
+def api_prescreen_status():
+    """Get current prescreening coverage stats without modifying anything."""
+    n_total = 0
+    n_with_state = 0
+    n_fix_orient = 0
+    n_excluded = 0
+
+    for species in _species_list:
+        sp_dir = species_to_dirname(species)
+        seg_dir = os.path.join(SEGMENTED_DIR, sp_dir)
+        if not os.path.isdir(seg_dir):
+            continue
+        for png_name in os.listdir(seg_dir):
+            if not png_name.endswith(".png"):
+                continue
+            base = os.path.splitext(png_name)[0]
+            orig_fname = _inv_by_species_base.get((species, base), base + ".jpg")
+            n_total += 1
+            state = _review_state.get(orig_fname)
+            if state:
+                n_with_state += 1
+                if state.get("action") == "fix_orientation":
+                    n_fix_orient += 1
+                elif state.get("action") == "exclude":
+                    n_excluded += 1
+
+    return jsonify({
+        "total_images": n_total,
+        "reviewed": n_with_state,
+        "unreviewed": n_total - n_with_state,
+        "fix_orientation": n_fix_orient,
+        "excluded": n_excluded,
+    })
 
 
 @app.route("/api/save_gestalt_k", methods=["POST"])
@@ -1895,6 +2177,8 @@ def staging_page():
 @app.route("/staging/image/<filename>")
 def serve_staging_image(filename):
     """Serve a staged image."""
+    if not _safe_filename(filename):
+        return "Invalid filename", 400
     path = os.path.join(STAGING_DIR, filename)
     if not os.path.exists(path):
         return "Not found", 404
@@ -1995,6 +2279,8 @@ def api_set_exemplar():
 @app.route("/image/full/<species_dirname>/<filename>")
 def serve_full_image(species_dirname, filename):
     """Serve full-size segmented image for orientation digitizing."""
+    if not (_safe_filename(species_dirname) and _safe_filename(filename)):
+        return "Invalid filename", 400
     path = os.path.join(SEGMENTED_DIR, species_dirname, filename)
     if not os.path.exists(path):
         return "Not found", 404
@@ -2199,6 +2485,8 @@ def api_apply_orientation():
 @app.route("/image/oriented/<species_dirname>/<filename>")
 def serve_oriented_image(species_dirname, filename):
     """Serve oriented image (after rotation applied)."""
+    if not (_safe_filename(species_dirname) and _safe_filename(filename)):
+        return "Invalid filename", 400
     path = os.path.join(ORIENTED_DIR, species_dirname, filename)
     if not os.path.exists(path):
         return "Not found", 404
@@ -2386,6 +2674,8 @@ def api_preview_rotation():
 @app.route("/image/exemplar_silhouette/<species_dirname>")
 def serve_exemplar_silhouette(species_dirname):
     """Serve the exemplar image as a silhouette (black shape) for overlay reference."""
+    if not _safe_filename(species_dirname):
+        return "Invalid filename", 400
     species = dirname_to_species(species_dirname)
 
     # Check if we have an exemplar for this species
@@ -2541,6 +2831,13 @@ INDEX_HTML = """<!DOCTYPE html>
     <p style="color:#888;font-size:13px;">Click to load...</p>
   </div>
 </details>
+<div style="margin:8px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+  <button onclick="backfillReasons(this)" style="padding:4px 12px;font-size:12px;border:1px solid #aaa;border-radius:4px;cursor:pointer;background:#fff;">Backfill Exclusion Reasons</button>
+  <span id="backfillResult" style="font-size:12px;color:#666;"></span>
+  <span style="color:#ccc;">|</span>
+  <button onclick="runPrescreen(this)" style="padding:4px 12px;font-size:12px;border:1px solid #aaa;border-radius:4px;cursor:pointer;background:#fff;">Run Prescreen (all unreviewed)</button>
+  <span id="prescreenResult" style="font-size:12px;color:#666;"></span>
+</div>
 <div id="manifestResult" style="display:none;margin:12px 0;padding:10px 16px;border-radius:6px;font-size:13px;"></div>
 
 <table id="speciesTable">
@@ -2661,6 +2958,57 @@ function validateManifest() {
     el.style.background = '#ffebee'; el.style.color = '#c62828';
     el.textContent = 'Error: ' + err;
   });
+}
+
+function runPrescreen(btn) {
+  btn.disabled = true;
+  const el = document.getElementById('prescreenResult');
+  el.textContent = 'Prescreening all unreviewed images (may take a minute)...';
+  el.style.color = '#1976d2';
+  fetch('/api/prescreen', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'})
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+      const s = data.stats;
+      if (s.analyzed === 0) {
+        el.textContent = 'No unreviewed images to prescreen.';
+        el.style.color = '#666';
+      } else {
+        el.textContent = 'Prescreened ' + s.analyzed + ' images: ' +
+          s.flipped + ' flagged for flip, ' +
+          s.excluded_view + ' wrong view, ' + s.excluded_multi + ' multi-fish, ' +
+          s.excluded_quality + ' low quality, ' + s.errors + ' errors';
+        el.style.color = '#2e7d32';
+      }
+    }).catch(err => {
+      btn.disabled = false;
+      el.textContent = 'Error: ' + err;
+      el.style.color = '#c62828';
+    });
+}
+
+function backfillReasons(btn) {
+  btn.disabled = true;
+  const el = document.getElementById('backfillResult');
+  el.textContent = 'Backfilling...';
+  fetch('/api/backfill_exclusion_reasons', {method: 'POST'})
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+      if (data.updated === 0) {
+        el.textContent = 'No images need backfill — all exclusions already have reasons.';
+      } else {
+        const b = data.breakdown;
+        el.textContent = 'Updated ' + data.updated + ' images: ' +
+          b.wrong_view + ' wrong_view, ' + b.poor_quality + ' poor_quality, ' +
+          b.auto_excluded + ' auto_excluded';
+        el.style.color = '#2e7d32';
+      }
+    }).catch(err => {
+      btn.disabled = false;
+      el.textContent = 'Error: ' + err;
+      el.style.color = '#c62828';
+    });
 }
 </script>
 </body>
@@ -3439,7 +3787,7 @@ REVIEW_HTML = """<!DOCTYPE html>
     <span id="nAltMorph">{{ n_alt_morph }}</span> alt &middot;
     <span id="nResegment">{{ n_resegment }}</span> reseg &middot;
     <span id="nColorCorrect">{{ n_color_correct }}</span> color &middot;
-    <span id="exemplarStatus">{{ '&#9733; Exemplar set' if has_exemplar else 'No exemplar' | safe }}</span>
+    <span id="exemplarStatus">{{ ('&#9733; Exemplar set' if has_exemplar else 'No exemplar') | safe }}</span>
   </div>
   {% if prev_sp %}
     <a href="/review/{{ prev_sp }}" class="btn btn-prev">&larr; Previous</a>
@@ -4236,25 +4584,39 @@ function batchExcludeAll(source) {
   const grid = document.getElementById('grid-source-' + source);
   if (!grid) return;
   const cards = Array.from(grid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
-  batchSetAction(cards, 'exclude');
+  batchSetAction(cards, 'exclude', source);
 }
 
 function batchIncludeAll(source) {
   const grid = document.getElementById('grid-source-' + source);
   if (!grid) return;
   const cards = Array.from(grid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
-  batchSetAction(cards, 'keep');
+  batchSetAction(cards, 'keep', source);
 }
 
-function batchSetAction(cards, action) {
+function batchSetAction(cards, action, source) {
   const filenames = cards.map(c => c.dataset.fname).filter(Boolean);
   if (!filenames.length) return;
+
+  // Show progress indicator
+  const bar = source ? document.querySelector('#panel-source-' + source + ' .source-filter-bar') : null;
+  let progressEl = null;
+  if (bar) {
+    progressEl = document.createElement('span');
+    progressEl.className = 'batch-progress';
+    progressEl.textContent = ' Updating ' + filenames.length + ' images...';
+    progressEl.style.cssText = 'color:#1976d2;font-weight:600;margin-left:8px;';
+    bar.appendChild(progressEl);
+    bar.querySelectorAll('.batch-btn').forEach(b => b.disabled = true);
+  }
 
   fetch('/api/batch_action', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({filenames: filenames, species: SPECIES, action: action})
   }).then(r => r.json()).then(data => {
+    if (progressEl) progressEl.remove();
+    if (bar) bar.querySelectorAll('.batch-btn').forEach(b => b.disabled = false);
     if (!data.ok) return;
     // Update all card copies
     filenames.forEach(fname => {
@@ -4291,6 +4653,9 @@ function batchSetAction(cards, action) {
     document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
     updateCounts();
     reorderCards();
+  }).catch(() => {
+    if (progressEl) progressEl.remove();
+    if (bar) bar.querySelectorAll('.batch-btn').forEach(b => b.disabled = false);
   });
 }
 
@@ -5383,10 +5748,12 @@ def init_app():
 
     print("Building original image index...")
     _orig_image_index = {}
+    _inv_by_species_base.clear()
     for row in _inventory:
         base = os.path.splitext(row["filename"])[0]
         orig_path = os.path.join(REPO_DIR, row["directory"], row["filename"])
         _orig_image_index[base] = orig_path
+        _inv_by_species_base[(row["species"], base)] = row["filename"]
     print(f"  {len(_orig_image_index)} images indexed")
 
 
