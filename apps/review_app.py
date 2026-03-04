@@ -953,10 +953,24 @@ def _apply_auto_exclude_defaults(species, images):
             applied = True
             continue
 
-        # For non-excluded images: detect facing direction and auto-flag if wrong
+        # For non-excluded images: check segmentation and facing direction
         sp_dir = species_to_dirname(species)
         png_path = os.path.join(SEGMENTED_DIR, sp_dir, im["png_name"])
         if os.path.exists(png_path):
+            # Multi-blob = multiple fish grabbed by segmenter
+            if _detect_multi_blob(png_path):
+                _review_state[im["orig_fname"]] = {
+                    "filename": im["orig_fname"],
+                    "species": species,
+                    "action": "exclude",
+                    "exclude_reason": "poor_quality",
+                    "reviewed_at": now,
+                }
+                _sync_annotations_for_image(im["orig_fname"], species, "exclude")
+                applied = True
+                continue
+
+            # Facing wrong way = needs horizontal flip
             facing = _detect_facing_direction(png_path)
             if facing == "right":
                 _review_state[im["orig_fname"]] = {
@@ -1624,6 +1638,35 @@ def api_backfill_exclusion_reasons():
     })
 
 
+def _detect_multi_blob(png_path):
+    """Detect if a segmented image contains multiple disconnected fish blobs.
+
+    Uses connected component analysis on the alpha channel after morphological
+    closing (to merge small gaps). If two or more blobs are each >5% of the
+    largest blob's area, the image is flagged as multi-blob (bad segmentation).
+
+    Returns True if multiple significant blobs detected, False otherwise.
+    """
+    try:
+        img = Image.open(png_path).convert("RGBA")
+        alpha = np.array(img)[:, :, 3]
+        mask = (alpha > 10).astype(np.uint8)
+
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+        closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+
+        n_labels, _labels, stats, _ = cv2.connectedComponentsWithStats(closed)
+        areas = [stats[i, cv2.CC_STAT_AREA] for i in range(1, n_labels)]
+        if not areas:
+            return False
+
+        max_area = max(areas)
+        significant = [a for a in areas if a > max_area * 0.05]
+        return len(significant) > 1
+    except Exception:
+        return False
+
+
 def _detect_facing_direction(png_path):
     """Detect whether a segmented fish image faces left or right.
 
@@ -1755,8 +1798,21 @@ def api_prescreen():
                 _sync_annotations_for_image(orig_fname, species, "exclude")
                 continue
 
-            # Detect facing direction
+            # Multi-blob detection (multiple fish in segmentation)
             png_path = os.path.join(seg_dir, png_name)
+            if _detect_multi_blob(png_path):
+                _review_state[orig_fname] = {
+                    "filename": orig_fname,
+                    "species": species,
+                    "action": "exclude",
+                    "exclude_reason": "poor_quality",
+                    "reviewed_at": now,
+                }
+                _sync_annotations_for_image(orig_fname, species, "exclude")
+                stats["excluded_multi"] += 1
+                continue
+
+            # Detect facing direction
             facing = _detect_facing_direction(png_path)
 
             if facing == "right":
